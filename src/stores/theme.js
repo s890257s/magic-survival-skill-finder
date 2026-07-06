@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref, watch } from 'vue'
 
 const STORAGE_KEY = 'theme'
@@ -30,3 +30,8 @@ export const useThemeStore = defineStore('theme', () => {
 
   return { theme, toggleTheme }
 })
+
+// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useThemeStore, import.meta.hot))
+}

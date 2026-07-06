@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue'
-import { Heart, AlertTriangle, ChevronUp, ChevronDown, Crown } from '@lucide/vue'
+import { Heart, Pin, AlertTriangle, ChevronUp, ChevronDown, Crown } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
+import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
 import { useSettingsStore } from '@/stores/settings'
 import GlassCard from '@/components/ui/GlassCard.vue'
@@ -27,6 +28,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // 顯示頂置按鈕（圖鑑頁）
+  pinnable: {
+    type: Boolean,
+    default: false,
+  },
   // 顯示排序按鈕（配裝頁）
   reorderable: {
     type: Boolean,
@@ -44,9 +50,19 @@ const props = defineProps({
 
 const emit = defineEmits(['select-base', 'select-enchant', 'select-subject', 'move'])
 const favoritesStore = useFavoritesStore()
+const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const settingsStore = useSettingsStore()
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
+const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
+
+const togglePin = () => {
+  pinnedStore.togglePin(props.skill.id)
+  toastStore.showToast(
+    isPinned.value ? `已頂置「${props.skill.name}」` : `已取消頂置「${props.skill.name}」`,
+    'info',
+  )
+}
 
 const toggle = () => {
   if (isFavorite.value) {
@@ -132,6 +148,20 @@ const onSubjectClick = (subjectName) => {
             <ChevronDown :size="18" />
           </button>
         </div>
+        <button
+          v-if="pinnable"
+          class="pin-btn"
+          @click="togglePin"
+          :class="{ active: isPinned }"
+          :aria-pressed="isPinned"
+          :aria-label="isPinned ? '取消頂置' : '頂置顯示'"
+        >
+          <Pin
+            :fill="isPinned ? 'var(--accent-cyan)' : 'none'"
+            :color="isPinned ? 'var(--accent-cyan)' : 'var(--text-muted)'"
+            :size="20"
+          />
+        </button>
         <button
           class="favorite-btn"
           @click="toggle"
@@ -344,7 +374,8 @@ const onSubjectClick = (subjectName) => {
   cursor: not-allowed;
 }
 
-.favorite-btn {
+.favorite-btn,
+.pin-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -355,6 +386,18 @@ const onSubjectClick = (subjectName) => {
   padding: 8px;
   border-radius: 50%;
   outline: none;
+}
+
+.pin-btn:hover {
+  transform: scale(1.15);
+}
+
+.pin-btn:active {
+  transform: scale(0.95);
+}
+
+.pin-btn.active {
+  animation: heart-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .favorite-btn:hover {

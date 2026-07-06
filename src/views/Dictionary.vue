@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { Search, Filter, X } from '@lucide/vue'
+import { Search, Filter, X, Pin } from '@lucide/vue'
 import {
   skillsData,
   schoolOptions,
@@ -10,9 +10,14 @@ import {
 } from '@/data'
 import { gameVersion } from '@/data/meta'
 import SkillCard from '@/components/SkillCard.vue'
+import { usePinnedStore } from '@/stores/pinned'
+import { useToastStore } from '@/stores/toast'
 import IconSelect from '@/components/ui/IconSelect.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
+
+const pinnedStore = usePinnedStore()
+const toastStore = useToastStore()
 
 const searchQuery = ref('')
 const selectedSchool = ref('')
@@ -171,6 +176,39 @@ const filteredSkills = computed(() => {
     return true
   })
 })
+
+// 篩選結果中的頂置技能，依 pinnedIds 的順序排列（可由使用者調整）
+const pinnedInView = computed(() => {
+  const byId = new Map(filteredSkills.value.map((s) => [s.id, s]))
+  return pinnedStore.pinnedIds.map((id) => byId.get(id)).filter(Boolean)
+})
+
+// 頂置的浮到最上方（只影響排序，仍遵循篩選條件）
+const displaySkills = computed(() => {
+  if (pinnedInView.value.length === 0) return filteredSkills.value
+  const rest = filteredSkills.value.filter((s) => !pinnedStore.isPinned(s.id))
+  return [...pinnedInView.value, ...rest]
+})
+
+// 調整頂置順序：與「畫面上可見的鄰居」交換，篩選中被隱藏的頂置卡不參與
+const onMovePinned = (skill, delta) => {
+  const visible = pinnedInView.value
+  const index = visible.findIndex((s) => s.id === skill.id)
+  const target = visible[index + delta]
+  if (!target) return
+  pinnedStore.swapPins(skill.id, target.id)
+}
+
+// 解除全部頂置：直接執行，靠 toast 的「復原」防誤觸
+const unpinAll = () => {
+  const backup = [...pinnedStore.pinnedIds]
+  pinnedStore.clearPins()
+  toastStore.showToast('已解除全部頂置', 'info', {
+    duration: 6000,
+    actionLabel: '復原',
+    onAction: () => pinnedStore.setPins(backup),
+  })
+}
 </script>
 
 <template>
@@ -277,7 +315,7 @@ const filteredSkills = computed(() => {
       </div>
     </header>
 
-    <div class="skill-list" ref="listTop">
+    <div class="list-area" ref="listTop">
       <div v-if="filteredSkills.length === 0" class="empty-state">
         <div class="empty-icon-wrap">
           <Search :size="48" />
@@ -287,15 +325,31 @@ const filteredSkills = computed(() => {
           清除搜尋與篩選
         </button>
       </div>
-      <SkillCard
-        v-for="skill in filteredSkills"
-        :key="skill.id"
-        :skill="skill"
-        clickableBases
-        @select-base="onSelectBase"
-        @select-enchant="onSelectEnchant"
-        @select-subject="onSelectSubject"
-      />
+      <template v-else>
+        <div v-if="pinnedInView.length > 0" class="pinned-bar">
+          <span class="pinned-info">
+            <Pin :size="14" />
+            已頂置 {{ pinnedStore.pinnedIds.length }} 個技能
+          </span>
+          <button class="unpin-all-btn" @click="unpinAll">全部解除</button>
+        </div>
+        <TransitionGroup tag="div" name="card-move" class="skill-list">
+          <SkillCard
+            v-for="(skill, index) in displaySkills"
+            :key="skill.id"
+            :skill="skill"
+            clickableBases
+            pinnable
+            :reorderable="index < pinnedInView.length && pinnedInView.length > 1"
+            :isFirst="index === 0"
+            :isLast="index === pinnedInView.length - 1"
+            @move="(delta) => onMovePinned(skill, delta)"
+            @select-base="onSelectBase"
+            @select-enchant="onSelectEnchant"
+            @select-subject="onSelectSubject"
+          />
+        </TransitionGroup>
+      </template>
     </div>
   </div>
 </template>
@@ -528,12 +582,61 @@ const filteredSkills = computed(() => {
   background: var(--accent-cyan-bg-strong);
 }
 
+.list-area {
+  scroll-margin-top: 96px;
+}
+
+.pinned-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px 0;
+}
+
+.pinned-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+.unpin-all-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.unpin-all-btn:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
 .skill-list {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  scroll-margin-top: 96px;
+}
+
+/* 頂置/取消頂置時卡片平滑移動（FLIP） */
+.card-move-move {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 搜尋/篩選屬大量增刪，離場即時移除（覆蓋 .skill-card 的 transition: all，
+   否則 Vue 會等它跑完才移除節點，造成殘影） */
+.card-move-leave-active {
+  transition: none;
 }
 
 .empty-state {

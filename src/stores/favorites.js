@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { skillsById } from '@/data'
 
@@ -125,3 +125,8 @@ export const useFavoritesStore = defineStore('favorites', () => {
     clearFavorites,
   }
 })
+
+// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useFavoritesStore, import.meta.hot))
+}

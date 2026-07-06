@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref } from 'vue'
 
 const MAX_VISIBLE = 3
@@ -35,3 +35,8 @@ export const useToastStore = defineStore('toast', () => {
 
   return { toasts, showToast, dismiss }
 })
+
+// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useToastStore, import.meta.hot))
+}

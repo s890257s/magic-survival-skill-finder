@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref } from 'vue'
 
 const STORAGE_KEY = 'show_english'
@@ -14,3 +14,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
   return { showEnglish, toggleEnglish }
 })
+
+// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
+}
