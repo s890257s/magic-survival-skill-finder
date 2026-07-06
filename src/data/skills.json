@@ -1,0 +1,1056 @@
+[
+  {
+    "id": 1,
+    "name": "放電",
+    "mainSkill": {
+      "name": "電氣衝擊",
+      "enchant": "高功率"
+    },
+    "subSkill": {
+      "name": "落雷",
+      "enchant": "閃電爆炸"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 2,
+    "name": "靈魂之刃",
+    "mainSkill": {
+      "name": "衛星",
+      "enchant": "怪火"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "魔力刀刃"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 3,
+    "name": "冰川領域",
+    "mainSkill": {
+      "name": "海嘯",
+      "enchant": "極點"
+    },
+    "subSkill": {
+      "name": "凜霜",
+      "enchant": "冰河期"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 4,
+    "name": "厄克西迪姆",
+    "mainSkill": {
+      "name": "閃光衝擊",
+      "enchant": "殲滅"
+    },
+    "subSkill": {
+      "name": "末日審判",
+      "enchant": "被提"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 5,
+    "name": "種族滅絕",
+    "mainSkill": {
+      "name": "幻視光線",
+      "enchant": "破壞光線"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "使魔"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 6,
+    "name": "毀滅者",
+    "mainSkill": {
+      "name": "導電地帶",
+      "enchant": "電荷排放"
+    },
+    "subSkill": {
+      "name": "護盾",
+      "enchant": "破壞場"
+    },
+    "requirements": {
+      "ultimate": "終結者",
+      "subject": "電荷術士",
+      "school": "電荷術士"
+    }
+  },
+  {
+    "id": 7,
+    "name": "太陽時代",
+    "mainSkill": {
+      "name": "熔岩地帶",
+      "enchant": "噴火口"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "核融合"
+    },
+    "requirements": {
+      "ultimate": "超載",
+      "subject": "魔女",
+      "school": "魔女"
+    }
+  },
+  {
+    "id": 8,
+    "name": "地獄火",
+    "mainSkill": {
+      "name": "焚燒",
+      "enchant": "縱火狂"
+    },
+    "subSkill": {
+      "name": "暴風雪",
+      "enchant": "火災"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 9,
+    "name": "超新星",
+    "mainSkill": {
+      "name": "精靈",
+      "enchant": "使魔"
+    },
+    "subSkill": {
+      "name": "能量彈",
+      "enchant": "閃焰"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 10,
+    "name": "阿斯特拉普",
+    "mainSkill": {
+      "name": "落雷",
+      "enchant": "審判"
+    },
+    "subSkill": {
+      "name": "隕石墜落",
+      "enchant": "小行星"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 11,
+    "name": "創世紀",
+    "mainSkill": {
+      "name": "暴風雪",
+      "enchant": "流星"
+    },
+    "subSkill": {
+      "name": "火焰球",
+      "enchant": "星座"
+    },
+    "requirements": {
+      "ultimate": "宇宙",
+      "subject": "魔學者",
+      "school": "魔學者"
+    }
+  },
+  {
+    "id": 12,
+    "name": "黑洞",
+    "mainSkill": {
+      "name": "旋風",
+      "enchant": "虛無"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "核融合"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 13,
+    "name": "揮舞",
+    "mainSkill": {
+      "name": "閃光衝擊",
+      "enchant": "殲滅"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "魔力刀刃"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 14,
+    "name": "鳳凰",
+    "mainSkill": {
+      "name": "海嘯",
+      "enchant": "大噴發"
+    },
+    "subSkill": {
+      "name": "暴風雪",
+      "enchant": "火災"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 15,
+    "name": "閃電之息",
+    "mainSkill": {
+      "name": "電氣衝擊",
+      "enchant": "超導"
+    },
+    "subSkill": {
+      "name": "焚燒",
+      "enchant": "火焰猛擊"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 16,
+    "name": "鼠疫",
+    "mainSkill": {
+      "name": "火焰球",
+      "enchant": "毒氣"
+    },
+    "subSkill": {
+      "name": "魔力彈",
+      "enchant": "亂射"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 17,
+    "name": "磁場",
+    "mainSkill": {
+      "name": "衛星",
+      "enchant": "反重力"
+    },
+    "subSkill": {
+      "name": "導電地帶",
+      "enchant": "電荷排放"
+    },
+    "requirements": {
+      "ultimate": "核心",
+      "subject": "天文學者",
+      "school": "天文學者"
+    }
+  },
+  {
+    "id": 18,
+    "name": "天門",
+    "mainSkill": {
+      "name": "閃光衝擊",
+      "enchant": "諸神黃昏"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "魔法導彈"
+    },
+    "requirements": {
+      "ultimate": "昇華",
+      "subject": "戰鬥法師",
+      "school": "戰鬥法師"
+    }
+  },
+  {
+    "id": 19,
+    "name": "魔力之矛",
+    "mainSkill": {
+      "name": "精靈",
+      "enchant": "魔法導彈"
+    },
+    "subSkill": {
+      "name": "閃光衝擊",
+      "enchant": "殲滅"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 20,
+    "name": "煙火秀",
+    "mainSkill": {
+      "name": "魔力彈",
+      "enchant": "爆竹"
+    },
+    "subSkill": {
+      "name": "能量彈",
+      "enchant": "閃焰"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 21,
+    "name": "火焰風暴",
+    "mainSkill": {
+      "name": "隕石墜落",
+      "enchant": "火山爆炸"
+    },
+    "subSkill": {
+      "name": "焚燒",
+      "enchant": "地獄三頭犬之焰"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 22,
+    "name": "瞬間移動",
+    "mainSkill": {
+      "name": "急行",
+      "enchant": "空間扭曲"
+    },
+    "subSkill": {
+      "name": "集中",
+      "enchant": ""
+    },
+    "requirements": {
+      "ultimate": "幻覺",
+      "subject": "傑克燈籠",
+      "school": null
+    }
+  },
+  {
+    "id": 23,
+    "name": "超級颱風",
+    "mainSkill": {
+      "name": "旋風",
+      "enchant": "極端天氣"
+    },
+    "subSkill": {
+      "name": "導電地帶",
+      "enchant": "火之光環"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 24,
+    "name": "能量飽和",
+    "mainSkill": {
+      "name": "幻視光線",
+      "enchant": "破壞光線"
+    },
+    "subSkill": {
+      "name": "閃光衝擊",
+      "enchant": "諸神黃昏"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 25,
+    "name": "冰凍之心",
+    "mainSkill": {
+      "name": "導電地帶",
+      "enchant": "火之光環"
+    },
+    "subSkill": {
+      "name": "凜霜",
+      "enchant": "冰河期"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 26,
+    "name": "大碰撞",
+    "mainSkill": {
+      "name": "隕石墜落",
+      "enchant": "小行星"
+    },
+    "subSkill": {
+      "name": "暴風雪",
+      "enchant": "流星"
+    },
+    "requirements": {
+      "ultimate": "巨力衝擊",
+      "subject": "巫術師",
+      "school": "巫術師"
+    }
+  },
+  {
+    "id": 27,
+    "name": "閃電之心",
+    "mainSkill": {
+      "name": "電氣衝擊",
+      "enchant": "連鎖閃電"
+    },
+    "subSkill": {
+      "name": "能量彈",
+      "enchant": "帶電粒子"
+    },
+    "requirements": {
+      "ultimate": "弧光",
+      "subject": "術士",
+      "school": "術士"
+    }
+  },
+  {
+    "id": 28,
+    "name": "分身",
+    "mainSkill": {
+      "name": "魔力彈",
+      "enchant": "分身"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "魔法導彈"
+    },
+    "requirements": {
+      "ultimate": "均衡",
+      "subject": "魔法師",
+      "school": "魔法師"
+    }
+  },
+  {
+    "id": 29,
+    "name": "海柏利昂",
+    "mainSkill": {
+      "name": "衛星",
+      "enchant": "核融合"
+    },
+    "subSkill": {
+      "name": "隕石墜落",
+      "enchant": "小行星"
+    },
+    "requirements": {
+      "ultimate": "亞巴頓",
+      "subject": "天文學者",
+      "school": "天文學者"
+    }
+  },
+  {
+    "id": 30,
+    "name": "大崩裂",
+    "mainSkill": {
+      "name": "凜霜",
+      "enchant": "地震"
+    },
+    "subSkill": {
+      "name": "隕石墜落",
+      "enchant": "火山爆炸"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 31,
+    "name": "棱鏡亂射",
+    "mainSkill": {
+      "name": "幻視光線",
+      "enchant": "反射"
+    },
+    "subSkill": {
+      "name": "魔力彈",
+      "enchant": "亂射"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 32,
+    "name": "原點爆炸",
+    "mainSkill": {
+      "name": "能量彈",
+      "enchant": "閃焰"
+    },
+    "subSkill": {
+      "name": "火焰球",
+      "enchant": "星座"
+    },
+    "requirements": {
+      "ultimate": "閃擊",
+      "subject": "煉金術士",
+      "school": "煉金術士"
+    }
+  },
+  {
+    "id": 33,
+    "name": "無限動力",
+    "mainSkill": {
+      "name": "魔法陣",
+      "enchant": "魔力釋放"
+    },
+    "subSkill": {
+      "name": "智力",
+      "enchant": ""
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 34,
+    "name": "暴風支配者",
+    "mainSkill": {
+      "name": "旋風",
+      "enchant": "極端天氣"
+    },
+    "subSkill": {
+      "name": "魔力彈",
+      "enchant": "亂射"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 35,
+    "name": "雪花綻放",
+    "mainSkill": {
+      "name": "凜霜",
+      "enchant": "冰河期"
+    },
+    "subSkill": {
+      "name": "海嘯",
+      "enchant": "極點"
+    },
+    "requirements": {
+      "ultimate": "零度新星",
+      "subject": "冰凍師",
+      "school": "冰凍師"
+    }
+  },
+  {
+    "id": 36,
+    "name": "大洪水",
+    "mainSkill": {
+      "name": "海嘯",
+      "enchant": "賽蓮之歌"
+    },
+    "subSkill": {
+      "name": "旋風",
+      "enchant": "極端天氣"
+    },
+    "requirements": {
+      "ultimate": "巨型海嘯",
+      "subject": "協調者",
+      "school": "協調者"
+    }
+  },
+  {
+    "id": 37,
+    "name": "電流暴走",
+    "mainSkill": {
+      "name": "電氣衝擊",
+      "enchant": "連鎖閃電"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "使魔"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 38,
+    "name": "熔爐",
+    "mainSkill": {
+      "name": "熔岩地帶",
+      "enchant": "岩漿噴湧"
+    },
+    "subSkill": {
+      "name": "隕石墜落",
+      "enchant": "火山爆炸"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 39,
+    "name": "閃電韻律",
+    "mainSkill": {
+      "name": "導電地帶",
+      "enchant": "電荷排放"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "怪火"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 40,
+    "name": "量子爆炸",
+    "mainSkill": {
+      "name": "護盾",
+      "enchant": "破壞場"
+    },
+    "subSkill": {
+      "name": "魔力發散",
+      "enchant": ""
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 41,
+    "name": "閃電轟炸",
+    "mainSkill": {
+      "name": "落雷",
+      "enchant": "晴天霹靂"
+    },
+    "subSkill": {
+      "name": "電氣衝擊",
+      "enchant": "連鎖閃電"
+    },
+    "requirements": {
+      "ultimate": "死亡風暴",
+      "subject": "咒術師",
+      "school": "咒術師"
+    }
+  },
+  {
+    "id": 42,
+    "name": "等離子光線",
+    "mainSkill": {
+      "name": "幻視光線",
+      "enchant": "破壞光線"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "核融合"
+    },
+    "requirements": {
+      "ultimate": "量子雷射",
+      "subject": "神秘術士",
+      "school": "神秘術士"
+    }
+  },
+  {
+    "id": 43,
+    "name": "寒冬風暴",
+    "mainSkill": {
+      "name": "暴風雪",
+      "enchant": "嚴寒期"
+    },
+    "subSkill": {
+      "name": "火焰球",
+      "enchant": "毒氣"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 44,
+    "name": "中子產生",
+    "mainSkill": {
+      "name": "旋風",
+      "enchant": "電氣球"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "核融合"
+    },
+    "requirements": {
+      "ultimate": "歐米伽",
+      "subject": "德魯伊",
+      "school": "德魯伊"
+    }
+  },
+  {
+    "id": 45,
+    "name": "軌道轟炸",
+    "mainSkill": {
+      "name": "落雷",
+      "enchant": "閃電爆炸"
+    },
+    "subSkill": {
+      "name": "暴風雪",
+      "enchant": "流星"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 46,
+    "name": "以太縱火",
+    "mainSkill": {
+      "name": "暴風雪",
+      "enchant": "火災"
+    },
+    "subSkill": {
+      "name": "焚燒",
+      "enchant": "火焰猛擊"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 47,
+    "name": "火之息",
+    "mainSkill": {
+      "name": "焚燒",
+      "enchant": "地獄三頭犬之焰"
+    },
+    "subSkill": {
+      "name": "幻視光線",
+      "enchant": "反射"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 48,
+    "name": "渦流",
+    "mainSkill": {
+      "name": "旋風",
+      "enchant": "虛無"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "反重力"
+    },
+    "requirements": {
+      "ultimate": "黑暗",
+      "subject": "德魯伊",
+      "school": "德魯伊"
+    }
+  },
+  {
+    "id": 49,
+    "name": "反作用",
+    "mainSkill": {
+      "name": "能量彈",
+      "enchant": "火星飛濺"
+    },
+    "subSkill": {
+      "name": "護盾",
+      "enchant": "破壞場"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 50,
+    "name": "百鬼夜行",
+    "mainSkill": {
+      "name": "火焰球",
+      "enchant": "星座"
+    },
+    "subSkill": {
+      "name": "衛星",
+      "enchant": "怪火"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 51,
+    "name": "狂暴",
+    "mainSkill": {
+      "name": "閃光衝擊",
+      "enchant": "惡魔利爪"
+    },
+    "subSkill": {
+      "name": "魔力彈",
+      "enchant": "亂射"
+    },
+    "requirements": {
+      "ultimate": "狂戰士",
+      "subject": "戰鬥法師",
+      "school": "戰鬥法師"
+    }
+  },
+  {
+    "id": 52,
+    "name": "邪靈方程式",
+    "mainSkill": {
+      "name": "火焰球",
+      "enchant": "大爆炸"
+    },
+    "subSkill": {
+      "name": "能量彈",
+      "enchant": "閃焰"
+    },
+    "requirements": {
+      "ultimate": "復仇女神",
+      "subject": "火焰術士",
+      "school": "火焰術士"
+    }
+  },
+  {
+    "id": 53,
+    "name": "戰爭之後",
+    "mainSkill": {
+      "name": "隕石墜落",
+      "enchant": "流星雨"
+    },
+    "subSkill": {
+      "name": "暴風雪",
+      "enchant": "流星"
+    },
+    "requirements": {
+      "ultimate": "零點地帶",
+      "subject": "巫術師",
+      "school": "巫術師"
+    }
+  },
+  {
+    "id": 54,
+    "name": "大地電流",
+    "mainSkill": {
+      "name": "幻視光線",
+      "enchant": "電磁放射"
+    },
+    "subSkill": {
+      "name": "電氣衝擊",
+      "enchant": "超導"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 55,
+    "name": "光彈亂射",
+    "mainSkill": {
+      "name": "能量彈",
+      "enchant": "帶電粒子"
+    },
+    "subSkill": {
+      "name": "精靈",
+      "enchant": "使魔"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 56,
+    "name": "蒼穹之怒",
+    "mainSkill": {
+      "name": "落雷",
+      "enchant": "閃電爆炸"
+    },
+    "subSkill": {
+      "name": "隕石墜落",
+      "enchant": "流星雨"
+    },
+    "requirements": {
+      "ultimate": "風暴使者",
+      "subject": "咒術師",
+      "school": "咒術師"
+    }
+  },
+  {
+    "id": 57,
+    "name": "主宰",
+    "mainSkill": {
+      "name": "魔法陣",
+      "enchant": "大魔法陣"
+    },
+    "subSkill": {
+      "name": "智力",
+      "enchant": ""
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 58,
+    "name": "邁斯納效應",
+    "mainSkill": {
+      "name": "導電地帶",
+      "enchant": "EMP"
+    },
+    "subSkill": {
+      "name": "電氣衝擊",
+      "enchant": "超導"
+    },
+    "requirements": {
+      "ultimate": "封鎖",
+      "subject": "電荷術士",
+      "school": "電荷術士"
+    }
+  },
+  {
+    "id": 59,
+    "name": "創造之門",
+    "mainSkill": {
+      "name": "魔法陣",
+      "enchant": "物質彈性"
+    },
+    "subSkill": {
+      "name": "智力",
+      "enchant": ""
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  },
+  {
+    "id": 60,
+    "name": "煉獄",
+    "mainSkill": {
+      "name": "焚燒",
+      "enchant": "火焰猛擊"
+    },
+    "subSkill": {
+      "name": "熔岩地帶",
+      "enchant": "融解"
+    },
+    "requirements": {
+      "ultimate": "審判者",
+      "subject": "戰爭領主",
+      "school": "戰爭領主"
+    }
+  },
+  {
+    "id": 61,
+    "name": "以氣馭劍",
+    "mainSkill": {
+      "name": "精靈",
+      "enchant": "魔力刀刃"
+    },
+    "subSkill": {
+      "name": "電氣衝擊",
+      "enchant": "連鎖閃電"
+    },
+    "requirements": {
+      "ultimate": "光刃",
+      "subject": "召喚師",
+      "school": "召喚師"
+    }
+  },
+  {
+    "id": 62,
+    "name": "爆能槍",
+    "mainSkill": {
+      "name": "魔力彈",
+      "enchant": "魔力箭矢"
+    },
+    "subSkill": {
+      "name": "閃光衝擊",
+      "enchant": "殲滅"
+    },
+    "requirements": {
+      "ultimate": null,
+      "subject": null,
+      "school": null
+    }
+  }
+]
