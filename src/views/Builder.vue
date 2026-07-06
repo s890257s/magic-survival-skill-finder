@@ -1,82 +1,27 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { useFavoritesStore } from '../stores/favorites'
-import skillsData from '../data/skills.json'
+import { computed } from 'vue'
+import { useFavoritesStore, MAX_SLOTS } from '../stores/favorites'
+import { useToastStore } from '../stores/toast'
 import SkillCard from '../components/SkillCard.vue'
-import Toast from '../components/ui/Toast.vue'
-import { Share2, Trash2, AlertTriangle, BookOpen } from '@lucide/vue'
+import ThemeToggle from '../components/ui/ThemeToggle.vue'
+import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
 import { RouterLink } from 'vue-router'
 
 const favoritesStore = useFavoritesStore()
+const toastStore = useToastStore()
 
-// State for toast
-const toast = ref({ show: false, message: '', type: 'info' })
+const favoriteSkills = computed(() => favoritesStore.favoriteSkills)
+const conflicts = computed(() => favoritesStore.conflicts)
 
-const showToast = (message, type = 'info') => {
-  toast.value = { show: true, message, type }
-}
-
-const hideToast = () => {
-  toast.value.show = false
-}
-
-// Compute favorite skills list
-const favoriteSkills = computed(() => {
-  return favoritesStore.favoriteIds
-    .map(id => skillsData.find(s => s.id === id))
-    .filter(Boolean)
-})
-
-// Conflict algorithm
-// Returns a Map of skillId -> array of conflicting base skill names
-const conflicts = computed(() => {
-  const result = new Map()
-  const baseSkillUsage = {} // baseSkillName -> array of skillIds
-  
-  favoriteSkills.value.forEach(skill => {
-    const bases = []
-    if (skill.mainSkill?.name) bases.push(skill.mainSkill.name)
-    if (skill.subSkill?.name) bases.push(skill.subSkill.name)
-    
-    bases.forEach(base => {
-      if (!baseSkillUsage[base]) {
-        baseSkillUsage[base] = []
-      }
-      baseSkillUsage[base].push(skill.id)
-    })
-  })
-  
-  // Find duplicates
-  Object.entries(baseSkillUsage).forEach(([base, ids]) => {
-    if (ids.length > 1) {
-      ids.forEach(id => {
-        if (!result.has(id)) result.set(id, [])
-        result.get(id).push(base)
-      })
-    }
-  })
-  
-  return result
-})
-
-// Check if we need to show a warning toast when conflicts change
-watch(() => conflicts.value.size, (newSize, oldSize) => {
-  if (newSize > 0 && newSize > oldSize) {
-    showToast('檢測到基礎技能衝突！', 'warning')
-  }
-})
-
-const exportBuild = async () => {
-  if (favoriteSkills.value.length === 0) {
-    showToast('配裝清單為空，無法匯出', 'warning')
-    return
-  }
-  
+const buildExportText = () => {
   let exportText = '【Magic Survival 我的配裝】\n\n'
   favoriteSkills.value.forEach((skill, index) => {
     exportText += `${index + 1}. ${skill.name}\n`
     exportText += `   - 主: ${skill.mainSkill.name} ${skill.mainSkill.enchant ? `(${skill.mainSkill.enchant})` : ''}\n`
     exportText += `   - 副: ${skill.subSkill.name} ${skill.subSkill.enchant ? `(${skill.subSkill.enchant})` : ''}\n`
+    if (skill.requirements?.ultimate) {
+      exportText += `   - 終極: ${skill.requirements.ultimate}\n`
+    }
     if (skill.requirements?.school) {
       exportText += `   - 學派: ${skill.requirements.school}\n`
     }
@@ -85,23 +30,48 @@ const exportBuild = async () => {
     }
     exportText += '\n'
   })
-  
+
   if (conflicts.value.size > 0) {
     exportText += '⚠️ 注意：目前配裝存在基礎技能衝突！\n'
   }
-  
+  return exportText
+}
+
+const exportBuild = async () => {
+  if (favoriteSkills.value.length === 0) {
+    toastStore.showToast('配裝清單為空，無法匯出', 'warning')
+    return
+  }
+
+  const exportText = buildExportText()
+
+  // 手機優先走系統分享面板
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Magic Survival 我的配裝', text: exportText })
+      return
+    } catch (err) {
+      if (err.name === 'AbortError') return // 使用者取消分享
+      // 其他錯誤退回剪貼簿
+    }
+  }
+
   try {
     await navigator.clipboard.writeText(exportText)
-    showToast('配裝已成功複製到剪貼簿！', 'success')
+    toastStore.showToast('配裝已複製到剪貼簿！', 'success')
   } catch (err) {
-    showToast('複製失敗，請手動選取複製', 'warning')
+    toastStore.showToast('複製失敗，請手動選取複製', 'warning')
   }
 }
 
 const clearAll = () => {
-  if (confirm('確定要清空所有配裝嗎？')) {
-    favoritesStore.clearFavorites()
-  }
+  const backup = [...favoritesStore.favoriteIds]
+  favoritesStore.clearFavorites()
+  toastStore.showToast('已清空配裝', 'info', {
+    duration: 6000,
+    actionLabel: '復原',
+    onAction: () => favoritesStore.setFavorites(backup),
+  })
 }
 </script>
 
@@ -109,7 +79,16 @@ const clearAll = () => {
   <div class="builder-view">
     <header class="builder-header">
       <div class="header-content">
-        <h2>我的配裝</h2>
+        <div class="title-area">
+          <h2>我的配裝</h2>
+          <span
+            v-if="favoritesStore.count > 0"
+            class="slot-count"
+            :class="{ over: favoritesStore.isOverLimit }"
+          >
+            {{ favoritesStore.count }}/{{ MAX_SLOTS }}
+          </span>
+        </div>
         <div class="header-actions">
           <button @click="clearAll" class="action-btn text-btn" v-if="favoriteSkills.length > 0">
             <Trash2 :size="18" /> 清空
@@ -117,11 +96,16 @@ const clearAll = () => {
           <button @click="exportBuild" class="action-btn primary-btn">
             <Share2 :size="18" /> 匯出
           </button>
+          <ThemeToggle class="compact-toggle" />
         </div>
       </div>
-      <div v-if="conflicts.size > 0" class="conflict-banner">
+      <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
+        <Layers :size="20" />
+        <span>超過遊戲常規上限（{{ MAX_SLOTS }} 個），實戰時記得取捨喔。</span>
+      </div>
+      <div v-if="conflicts.size > 0" class="banner conflict-banner">
         <AlertTriangle :size="20" />
-        <span>注意：檢測到基礎技能被重複使用，已標記紅框。</span>
+        <span>檢測到基礎技能被重複使用，衝突技能已標記紅框。</span>
       </div>
     </header>
 
@@ -133,27 +117,21 @@ const clearAll = () => {
         <p>尚未添加任何技能到配裝中</p>
         <RouterLink to="/" class="go-dictionary-btn">前往圖鑑添加</RouterLink>
       </div>
-      
-      <div v-else class="skill-grid">
-        <SkillCard 
-          v-for="skill in favoriteSkills" 
-          :key="skill.id" 
-          :skill="skill" 
-          :hasConflict="conflicts.has(skill.id)"
-        />
-      </div>
-    </div>
 
-    <!-- Toast Notification -->
-    <Transition name="toast-slide">
-      <div class="toast-container" v-if="toast.show">
-        <Toast 
-          :message="toast.message" 
-          :type="toast.type" 
-          @close="hideToast" 
+      <TransitionGroup v-else tag="div" name="card-move" class="skill-grid">
+        <SkillCard
+          v-for="(skill, index) in favoriteSkills"
+          :key="skill.id"
+          :skill="skill"
+          :hasConflict="conflicts.has(skill.id)"
+          :conflictBases="conflicts.get(skill.id) || []"
+          reorderable
+          :isFirst="index === 0"
+          :isLast="index === favoriteSkills.length - 1"
+          @move="(delta) => favoritesStore.moveFavorite(skill.id, delta)"
         />
-      </div>
-    </Transition>
+      </TransitionGroup>
+    </div>
   </div>
 </template>
 
@@ -174,29 +152,63 @@ const clearAll = () => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: background-color 0.3s ease;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
-.header-content h2 {
+.title-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-area h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  white-space: nowrap;
+}
+
+.slot-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: var(--accent-cyan-bg);
+  border: 1px solid var(--accent-cyan-border);
+  color: var(--accent-cyan);
+}
+
+.slot-count.over {
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+  color: var(--danger);
 }
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.header-actions .compact-toggle {
+  width: 40px;
+  height: 40px;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -206,13 +218,13 @@ const clearAll = () => {
 }
 
 .primary-btn {
-  background: rgba(0, 240, 255, 0.15);
+  background: var(--accent-cyan-bg);
   color: var(--accent-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  border: 1px solid var(--accent-cyan-border);
 }
 
 .primary-btn:hover {
-  background: rgba(0, 240, 255, 0.25);
+  background: var(--accent-cyan-bg-strong);
 }
 
 .text-btn {
@@ -221,21 +233,30 @@ const clearAll = () => {
 }
 
 .text-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-hover);
   color: var(--text-primary);
 }
 
-.conflict-banner {
+.banner {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  background: rgba(255, 85, 85, 0.15);
-  border: 1px solid rgba(255, 85, 85, 0.3);
-  color: #ff5555;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
+}
+
+.conflict-banner {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--danger);
+}
+
+.limit-banner {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--warning);
 }
 
 .build-content {
@@ -263,28 +284,44 @@ const clearAll = () => {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--card-shadow);
 }
 
 .go-dictionary-btn {
   margin-top: 8px;
   padding: 10px 24px;
-  background: rgba(181, 55, 242, 0.15);
+  background: var(--accent-purple-bg);
   color: var(--accent-purple);
-  border: 1px solid rgba(181, 55, 242, 0.3);
+  border: 1px solid var(--accent-purple-border);
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.2s ease;
 }
 
 .go-dictionary-btn:hover {
-  background: rgba(181, 55, 242, 0.25);
+  background: var(--accent-purple-bg-strong);
 }
 
 .skill-grid {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
+}
+
+.card-move-move {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-move-leave-active {
+  transition: all 0.25s ease;
+  position: absolute;
+  width: 100%;
+}
+
+.card-move-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 @media (min-width: 768px) {
@@ -292,24 +329,9 @@ const clearAll = () => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
-}
 
-.toast-container {
-  position: fixed;
-  bottom: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
-}
-
-.toast-slide-enter-active,
-.toast-slide-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.toast-slide-enter-from,
-.toast-slide-leave-to {
-  opacity: 0;
-  transform: translate(-50%, 20px);
+  .card-move-leave-active {
+    width: auto;
+  }
 }
 </style>

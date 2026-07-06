@@ -6,7 +6,24 @@
   --bg-surface: #151A22;
   --accent-cyan: #00F0FF;
   --accent-purple: #B537F2;
-  
+
+  /* Accent derivatives */
+  --accent-cyan-bg: rgba(0, 240, 255, 0.15);
+  --accent-cyan-bg-strong: rgba(0, 240, 255, 0.25);
+  --accent-cyan-border: rgba(0, 240, 255, 0.3);
+  --accent-cyan-glow: rgba(0, 240, 255, 0.2);
+  --accent-purple-bg: rgba(181, 55, 242, 0.15);
+  --accent-purple-bg-strong: rgba(181, 55, 242, 0.25);
+  --accent-purple-border: rgba(181, 55, 242, 0.3);
+
+  /* Status Colors */
+  --danger: #ff5555;
+  --danger-bg: rgba(255, 85, 85, 0.15);
+  --danger-border: rgba(255, 85, 85, 0.3);
+  --warning: #ffb454;
+  --warning-bg: rgba(255, 180, 84, 0.12);
+  --warning-border: rgba(255, 180, 84, 0.35);
+
   /* Text Colors */
   --text-primary: #FFFFFF;
   --text-secondary: rgba(255, 255, 255, 0.7);
@@ -17,9 +34,55 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-blur: blur(12px);
 
+  /* Surfaces & Effects */
+  --surface-hover: rgba(255, 255, 255, 0.1);
+  --tag-default-bg: rgba(255, 255, 255, 0.1);
+  --tag-default-border: rgba(255, 255, 255, 0.15);
+  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --shadow-strong: 0 10px 40px rgba(0, 0, 0, 0.5);
+  --name-glow: 0 0 10px rgba(0, 240, 255, 0.3);
+  --inset-bg: rgba(0, 0, 0, 0.2);
+
   /* Font Families */
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+
+:root[data-theme="light"] {
+  --bg-dark: #F2F4F8;
+  --bg-surface: #FFFFFF;
+  --accent-cyan: #0891B2;
+  --accent-purple: #9333EA;
+
+  --accent-cyan-bg: rgba(8, 145, 178, 0.1);
+  --accent-cyan-bg-strong: rgba(8, 145, 178, 0.18);
+  --accent-cyan-border: rgba(8, 145, 178, 0.35);
+  --accent-cyan-glow: rgba(8, 145, 178, 0.15);
+  --accent-purple-bg: rgba(147, 51, 234, 0.08);
+  --accent-purple-bg-strong: rgba(147, 51, 234, 0.16);
+  --accent-purple-border: rgba(147, 51, 234, 0.35);
+
+  --danger: #DC2626;
+  --danger-bg: rgba(220, 38, 38, 0.08);
+  --danger-border: rgba(220, 38, 38, 0.35);
+  --warning: #B45309;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --warning-border: rgba(217, 119, 6, 0.35);
+
+  --text-primary: #1A2230;
+  --text-secondary: rgba(26, 34, 48, 0.72);
+  --text-muted: rgba(26, 34, 48, 0.45);
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(26, 34, 48, 0.12);
+
+  --surface-hover: rgba(26, 34, 48, 0.06);
+  --tag-default-bg: rgba(26, 34, 48, 0.06);
+  --tag-default-border: rgba(26, 34, 48, 0.14);
+  --card-shadow: 0 8px 32px 0 rgba(30, 41, 59, 0.08);
+  --shadow-strong: 0 10px 40px rgba(30, 41, 59, 0.18);
+  --name-glow: none;
+  --inset-bg: rgba(26, 34, 48, 0.04);
 }
 
 *, *::before, *::after {
@@ -36,6 +99,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {

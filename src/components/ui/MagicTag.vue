@@ -6,7 +6,7 @@ defineProps({
   },
   type: {
     type: String,
-    default: 'default', // 'primary', 'secondary', 'warning', 'default'
+    default: 'default', // 'primary', 'secondary', 'gold', 'warning', 'default'
   }
 })
 </script>
@@ -33,26 +33,32 @@ defineProps({
 }
 
 .tag-default {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--tag-default-bg);
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--tag-default-border);
 }
 
 .tag-primary {
-  background: rgba(0, 240, 255, 0.15);
+  background: var(--accent-cyan-bg);
   color: var(--accent-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  border: 1px solid var(--accent-cyan-border);
 }
 
 .tag-secondary {
-  background: rgba(181, 55, 242, 0.15);
+  background: var(--accent-purple-bg);
   color: var(--accent-purple);
-  border: 1px solid rgba(181, 55, 242, 0.3);
+  border: 1px solid var(--accent-purple-border);
+}
+
+.tag-gold {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid var(--warning-border);
 }
 
 .tag-warning {
-  background: rgba(255, 85, 85, 0.15);
-  color: #ff5555;
-  border: 1px solid rgba(255, 85, 85, 0.3);
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
 }
 </style>

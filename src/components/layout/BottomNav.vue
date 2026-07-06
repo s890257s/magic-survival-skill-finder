@@ -1,6 +1,9 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { BookOpen, Wrench } from '@lucide/vue'
+import { useFavoritesStore, MAX_SLOTS } from '../../stores/favorites'
+
+const favoritesStore = useFavoritesStore()
 </script>
 
 <template>
@@ -10,7 +13,18 @@ import { BookOpen, Wrench } from '@lucide/vue'
       <span>圖鑑</span>
     </RouterLink>
     <RouterLink to="/builder" class="nav-item">
-      <Wrench class="nav-icon" :size="24" />
+      <div class="icon-wrap">
+        <Wrench class="nav-icon" :size="24" />
+        <Transition name="badge-pop">
+          <span
+            v-if="favoritesStore.count > 0"
+            class="badge"
+            :class="{ over: favoritesStore.count > MAX_SLOTS }"
+          >
+            {{ favoritesStore.count }}
+          </span>
+        </Transition>
+      </div>
       <span>配裝</span>
     </RouterLink>
   </nav>
@@ -48,6 +62,44 @@ import { BookOpen, Wrench } from '@lucide/vue'
   transition: all 0.3s ease;
 }
 
+.icon-wrap {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent-purple);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.badge.over {
+  background: var(--danger);
+}
+
+.badge-pop-enter-active {
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+}
+
+.badge-pop-leave-active {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.badge-pop-enter-from,
+.badge-pop-leave-to {
+  transform: scale(0);
+  opacity: 0;
+}
+
 .nav-icon {
   transition: transform 0.3s ease;
 }
@@ -58,6 +110,6 @@ import { BookOpen, Wrench } from '@lucide/vue'
 
 .nav-item.router-link-active .nav-icon {
   transform: translateY(-2px);
-  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+  filter: drop-shadow(0 0 8px var(--accent-cyan-glow));
 }
 </style>
