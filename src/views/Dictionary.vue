@@ -3,7 +3,8 @@ import { ref, computed } from 'vue'
 import { Search, Filter, X } from '@lucide/vue'
 import { skillsData, schoolOptions, subjectOptions, baseSkillOptions, enchantOptionsFor } from '../data'
 import SkillCard from '../components/SkillCard.vue'
-import FormSelect from '../components/ui/FormSelect.vue'
+import IconSelect from '../components/ui/IconSelect.vue'
+import GameIcon from '../components/ui/GameIcon.vue'
 import ThemeToggle from '../components/ui/ThemeToggle.vue'
 
 const searchQuery = ref('')
@@ -52,15 +53,26 @@ const onSelectBase = (name) => {
 const activeChips = computed(() => {
   const chips = []
   if (selectedSchool.value) {
-    chips.push({ key: 'school', label: `學派：${selectedSchool.value}`, clear: () => (selectedSchool.value = '') })
+    chips.push({
+      key: 'school',
+      label: `學派：${selectedSchool.value}`,
+      icon: { name: selectedSchool.value, category: 'school' },
+      clear: () => (selectedSchool.value = '')
+    })
   }
   if (selectedSubject.value) {
-    chips.push({ key: 'subject', label: `實驗體：${selectedSubject.value}`, clear: () => (selectedSubject.value = '') })
+    chips.push({
+      key: 'subject',
+      label: `實驗體：${selectedSubject.value}`,
+      icon: { name: selectedSubject.value, category: 'subject' },
+      clear: () => (selectedSubject.value = '')
+    })
   }
   if (selectedBaseSkill.value) {
     chips.push({
       key: 'base',
       label: `技能：${selectedBaseSkill.value}`,
+      icon: { name: selectedBaseSkill.value, category: 'skill' },
       clear: () => {
         selectedBaseSkill.value = ''
         selectedEnchant.value = ''
@@ -68,7 +80,7 @@ const activeChips = computed(() => {
     })
   }
   if (selectedEnchant.value) {
-    chips.push({ key: 'enchant', label: `附魔：${selectedEnchant.value}`, clear: () => (selectedEnchant.value = '') })
+    chips.push({ key: 'enchant', label: `附魔：${selectedEnchant.value}`, icon: null, clear: () => (selectedEnchant.value = '') })
   }
   return chips
 })
@@ -141,15 +153,16 @@ const filteredSkills = computed(() => {
           <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">清除全部</button>
         </div>
         <div class="filter-grid">
-          <FormSelect v-model="selectedSchool" :options="schoolOptions" placeholder="所有學派" />
-          <FormSelect v-model="selectedSubject" :options="subjectOptions" placeholder="所有實驗體" />
-          <FormSelect
+          <IconSelect v-model="selectedSchool" :options="schoolOptions" placeholder="所有學派" category="school" />
+          <IconSelect v-model="selectedSubject" :options="subjectOptions" placeholder="所有實驗體" category="subject" />
+          <IconSelect
             :modelValue="selectedBaseSkill"
             @update:modelValue="onBaseSkillChange"
             :options="baseSkillOptions"
             placeholder="基礎技能"
+            category="skill"
           />
-          <FormSelect
+          <IconSelect
             v-model="selectedEnchant"
             :options="enchants"
             placeholder="指定附魔"
@@ -168,6 +181,7 @@ const filteredSkills = computed(() => {
             @click="chip.clear"
             :aria-label="`移除篩選 ${chip.label}`"
           >
+            <GameIcon v-if="chip.icon" :name="chip.icon.name" :category="chip.icon.category" :size="16" />
             {{ chip.label }}
             <X :size="14" />
           </button>

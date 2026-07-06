@@ -5,6 +5,7 @@ import { useFavoritesStore, MAX_SLOTS } from '../stores/favorites'
 import { useToastStore } from '../stores/toast'
 import GlassCard from './ui/GlassCard.vue'
 import MagicTag from './ui/MagicTag.vue'
+import GameIcon from './ui/GameIcon.vue'
 
 const props = defineProps({
   skill: {
@@ -77,8 +78,15 @@ const onBaseClick = (name) => {
   <GlassCard class="skill-card" :class="{ 'is-conflict': hasConflict }">
     <div class="skill-header">
       <div class="name-area">
-        <h3 class="skill-name">{{ skill.name }}</h3>
-        <MagicTag v-if="skill.requirements?.subject" :text="skill.requirements.subject" type="secondary" />
+        <GameIcon :name="skill.name" category="fusion" :size="40" />
+        <div class="name-text">
+          <h3 class="skill-name">{{ skill.name }}</h3>
+          <MagicTag v-if="skill.requirements?.subject" :text="skill.requirements.subject" type="secondary">
+            <template #icon>
+              <GameIcon :name="skill.requirements.subject" category="subject" :size="16" />
+            </template>
+          </MagicTag>
+        </div>
       </div>
       <div class="header-actions">
         <div v-if="reorderable" class="reorder-group">
@@ -113,27 +121,33 @@ const onBaseClick = (name) => {
       <div class="skill-formula">
         <div class="formula-item">
           <span class="formula-label">主技能 <em class="keep">保留</em></span>
-          <component
-            :is="clickableBases ? 'button' : 'span'"
-            class="formula-value"
-            :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.mainSkill.name) }"
-            @click="onBaseClick(skill.mainSkill.name)"
-          >
-            {{ skill.mainSkill.name }}
-          </component>
+          <div class="formula-name-row">
+            <GameIcon :name="skill.mainSkill.name" category="skill" :size="28" />
+            <component
+              :is="clickableBases ? 'button' : 'span'"
+              class="formula-value"
+              :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.mainSkill.name) }"
+              @click="onBaseClick(skill.mainSkill.name)"
+            >
+              {{ skill.mainSkill.name }}
+            </component>
+          </div>
           <MagicTag v-if="skill.mainSkill.enchant" :text="skill.mainSkill.enchant" type="primary" />
         </div>
         <div class="formula-divider">+</div>
         <div class="formula-item">
           <span class="formula-label">副技能 <em class="consume">消耗</em></span>
-          <component
-            :is="clickableBases ? 'button' : 'span'"
-            class="formula-value"
-            :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.subSkill.name) }"
-            @click="onBaseClick(skill.subSkill.name)"
-          >
-            {{ skill.subSkill.name }}
-          </component>
+          <div class="formula-name-row">
+            <GameIcon :name="skill.subSkill.name" category="skill" :size="28" />
+            <component
+              :is="clickableBases ? 'button' : 'span'"
+              class="formula-value"
+              :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.subSkill.name) }"
+              @click="onBaseClick(skill.subSkill.name)"
+            >
+              {{ skill.subSkill.name }}
+            </component>
+          </div>
           <MagicTag v-if="skill.subSkill.enchant" :text="skill.subSkill.enchant" type="primary" />
         </div>
       </div>
@@ -151,7 +165,11 @@ const onBaseClick = (name) => {
           <MagicTag :text="`【終極技能】 ${skill.requirements.ultimate}`" type="gold" />
         </template>
       </div>
-      <MagicTag v-if="skill.requirements?.school" :text="skill.requirements.school" type="default" />
+      <MagicTag v-if="skill.requirements?.school" :text="skill.requirements.school" type="default">
+        <template #icon>
+          <GameIcon :name="skill.requirements.school" category="school" :size="16" />
+        </template>
+      </MagicTag>
     </div>
   </GlassCard>
 </template>
@@ -180,7 +198,21 @@ const onBaseClick = (name) => {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+.name-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
+}
+
+.formula-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-width: 0;
 }
 

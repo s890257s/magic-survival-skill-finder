@@ -13,6 +13,7 @@ defineProps({
 
 <template>
   <span class="magic-tag" :class="`tag-${type}`">
+    <slot name="icon"></slot>
     {{ text }}
   </span>
 </template>
@@ -22,6 +23,7 @@ defineProps({
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 5px;
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.75rem;
