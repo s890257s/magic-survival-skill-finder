@@ -4,6 +4,7 @@ import { useFavoritesStore } from '../stores/favorites'
 import { useToastStore } from '../stores/toast'
 import SkillCard from '../components/SkillCard.vue'
 import ThemeToggle from '../components/ui/ThemeToggle.vue'
+import LangToggle from '../components/ui/LangToggle.vue'
 import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
 import { RouterLink } from 'vue-router'
 
@@ -96,6 +97,7 @@ const clearAll = () => {
           <button @click="exportBuild" class="action-btn primary-btn">
             <Share2 :size="18" /> 匯出
           </button>
+          <LangToggle class="compact-toggle" />
           <ThemeToggle class="compact-toggle" />
         </div>
       </div>

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Heart, AlertTriangle, ChevronUp, ChevronDown, Crown } from '@lucide/vue'
 import { useFavoritesStore } from '../stores/favorites'
 import { useToastStore } from '../stores/toast'
+import { useSettingsStore } from '../stores/settings'
 import GlassCard from './ui/GlassCard.vue'
 import MagicTag from './ui/MagicTag.vue'
 import GameIcon from './ui/GameIcon.vue'
@@ -41,10 +42,10 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['select-base', 'move'])
-
+const emit = defineEmits(['select-base', 'select-enchant', 'select-subject', 'move'])
 const favoritesStore = useFavoritesStore()
 const toastStore = useToastStore()
+const settingsStore = useSettingsStore()
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 
 const toggle = () => {
@@ -72,6 +73,18 @@ const onBaseClick = (name) => {
     emit('select-base', name)
   }
 }
+
+const onEnchantClick = (baseName, enchantName) => {
+  if (props.clickableBases) {
+    emit('select-enchant', { baseName, enchantName })
+  }
+}
+
+const onSubjectClick = (subjectName) => {
+  if (props.clickableBases) {
+    emit('select-subject', subjectName)
+  }
+}
 </script>
 
 <template>
@@ -82,9 +95,15 @@ const onBaseClick = (name) => {
         <div class="name-text">
           <div class="skill-title-group">
             <h3 class="skill-name">{{ skill.name }}</h3>
-            <span v-if="skill.enName" class="skill-name-en">{{ skill.enName }}</span>
+            <span v-if="skill.enName && settingsStore.showEnglish" class="skill-name-en">{{ skill.enName }}</span>
           </div>
-          <MagicTag v-if="skill.requirements?.subject" :text="skill.requirements.subject" type="secondary">
+          <MagicTag 
+            v-if="skill.requirements?.subject" 
+            :text="skill.requirements.subject" 
+            type="secondary"
+            :class="{ 'clickable-tag': clickableBases }"
+            @click="onSubjectClick(skill.requirements.subject)"
+          >
             <template #icon>
               <GameIcon :name="skill.requirements.subject" category="subject" :size="16" />
             </template>
@@ -126,16 +145,26 @@ const onBaseClick = (name) => {
           <span class="formula-label">主技能 <em class="keep">保留</em></span>
           <div class="formula-name-row">
             <GameIcon :name="skill.mainSkill.name" category="skill" :size="28" />
-            <component
-              :is="clickableBases ? 'button' : 'span'"
-              class="formula-value"
-              :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.mainSkill.name) }"
-              @click="onBaseClick(skill.mainSkill.name)"
-            >
-              {{ skill.mainSkill.name }}
-            </component>
+            <div class="formula-title-group">
+              <component
+                :is="clickableBases ? 'button' : 'span'"
+                class="formula-value"
+                :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.mainSkill.name) }"
+                @click="onBaseClick(skill.mainSkill.name)"
+              >
+                {{ skill.mainSkill.name }}
+              </component>
+              <span v-if="skill.mainSkill.enName && settingsStore.showEnglish" class="formula-en">{{ skill.mainSkill.enName }}</span>
+            </div>
           </div>
-          <MagicTag v-if="skill.mainSkill.enchant" :text="skill.mainSkill.enchant" type="primary" />
+          <MagicTag 
+            v-if="skill.mainSkill.enchant" 
+            :text="skill.mainSkill.enchant" 
+            :enText="settingsStore.showEnglish ? skill.mainSkill.enEnchant : ''"
+            type="primary"
+            :class="{ 'clickable-tag': clickableBases }"
+            @click="onEnchantClick(skill.mainSkill.name, skill.mainSkill.enchant)"
+          />
         </div>
         <div class="formula-divider">+</div>
         <div class="formula-item">
@@ -145,16 +174,26 @@ const onBaseClick = (name) => {
           </span>
           <div class="formula-name-row">
             <GameIcon :name="skill.subSkill.name" category="skill" :size="28" />
-            <component
-              :is="clickableBases ? 'button' : 'span'"
-              class="formula-value"
-              :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.subSkill.name) }"
-              @click="onBaseClick(skill.subSkill.name)"
-            >
-              {{ skill.subSkill.name }}
-            </component>
+            <div class="formula-title-group">
+              <component
+                :is="clickableBases ? 'button' : 'span'"
+                class="formula-value"
+                :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.subSkill.name) }"
+                @click="onBaseClick(skill.subSkill.name)"
+              >
+                {{ skill.subSkill.name }}
+              </component>
+              <span v-if="skill.subSkill.enName && settingsStore.showEnglish" class="formula-en">{{ skill.subSkill.enName }}</span>
+            </div>
           </div>
-          <MagicTag v-if="skill.subSkill.enchant" :text="skill.subSkill.enchant" type="primary" />
+          <MagicTag 
+            v-if="skill.subSkill.enchant" 
+            :text="skill.subSkill.enchant" 
+            :enText="settingsStore.showEnglish ? skill.subSkill.enEnchant : ''"
+            type="primary"
+            :class="{ 'clickable-tag': clickableBases }"
+            @click="onEnchantClick(skill.subSkill.name, skill.subSkill.enchant)"
+          />
         </div>
       </div>
     </div>
@@ -164,18 +203,13 @@ const onBaseClick = (name) => {
       <span>基礎技能重複：{{ conflictBases.join('、') }}</span>
     </div>
 
-    <div class="skill-footer" v-if="skill.requirements?.ultimate || skill.requirements?.school">
+    <div class="skill-footer" v-if="skill.requirements?.ultimate">
       <div class="ultimate-area">
         <template v-if="skill.requirements?.ultimate">
           <Crown :size="14" class="ultimate-icon" />
           <MagicTag :text="`【終極技能】 ${skill.requirements.ultimate}`" type="gold" />
         </template>
       </div>
-      <MagicTag v-if="skill.requirements?.school" :text="skill.requirements.school" type="default">
-        <template #icon>
-          <GameIcon :name="skill.requirements.school" category="school" :size="16" />
-        </template>
-      </MagicTag>
     </div>
   </GlassCard>
 </template>
@@ -220,6 +254,20 @@ const onBaseClick = (name) => {
   align-items: center;
   gap: 8px;
   min-width: 0;
+}
+
+.formula-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.formula-en {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1;
 }
 
 .skill-title-group {
@@ -414,5 +462,15 @@ const onBaseClick = (name) => {
 
 .ultimate-icon {
   color: var(--warning);
+}
+
+:deep(.clickable-tag) {
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+:deep(.clickable-tag:hover) {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
 }
 </style>

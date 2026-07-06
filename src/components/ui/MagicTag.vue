@@ -4,6 +4,10 @@ defineProps({
     type: String,
     required: true
   },
+  enText: {
+    type: String,
+    default: ''
+  },
   type: {
     type: String,
     default: 'default', // 'primary', 'secondary', 'gold', 'warning', 'default'
@@ -14,7 +18,10 @@ defineProps({
 <template>
   <span class="magic-tag" :class="`tag-${type}`">
     <slot name="icon"></slot>
-    {{ text }}
+    <span class="tag-content">
+      <span class="tag-text">{{ text }}</span>
+      <span v-if="enText" class="tag-en">{{ enText }}</span>
+    </span>
   </span>
 </template>
 
@@ -32,6 +39,24 @@ defineProps({
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   white-space: nowrap;
+}
+
+.tag-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0px;
+}
+
+.tag-text {
+  line-height: 1.2;
+}
+
+.tag-en {
+  font-size: 0.65rem;
+  font-style: italic;
+  opacity: 0.8;
+  line-height: 1.1;
 }
 
 .tag-default {

@@ -6,17 +6,19 @@ import SkillCard from '../components/SkillCard.vue'
 import IconSelect from '../components/ui/IconSelect.vue'
 import GameIcon from '../components/ui/GameIcon.vue'
 import ThemeToggle from '../components/ui/ThemeToggle.vue'
+import LangToggle from '../components/ui/LangToggle.vue'
 
 const searchQuery = ref('')
 const selectedSchool = ref('')
 const selectedSubject = ref('')
 const selectedBaseSkill = ref('')
 const selectedEnchant = ref('')
+const onlyUltimate = ref(false)
 
 const isFilterOpen = ref(true)
 
 const hasActiveFilters = computed(() => {
-  return selectedSchool.value || selectedSubject.value || selectedBaseSkill.value
+  return selectedSchool.value || selectedSubject.value || selectedBaseSkill.value || onlyUltimate.value
 })
 
 // Dynamic enchants based on selectedBaseSkill
@@ -36,6 +38,7 @@ const clearFilters = () => {
   selectedSubject.value = ''
   selectedBaseSkill.value = ''
   selectedEnchant.value = ''
+  onlyUltimate.value = false
 }
 
 // 卡片上點擊基礎技能名稱 → 直接反查
@@ -45,6 +48,19 @@ const onSelectBase = (name) => {
   if (selectedBaseSkill.value !== name) {
     selectedBaseSkill.value = name
     selectedEnchant.value = ''
+  }
+  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+const onSelectEnchant = ({ baseName, enchantName }) => {
+  selectedBaseSkill.value = baseName
+  selectedEnchant.value = enchantName
+  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+const onSelectSubject = (name) => {
+  if (selectedSubject.value !== name) {
+    selectedSubject.value = name
   }
   listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
@@ -82,6 +98,9 @@ const activeChips = computed(() => {
   if (selectedEnchant.value) {
     chips.push({ key: 'enchant', label: `附魔：${selectedEnchant.value}`, icon: null, clear: () => (selectedEnchant.value = '') })
   }
+  if (onlyUltimate.value) {
+    chips.push({ key: 'ultimate', label: '僅顯示終極技能', icon: null, clear: () => (onlyUltimate.value = false) })
+  }
   return chips
 })
 
@@ -96,7 +115,11 @@ const filteredSkills = computed(() => {
         skill.name.includes(q) ||
         (skill.enName && skill.enName.toLowerCase().includes(qLower)) ||
         skill.mainSkill?.name.includes(q) ||
-        skill.subSkill?.name.includes(q)
+        (skill.mainSkill?.enName && skill.mainSkill.enName.toLowerCase().includes(qLower)) ||
+        (skill.mainSkill?.enEnchant && skill.mainSkill.enEnchant.toLowerCase().includes(qLower)) ||
+        skill.subSkill?.name.includes(q) ||
+        (skill.subSkill?.enName && skill.subSkill.enName.toLowerCase().includes(qLower)) ||
+        (skill.subSkill?.enEnchant && skill.subSkill.enEnchant.toLowerCase().includes(qLower))
       if (!matched) return false
     }
     // School match：顯示該學派專屬 + 無限制的通用技能
@@ -121,6 +144,10 @@ const filteredSkills = computed(() => {
         if (!enchantMatched) return false
       }
     }
+    // Ultimate match
+    if (onlyUltimate.value && !skill.requirements?.ultimate) {
+      return false
+    }
     return true
   })
 })
@@ -129,6 +156,12 @@ const filteredSkills = computed(() => {
 <template>
   <div class="dictionary-view">
     <header class="header">
+      <div class="app-header">
+        <h1 class="app-title">
+          Magic Survival 魔法生存戰
+          <span class="version-tag">v0.991</span>
+        </h1>
+      </div>
       <div class="search-bar">
         <div class="search-wrapper">
           <Search class="search-icon" :size="20" />
@@ -151,6 +184,7 @@ const filteredSkills = computed(() => {
           <Filter :size="20" />
           <span v-if="hasActiveFilters" class="filter-dot"></span>
         </button>
+        <LangToggle />
         <ThemeToggle />
       </div>
 
@@ -175,6 +209,12 @@ const filteredSkills = computed(() => {
             placeholder="指定附魔"
             :disabled="!selectedBaseSkill || enchants.length === 0"
           />
+        </div>
+        <div class="filter-options">
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="onlyUltimate" />
+            <span class="checkbox-text">僅顯示終極技能</span>
+          </label>
         </div>
       </div>
 
@@ -212,6 +252,8 @@ const filteredSkills = computed(() => {
         :skill="skill"
         clickableBases
         @select-base="onSelectBase"
+        @select-enchant="onSelectEnchant"
+        @select-subject="onSelectSubject"
       />
     </div>
   </div>
@@ -232,6 +274,35 @@ const filteredSkills = computed(() => {
   padding: 16px;
   border-bottom: 1px solid var(--glass-border);
   transition: background-color 0.3s ease;
+}
+
+.app-header {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: var(--name-glow);
+}
+
+.version-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-cyan-border);
+  box-shadow: 0 0 10px var(--accent-cyan-glow);
+  letter-spacing: 0.5px;
 }
 
 .search-bar {
@@ -464,5 +535,54 @@ const filteredSkills = computed(() => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
+}
+
+.filter-options {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 9px;
+  border: solid var(--bg-dark);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-text {
+  font-weight: 500;
 }
 </style>
