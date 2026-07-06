@@ -1,12 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { Search, Filter, X } from '@lucide/vue'
-import { skillsData, schoolOptions, subjectOptions, baseSkillOptions, enchantOptionsFor } from '../data'
-import SkillCard from '../components/SkillCard.vue'
-import IconSelect from '../components/ui/IconSelect.vue'
-import GameIcon from '../components/ui/GameIcon.vue'
-import ThemeToggle from '../components/ui/ThemeToggle.vue'
-import LangToggle from '../components/ui/LangToggle.vue'
+import {
+  skillsData,
+  schoolOptions,
+  subjectOptions,
+  baseSkillOptions,
+  enchantOptionsFor,
+} from '@/data'
+import { gameVersion } from '@/data/meta'
+import SkillCard from '@/components/SkillCard.vue'
+import IconSelect from '@/components/ui/IconSelect.vue'
+import GameIcon from '@/components/ui/GameIcon.vue'
+import HeaderActions from '@/components/layout/HeaderActions.vue'
 
 const searchQuery = ref('')
 const selectedSchool = ref('')
@@ -15,10 +21,15 @@ const selectedBaseSkill = ref('')
 const selectedEnchant = ref('')
 const onlyUltimate = ref(false)
 
-const isFilterOpen = ref(true)
+// 記住上次的展開狀態，首次進入預設收合
+const FILTER_PANEL_KEY = 'filter_panel_open'
+const isFilterOpen = ref(localStorage.getItem(FILTER_PANEL_KEY) === 'true')
+watch(isFilterOpen, (val) => localStorage.setItem(FILTER_PANEL_KEY, val))
 
 const hasActiveFilters = computed(() => {
-  return selectedSchool.value || selectedSubject.value || selectedBaseSkill.value || onlyUltimate.value
+  return (
+    selectedSchool.value || selectedSubject.value || selectedBaseSkill.value || onlyUltimate.value
+  )
 })
 
 // Dynamic enchants based on selectedBaseSkill
@@ -39,6 +50,11 @@ const clearFilters = () => {
   selectedBaseSkill.value = ''
   selectedEnchant.value = ''
   onlyUltimate.value = false
+}
+
+const resetAll = () => {
+  clearFilters()
+  searchQuery.value = ''
 }
 
 // 卡片上點擊基礎技能名稱 → 直接反查
@@ -73,7 +89,7 @@ const activeChips = computed(() => {
       key: 'school',
       label: `學派：${selectedSchool.value}`,
       icon: { name: selectedSchool.value, category: 'school' },
-      clear: () => (selectedSchool.value = '')
+      clear: () => (selectedSchool.value = ''),
     })
   }
   if (selectedSubject.value) {
@@ -81,7 +97,7 @@ const activeChips = computed(() => {
       key: 'subject',
       label: `實驗體：${selectedSubject.value}`,
       icon: { name: selectedSubject.value, category: 'subject' },
-      clear: () => (selectedSubject.value = '')
+      clear: () => (selectedSubject.value = ''),
     })
   }
   if (selectedBaseSkill.value) {
@@ -92,38 +108,42 @@ const activeChips = computed(() => {
       clear: () => {
         selectedBaseSkill.value = ''
         selectedEnchant.value = ''
-      }
+      },
     })
   }
   if (selectedEnchant.value) {
-    chips.push({ key: 'enchant', label: `附魔：${selectedEnchant.value}`, icon: null, clear: () => (selectedEnchant.value = '') })
+    chips.push({
+      key: 'enchant',
+      label: `附魔：${selectedEnchant.value}`,
+      icon: null,
+      clear: () => (selectedEnchant.value = ''),
+    })
   }
   if (onlyUltimate.value) {
-    chips.push({ key: 'ultimate', label: '僅顯示終極技能', icon: null, clear: () => (onlyUltimate.value = false) })
+    chips.push({
+      key: 'ultimate',
+      label: '僅顯示終極技能',
+      icon: null,
+      clear: () => (onlyUltimate.value = false),
+    })
   }
   return chips
 })
 
 // Filtered Skills
 const filteredSkills = computed(() => {
-  return skillsData.filter(skill => {
-    // Keyword match（融合技能名稱或基礎技能名稱）
+  return skillsData.filter((skill) => {
+    // Keyword match（融合技能名稱或基礎技能名稱，中英文；searchText 於 data 層預組）
     if (searchQuery.value) {
-      const q = searchQuery.value.trim()
-      const qLower = q.toLowerCase()
-      const matched =
-        skill.name.includes(q) ||
-        (skill.enName && skill.enName.toLowerCase().includes(qLower)) ||
-        skill.mainSkill?.name.includes(q) ||
-        (skill.mainSkill?.enName && skill.mainSkill.enName.toLowerCase().includes(qLower)) ||
-        (skill.mainSkill?.enEnchant && skill.mainSkill.enEnchant.toLowerCase().includes(qLower)) ||
-        skill.subSkill?.name.includes(q) ||
-        (skill.subSkill?.enName && skill.subSkill.enName.toLowerCase().includes(qLower)) ||
-        (skill.subSkill?.enEnchant && skill.subSkill.enEnchant.toLowerCase().includes(qLower))
-      if (!matched) return false
+      const q = searchQuery.value.trim().toLowerCase()
+      if (q && !skill.searchText.includes(q)) return false
     }
     // School match：顯示該學派專屬 + 無限制的通用技能
-    if (selectedSchool.value && skill.requirements?.school && skill.requirements.school !== selectedSchool.value) {
+    if (
+      selectedSchool.value &&
+      skill.requirements?.school &&
+      skill.requirements.school !== selectedSchool.value
+    ) {
       return false
     }
     // Subject match
@@ -159,7 +179,7 @@ const filteredSkills = computed(() => {
       <div class="app-header">
         <h1 class="app-title">
           Magic Survival 魔法生存戰
-          <span class="version-tag">v0.991</span>
+          <span class="version-tag">v{{ gameVersion }}</span>
         </h1>
       </div>
       <div class="search-bar">
@@ -171,7 +191,12 @@ const filteredSkills = computed(() => {
             placeholder="搜尋融合或基礎技能名稱 (中/英文)..."
             class="search-input"
           />
-          <button v-if="searchQuery" @click="searchQuery = ''" class="clear-search" aria-label="清除搜尋">
+          <button
+            v-if="searchQuery"
+            @click="searchQuery = ''"
+            class="clear-search"
+            aria-label="清除搜尋"
+          >
             <X :size="18" />
           </button>
         </div>
@@ -180,12 +205,12 @@ const filteredSkills = computed(() => {
           @click="isFilterOpen = !isFilterOpen"
           :class="{ active: isFilterOpen || hasActiveFilters }"
           aria-label="進階篩選"
+          :aria-expanded="isFilterOpen"
         >
           <Filter :size="20" />
           <span v-if="hasActiveFilters" class="filter-dot"></span>
         </button>
-        <LangToggle />
-        <ThemeToggle />
+        <HeaderActions />
       </div>
 
       <div class="filter-panel" :class="{ 'is-open': isFilterOpen }">
@@ -194,8 +219,19 @@ const filteredSkills = computed(() => {
           <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">清除全部</button>
         </div>
         <div class="filter-grid">
-          <IconSelect v-model="selectedSchool" :options="schoolOptions" placeholder="所有學派(目前版本沒有差異)" category="school" disabled />
-          <IconSelect v-model="selectedSubject" :options="subjectOptions" placeholder="所有實驗體" category="subject" />
+          <IconSelect
+            v-model="selectedSchool"
+            :options="schoolOptions"
+            placeholder="所有學派(目前版本沒有差異)"
+            category="school"
+            disabled
+          />
+          <IconSelect
+            v-model="selectedSubject"
+            :options="subjectOptions"
+            placeholder="所有實驗體"
+            category="subject"
+          />
           <IconSelect
             :modelValue="selectedBaseSkill"
             @update:modelValue="onBaseSkillChange"
@@ -228,7 +264,12 @@ const filteredSkills = computed(() => {
             @click="chip.clear"
             :aria-label="`移除篩選 ${chip.label}`"
           >
-            <GameIcon v-if="chip.icon" :name="chip.icon.name" :category="chip.icon.category" :size="16" />
+            <GameIcon
+              v-if="chip.icon"
+              :name="chip.icon.name"
+              :category="chip.icon.category"
+              :size="16"
+            />
             {{ chip.label }}
             <X :size="14" />
           </button>
@@ -242,7 +283,7 @@ const filteredSkills = computed(() => {
           <Search :size="48" />
         </div>
         <p>找不到符合條件的技能</p>
-        <button v-if="hasActiveFilters || searchQuery" class="reset-btn" @click="clearFilters(); searchQuery = ''">
+        <button v-if="hasActiveFilters || searchQuery" class="reset-btn" @click="resetAll">
           清除搜尋與篩選
         </button>
       </div>
@@ -400,7 +441,9 @@ const filteredSkills = computed(() => {
 .filter-panel {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  transition:
+    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
   opacity: 0;
 }
 
@@ -552,7 +595,7 @@ const filteredSkills = computed(() => {
   font-size: 0.9rem;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type='checkbox'] {
   appearance: none;
   width: 18px;
   height: 18px;
@@ -565,12 +608,12 @@ const filteredSkills = computed(() => {
   margin: 0;
 }
 
-.checkbox-label input[type="checkbox"]:checked {
+.checkbox-label input[type='checkbox']:checked {
   background: var(--accent-cyan);
   border-color: var(--accent-cyan);
 }
 
-.checkbox-label input[type="checkbox"]:checked::after {
+.checkbox-label input[type='checkbox']:checked::after {
   content: '';
   position: absolute;
   top: 2px;

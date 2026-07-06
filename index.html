@@ -1,20 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="./favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Magic Survival 融合技能查找工具：搜尋、反查、學派與實驗體篩選，並可模擬配裝檢測技能衝突。">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0B0E14">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F2F4F8">
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Magic Survival 融合技能查找工具：搜尋、反查、學派與實驗體篩選，並可模擬配裝檢測技能衝突。"
+    />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0B0E14" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F2F4F8" />
     <title>Magic Survival 技能查找工具</title>
     <script>
       // 在 CSS 生效前決定主題，避免淺色使用者看到深色閃爍
-      (function () {
-        var t = localStorage.getItem('theme') ||
-          (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-        document.documentElement.setAttribute('data-theme', t);
-      })();
+      ;(function () {
+        var t =
+          localStorage.getItem('theme') ||
+          (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+        document.documentElement.setAttribute('data-theme', t)
+      })()
     </script>
   </head>
   <body>

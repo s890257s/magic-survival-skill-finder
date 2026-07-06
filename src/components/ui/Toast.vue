@@ -1,24 +1,24 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
-import { CheckCircle2, AlertCircle, Info } from '@lucide/vue'
+import { CheckCircle2, AlertCircle, AlertTriangle, Info } from '@lucide/vue'
 
 const props = defineProps({
   message: {
     type: String,
-    required: true
+    required: true,
   },
   type: {
     type: String,
-    default: 'info' // 'success', 'warning', 'info'
+    default: 'info', // 'success', 'info', 'warning', 'danger'
   },
   duration: {
     type: Number,
-    default: 3000
+    default: 3000,
   },
   actionLabel: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits(['close', 'action'])
@@ -42,6 +42,7 @@ onUnmounted(() => {
   <div class="toast" :class="`toast-${type}`">
     <CheckCircle2 v-if="type === 'success'" class="toast-icon" :size="20" />
     <AlertCircle v-else-if="type === 'warning'" class="toast-icon" :size="20" />
+    <AlertTriangle v-else-if="type === 'danger'" class="toast-icon" :size="20" />
     <Info v-else class="toast-icon" :size="20" />
     <span class="toast-message">{{ message }}</span>
     <button v-if="actionLabel" class="toast-action" @click="emit('action')">
@@ -71,9 +72,18 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-.toast-success .toast-icon { color: var(--accent-cyan); }
-.toast-warning .toast-icon { color: var(--danger); }
-.toast-info .toast-icon { color: var(--accent-purple); }
+.toast-success .toast-icon {
+  color: var(--accent-cyan);
+}
+.toast-warning .toast-icon {
+  color: var(--warning);
+}
+.toast-danger .toast-icon {
+  color: var(--danger);
+}
+.toast-info .toast-icon {
+  color: var(--accent-purple);
+}
 
 .toast-message {
   font-size: 0.95rem;

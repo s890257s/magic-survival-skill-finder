@@ -1,6 +1,6 @@
 <script setup>
 import { Sun, Moon } from '@lucide/vue'
-import { useThemeStore } from '../../stores/theme'
+import { useThemeStore } from '@/stores/theme'
 
 const themeStore = useThemeStore()
 </script>
@@ -41,7 +41,9 @@ const themeStore = useThemeStore()
 
 .icon-swap-enter-active,
 .icon-swap-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 .icon-swap-enter-from {

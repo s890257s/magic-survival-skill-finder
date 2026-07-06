@@ -1,9 +1,9 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import BottomNav from './components/layout/BottomNav.vue'
-import Toast from './components/ui/Toast.vue'
-import { useToastStore } from './stores/toast'
-import { useThemeStore } from './stores/theme'
+import BottomNav from '@/components/layout/BottomNav.vue'
+import Toast from '@/components/ui/Toast.vue'
+import { useToastStore } from '@/stores/toast'
+import { useThemeStore } from '@/stores/theme'
 
 const toastStore = useToastStore()
 useThemeStore() // 初始化主題（套用 data-theme）
@@ -26,7 +26,7 @@ const handleAction = (toast) => {
   <BottomNav />
 
   <!-- Global Toasts -->
-  <div class="toast-stack">
+  <div class="toast-stack" role="status" aria-live="polite">
     <TransitionGroup name="toast-slide">
       <Toast
         v-for="toast in toastStore.toasts"
@@ -51,7 +51,9 @@ const handleAction = (toast) => {
 /* Page Transition */
 .page-fade-enter-active,
 .page-fade-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .page-fade-enter-from {

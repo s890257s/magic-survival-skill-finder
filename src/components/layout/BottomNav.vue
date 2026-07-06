@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { BookOpen, Wrench } from '@lucide/vue'
-import { useFavoritesStore } from '../../stores/favorites'
+import { useFavoritesStore } from '@/stores/favorites'
 
 const favoritesStore = useFavoritesStore()
 </script>
@@ -87,11 +87,15 @@ const favoritesStore = useFavoritesStore()
 }
 
 .badge-pop-enter-active {
-  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.2s ease;
 }
 
 .badge-pop-leave-active {
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .badge-pop-enter-from,

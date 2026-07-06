@@ -2,16 +2,16 @@
 defineProps({
   text: {
     type: String,
-    required: true
+    required: true,
   },
   enText: {
     type: String,
-    default: ''
+    default: '',
   },
   type: {
     type: String,
     default: 'default', // 'primary', 'secondary', 'gold', 'warning', 'default'
-  }
+  },
 })
 </script>
 

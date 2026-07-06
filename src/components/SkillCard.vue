@@ -1,45 +1,45 @@
 <script setup>
 import { computed } from 'vue'
 import { Heart, AlertTriangle, ChevronUp, ChevronDown, Crown } from '@lucide/vue'
-import { useFavoritesStore } from '../stores/favorites'
-import { useToastStore } from '../stores/toast'
-import { useSettingsStore } from '../stores/settings'
-import GlassCard from './ui/GlassCard.vue'
-import MagicTag from './ui/MagicTag.vue'
-import GameIcon from './ui/GameIcon.vue'
+import { useFavoritesStore } from '@/stores/favorites'
+import { useToastStore } from '@/stores/toast'
+import { useSettingsStore } from '@/stores/settings'
+import GlassCard from '@/components/ui/GlassCard.vue'
+import MagicTag from '@/components/ui/MagicTag.vue'
+import GameIcon from '@/components/ui/GameIcon.vue'
 
 const props = defineProps({
   skill: {
     type: Object,
-    required: true
+    required: true,
   },
   hasConflict: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 該技能中與配裝其他技能重複的基礎技能名稱
   conflictBases: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   // 主/副技能名稱可點擊反查
   clickableBases: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 顯示排序按鈕（配裝頁）
   reorderable: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isFirst: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isLast: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['select-base', 'select-enchant', 'select-subject', 'move'])
@@ -59,12 +59,18 @@ const toggle = () => {
   favoritesStore.toggleFavorite(props.skill.id)
 
   if (hits.length > 0) {
-    const detail = hits.map(h => `「${h.base}」與『${h.skillName}』`).join('、')
-    toastStore.showToast(`已加入，但 ${detail} 衝突`, 'warning', { duration: 4500 })
+    const detail = hits.map((h) => `「${h.base}」與『${h.skillName}』`).join('、')
+    toastStore.showToast(`已加入，但 ${detail} 衝突`, 'danger', { duration: 4500 })
   } else if (favoritesStore.isOverLimit) {
-    toastStore.showToast(`已加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}，超過常規上限）`, 'warning')
+    toastStore.showToast(
+      `已加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}，超過常規上限）`,
+      'warning',
+    )
   } else {
-    toastStore.showToast(`已將「${props.skill.name}」加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}）`, 'success')
+    toastStore.showToast(
+      `已將「${props.skill.name}」加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}）`,
+      'success',
+    )
   }
 }
 
@@ -95,11 +101,13 @@ const onSubjectClick = (subjectName) => {
         <div class="name-text">
           <div class="skill-title-group">
             <h3 class="skill-name">{{ skill.name }}</h3>
-            <span v-if="skill.enName && settingsStore.showEnglish" class="skill-name-en">{{ skill.enName }}</span>
+            <span v-if="skill.enName && settingsStore.showEnglish" class="skill-name-en">{{
+              skill.enName
+            }}</span>
           </div>
-          <MagicTag 
-            v-if="skill.requirements?.subject" 
-            :text="skill.requirements.subject" 
+          <MagicTag
+            v-if="skill.requirements?.subject"
+            :text="skill.requirements.subject"
             type="secondary"
             :class="{ 'clickable-tag': clickableBases }"
             @click="onSubjectClick(skill.requirements.subject)"
@@ -120,16 +128,17 @@ const onSubjectClick = (subjectName) => {
           >
             <ChevronUp :size="18" />
           </button>
-          <button
-            class="reorder-btn"
-            :disabled="isLast"
-            @click="emit('move', 1)"
-            aria-label="下移"
-          >
+          <button class="reorder-btn" :disabled="isLast" @click="emit('move', 1)" aria-label="下移">
             <ChevronDown :size="18" />
           </button>
         </div>
-        <button class="favorite-btn" @click="toggle" :class="{ active: isFavorite }" aria-label="加入或移出配裝">
+        <button
+          class="favorite-btn"
+          @click="toggle"
+          :class="{ active: isFavorite }"
+          :aria-pressed="isFavorite"
+          :aria-label="isFavorite ? '移出配裝' : '加入配裝'"
+        >
           <Heart
             :fill="isFavorite ? 'var(--accent-purple)' : 'none'"
             :color="isFavorite ? 'var(--accent-purple)' : 'var(--text-muted)'"
@@ -149,17 +158,22 @@ const onSubjectClick = (subjectName) => {
               <component
                 :is="clickableBases ? 'button' : 'span'"
                 class="formula-value"
-                :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.mainSkill.name) }"
+                :class="{
+                  clickable: clickableBases,
+                  'in-conflict': conflictBases.includes(skill.mainSkill.name),
+                }"
                 @click="onBaseClick(skill.mainSkill.name)"
               >
                 {{ skill.mainSkill.name }}
               </component>
-              <span v-if="skill.mainSkill.enName && settingsStore.showEnglish" class="formula-en">{{ skill.mainSkill.enName }}</span>
+              <span v-if="skill.mainSkill.enName && settingsStore.showEnglish" class="formula-en">{{
+                skill.mainSkill.enName
+              }}</span>
             </div>
           </div>
-          <MagicTag 
-            v-if="skill.mainSkill.enchant" 
-            :text="skill.mainSkill.enchant" 
+          <MagicTag
+            v-if="skill.mainSkill.enchant"
+            :text="skill.mainSkill.enchant"
             :enText="settingsStore.showEnglish ? skill.mainSkill.enEnchant : ''"
             type="primary"
             :class="{ 'clickable-tag': clickableBases }"
@@ -168,7 +182,8 @@ const onSubjectClick = (subjectName) => {
         </div>
         <div class="formula-divider">+</div>
         <div class="formula-item">
-          <span class="formula-label">副技能 
+          <span class="formula-label"
+            >副技能
             <em v-if="skill.subSkill.enchant" class="consume">消耗</em>
             <em v-else class="keep">保留</em>
           </span>
@@ -178,17 +193,22 @@ const onSubjectClick = (subjectName) => {
               <component
                 :is="clickableBases ? 'button' : 'span'"
                 class="formula-value"
-                :class="{ clickable: clickableBases, 'in-conflict': conflictBases.includes(skill.subSkill.name) }"
+                :class="{
+                  clickable: clickableBases,
+                  'in-conflict': conflictBases.includes(skill.subSkill.name),
+                }"
                 @click="onBaseClick(skill.subSkill.name)"
               >
                 {{ skill.subSkill.name }}
               </component>
-              <span v-if="skill.subSkill.enName && settingsStore.showEnglish" class="formula-en">{{ skill.subSkill.enName }}</span>
+              <span v-if="skill.subSkill.enName && settingsStore.showEnglish" class="formula-en">{{
+                skill.subSkill.enName
+              }}</span>
             </div>
           </div>
-          <MagicTag 
-            v-if="skill.subSkill.enchant" 
-            :text="skill.subSkill.enchant" 
+          <MagicTag
+            v-if="skill.subSkill.enchant"
+            :text="skill.subSkill.enchant"
             :enText="settingsStore.showEnglish ? skill.subSkill.enEnchant : ''"
             type="primary"
             :class="{ 'clickable-tag': clickableBases }"
@@ -205,10 +225,8 @@ const onSubjectClick = (subjectName) => {
 
     <div class="skill-footer" v-if="skill.requirements?.ultimate">
       <div class="ultimate-area">
-        <template v-if="skill.requirements?.ultimate">
-          <Crown :size="14" class="ultimate-icon" />
-          <MagicTag :text="`【終極技能】 ${skill.requirements.ultimate}`" type="gold" />
-        </template>
+        <Crown :size="14" class="ultimate-icon" />
+        <MagicTag :text="`【終極技能】 ${skill.requirements.ultimate}`" type="gold" />
       </div>
     </div>
   </GlassCard>
@@ -352,9 +370,15 @@ const onSubjectClick = (subjectName) => {
 }
 
 @keyframes heart-pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .skill-body {
@@ -419,7 +443,9 @@ const onSubjectClick = (subjectName) => {
 .formula-value.clickable {
   cursor: pointer;
   border-bottom: 1px dashed var(--accent-cyan-border);
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .formula-value.clickable:hover {
@@ -466,7 +492,9 @@ const onSubjectClick = (subjectName) => {
 
 :deep(.clickable-tag) {
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
 }
 
 :deep(.clickable-tag:hover) {

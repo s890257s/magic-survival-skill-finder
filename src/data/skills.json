@@ -14,14 +14,6 @@
       "enName": "Thunderstorm",
       "enEnchant": "Lightning Explosion"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Discharge"
   },
   {
@@ -38,14 +30,6 @@
       "enchant": "魔力刀刃",
       "enName": "Spirit",
       "enEnchant": "Magic Blade"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Soul Blades"
   },
@@ -64,14 +48,6 @@
       "enName": "Frost Nova",
       "enEnchant": "Ice Age"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Glacium"
   },
   {
@@ -89,14 +65,6 @@
       "enName": "Armageddon",
       "enEnchant": "Rapture"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Excidium"
   },
   {
@@ -113,14 +81,6 @@
       "enchant": "使魔",
       "enName": "Spirit",
       "enEnchant": "Familiar"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Genocide"
   },
@@ -189,14 +149,6 @@
       "enName": "Blizzard",
       "enEnchant": "Blaze"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Ether Blaze"
   },
   {
@@ -214,14 +166,6 @@
       "enName": "Energy Bolt",
       "enEnchant": "Flare"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Supernova"
   },
   {
@@ -238,14 +182,6 @@
       "enchant": "小行星",
       "enName": "Meteor",
       "enEnchant": "Asteroid"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Astrape"
   },
@@ -289,14 +225,6 @@
       "enName": "Satellite",
       "enEnchant": "Nuclear Fusion"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Black Hole"
   },
   {
@@ -313,14 +241,6 @@
       "enchant": "魔力刀刃",
       "enName": "Spirit",
       "enEnchant": "Magic Blade"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Brandish"
   },
@@ -339,14 +259,6 @@
       "enName": "Blizzard",
       "enEnchant": "Blaze"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Phoenix"
   },
   {
@@ -364,14 +276,6 @@
       "enName": "Incineration",
       "enEnchant": "Flame Strike"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Lightning Breath"
   },
   {
@@ -388,14 +292,6 @@
       "enchant": "亂射",
       "enName": "Magic Bolt",
       "enEnchant": "Spray"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Plague"
   },
@@ -464,14 +360,6 @@
       "enName": "Flash Shock",
       "enEnchant": "Annihilation"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Mana Spear"
   },
   {
@@ -488,14 +376,6 @@
       "enchant": "閃焰",
       "enName": "Energy Bolt",
       "enEnchant": "Flare"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Fireworks"
   },
@@ -514,14 +394,6 @@
       "enName": "Incineration",
       "enEnchant": "Cerberus Flame"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Fire Storm"
   },
   {
@@ -535,16 +407,12 @@
     },
     "subSkill": {
       "name": "集中",
-      "enchant": "",
-      "enName": "Concentration",
-      "enEnchant": ""
+      "enName": "Concentration"
     },
     "requirements": {
       "ultimate": "幻覺",
       "subject": "傑克燈籠",
-      "school": null,
       "subjectEn": "Jack-o-lantern",
-      "schoolEn": null,
       "ultimateEn": "Illusion"
     },
     "enName": "Teleport"
@@ -564,14 +432,6 @@
       "enName": "Electric Zone",
       "enEnchant": "Fire Aura"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Super Cyclone"
   },
   {
@@ -589,14 +449,6 @@
       "enName": "Flash Shock",
       "enEnchant": "Ragnarok"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Energy Saturation"
   },
   {
@@ -613,14 +465,6 @@
       "enchant": "冰河期",
       "enName": "Frost Nova",
       "enEnchant": "Ice Age"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Heart of Ice"
   },
@@ -739,14 +583,6 @@
       "enName": "Meteor",
       "enEnchant": "Volcanic Eruption"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Great Rift"
   },
   {
@@ -763,14 +599,6 @@
       "enchant": "亂射",
       "enName": "Magic Bolt",
       "enEnchant": "Spray"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Prism Spree"
   },
@@ -805,22 +633,11 @@
     "mainSkill": {
       "name": "魔法陣",
       "enchant": "魔力釋放",
-      "enName": "Magic Circle",
-      "enEnchant": ""
+      "enName": "Magic Circle"
     },
     "subSkill": {
       "name": "智力",
-      "enchant": "",
-      "enName": "Intelligence",
-      "enEnchant": ""
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
+      "enName": "Intelligence"
     },
     "enName": "Infinite Power"
   },
@@ -838,14 +655,6 @@
       "enchant": "亂射",
       "enName": "Magic Bolt",
       "enEnchant": "Spray"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Ruler of Storms"
   },
@@ -914,14 +723,6 @@
       "enName": "Spirit",
       "enEnchant": "Familiar"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Runaway Electricity"
   },
   {
@@ -938,14 +739,6 @@
       "enchant": "火山爆炸",
       "enName": "Meteor",
       "enEnchant": "Volcanic Eruption"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Furnace"
   },
@@ -964,14 +757,6 @@
       "enName": "Satellite",
       "enEnchant": "Will-o'-the-wisp"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Lightning Calibration"
   },
   {
@@ -985,17 +770,7 @@
     },
     "subSkill": {
       "name": "魔力發散",
-      "enchant": "",
-      "enName": "Magic Release",
-      "enEnchant": ""
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
+      "enName": "Magic Release"
     },
     "enName": "Quantum Explosion"
   },
@@ -1064,14 +839,6 @@
       "enName": "Fireball",
       "enEnchant": "Poison Gas"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Winter Storm"
   },
   {
@@ -1114,14 +881,6 @@
       "enName": "Blizzard",
       "enEnchant": "Shooting Star"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Orbital Bombing"
   },
   {
@@ -1139,14 +898,6 @@
       "enName": "Incineration",
       "enEnchant": "Flame Strike"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Ether Fire"
   },
   {
@@ -1163,14 +914,6 @@
       "enchant": "反射",
       "enName": "Arcane Ray",
       "enEnchant": "Reflection"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Breath of Fire"
   },
@@ -1205,22 +948,13 @@
     "mainSkill": {
       "name": "能量彈",
       "enchant": "火星飛濺",
-      "enName": "Energy Bolt",
-      "enEnchant": ""
+      "enName": "Energy Bolt"
     },
     "subSkill": {
       "name": "護盾",
       "enchant": "破壞場",
       "enName": "Shield",
       "enEnchant": "Destruction Field"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Reaction"
   },
@@ -1238,14 +972,6 @@
       "enchant": "怪火",
       "enName": "Satellite",
       "enEnchant": "Will-o'-the-wisp"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Pandemonium"
   },
@@ -1339,14 +1065,6 @@
       "enName": "Electric Shock",
       "enEnchant": "Superconductivity"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
     "enName": "Terra Current"
   },
   {
@@ -1363,14 +1081,6 @@
       "enchant": "使魔",
       "enName": "Spirit",
       "enEnchant": "Familiar"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Crazed Spray"
   },
@@ -1410,17 +1120,7 @@
     },
     "subSkill": {
       "name": "智力",
-      "enchant": "",
-      "enName": "Intelligence",
-      "enEnchant": ""
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
+      "enName": "Intelligence"
     },
     "enName": "Overmind"
   },
@@ -1460,19 +1160,10 @@
     },
     "subSkill": {
       "name": "智力",
-      "enchant": "",
-      "enName": "Intelligence",
-      "enEnchant": ""
+      "enName": "Intelligence"
     },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
-    },
-    "enName": "Gate of Creation"
+    "enName": "Gate of Creation",
+    "slotBonus": 2
   },
   {
     "id": 60,
@@ -1538,14 +1229,6 @@
       "enchant": "殲滅",
       "enName": "Flash Shock",
       "enEnchant": "Annihilation"
-    },
-    "requirements": {
-      "ultimate": null,
-      "subject": null,
-      "school": null,
-      "subjectEn": null,
-      "schoolEn": null,
-      "ultimateEn": null
     },
     "enName": "Blaster"
   }

@@ -1,28 +1,31 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { iconMap, iconDirs } from '../../data/icons'
+import { iconMap, iconDirs } from '@/data/icons'
 
 const props = defineProps({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   // 'fusion' | 'skill' | 'subject' | 'school'
   category: {
     type: String,
-    required: true
+    required: true,
   },
   size: {
     type: Number,
-    default: 32
-  }
+    default: 32,
+  },
 })
 
 // 圖檔載入失敗時退回佔位圖（對照表填了但檔案不存在）
 const loadFailed = ref(false)
-watch(() => [props.name, props.category], () => {
-  loadFailed.value = false
-})
+watch(
+  () => [props.name, props.category],
+  () => {
+    loadFailed.value = false
+  },
+)
 
 const src = computed(() => {
   const file = iconMap[props.category]?.[props.name]

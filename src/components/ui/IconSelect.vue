@@ -1,30 +1,30 @@
 <script setup>
 import { computed, ref, onBeforeUnmount, nextTick } from 'vue'
 import { ChevronDown, Check, Search } from '@lucide/vue'
-import GameIcon from './GameIcon.vue'
+import GameIcon from '@/components/ui/GameIcon.vue'
 
 const props = defineProps({
   modelValue: {
     type: [String, Number],
-    default: ''
+    default: '',
   },
   options: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   placeholder: {
     type: String,
-    default: '請選擇'
+    default: '請選擇',
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // GameIcon 分類；null 表示純文字選單（如附魔）
   category: {
     type: String,
-    default: null
-  }
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -38,7 +38,7 @@ const searchQuery = ref('')
 const searchInputRef = ref(null)
 
 const selectedLabel = computed(() => {
-  const opt = props.options.find(o => o.value === props.modelValue)
+  const opt = props.options.find((o) => o.value === props.modelValue)
   return opt?.label ?? ''
 })
 
@@ -61,9 +61,9 @@ const positionPanel = () => {
 const filteredOptions = computed(() => {
   if (!searchQuery.value) return props.options
   const q = searchQuery.value.toLowerCase()
-  return props.options.filter(opt => 
-    opt.label.toLowerCase().includes(q) || 
-    (opt.enLabel && opt.enLabel.toLowerCase().includes(q))
+  return props.options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(q) || (opt.enLabel && opt.enLabel.toLowerCase().includes(q)),
   )
 })
 
@@ -120,6 +120,8 @@ onBeforeUnmount(close)
       class="select-trigger"
       :class="{ 'is-open': isOpen, 'has-value': !!modelValue }"
       :disabled="disabled"
+      aria-haspopup="listbox"
+      :aria-expanded="isOpen"
       @click="toggle"
     >
       <GameIcon
@@ -141,18 +143,25 @@ onBeforeUnmount(close)
         <div ref="panelRef" v-if="isOpen" class="select-panel" :style="panelStyle" role="listbox">
           <div class="search-box" v-if="options.length > 5">
             <Search class="search-icon" :size="16" />
-            <input 
+            <input
               ref="searchInputRef"
-              type="text" 
+              type="text"
               v-model="searchQuery"
-              placeholder="搜尋選項..." 
+              placeholder="搜尋選項..."
               class="search-input"
               @keydown.enter.prevent
             />
           </div>
           <ul class="options-list">
             <li>
-              <button type="button" class="option" :class="{ selected: !modelValue }" @click="select('')">
+              <button
+                type="button"
+                class="option"
+                :class="{ selected: !modelValue }"
+                role="option"
+                :aria-selected="!modelValue"
+                @click="select('')"
+              >
                 <span class="option-label muted">{{ placeholder }}</span>
                 <Check v-if="!modelValue" :size="16" class="check" />
               </button>
@@ -166,7 +175,12 @@ onBeforeUnmount(close)
                 :aria-selected="opt.value === modelValue"
                 @click="select(opt.value)"
               >
-                <GameIcon v-if="category" :name="String(opt.value)" :category="category" :size="24" />
+                <GameIcon
+                  v-if="category"
+                  :name="String(opt.value)"
+                  :category="category"
+                  :size="24"
+                />
                 <span class="option-label">
                   {{ opt.label }}
                   <span v-if="opt.enLabel" class="en-label">{{ opt.enLabel }}</span>
@@ -202,7 +216,9 @@ onBeforeUnmount(close)
   -webkit-backdrop-filter: var(--glass-blur);
   cursor: pointer;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   text-align: left;
   min-height: 48px;
 }
@@ -352,7 +368,9 @@ onBeforeUnmount(close)
 
 .panel-fade-enter-active,
 .panel-fade-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 .panel-fade-enter-from,

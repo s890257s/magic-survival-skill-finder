@@ -2,7 +2,7 @@ import skillsData from './skills.json'
 
 export { skillsData }
 
-export const skillsById = new Map(skillsData.map(s => [s.id, s]))
+export const skillsById = new Map(skillsData.map((s) => [s.id, s]))
 
 const schoolsMap = new Map()
 const subjectsMap = new Map()
@@ -11,7 +11,7 @@ const enchantsByBase = new Map() // baseName -> Map(enchantName -> enEnchant)
 
 const collectPart = (part) => {
   if (!part?.name) return
-  
+
   if (!basesMap.has(part.name) || !basesMap.get(part.name)) {
     basesMap.set(part.name, part.enName || '')
   }
@@ -27,7 +27,24 @@ const collectPart = (part) => {
   }
 }
 
-skillsData.forEach(s => {
+// 預組搜尋字串：融合技能與主副技能的中英文名稱、附魔英文，一次 includes 就能比對
+skillsData.forEach((s) => {
+  s.searchText = [
+    s.name,
+    s.enName,
+    s.mainSkill?.name,
+    s.mainSkill?.enName,
+    s.mainSkill?.enEnchant,
+    s.subSkill?.name,
+    s.subSkill?.enName,
+    s.subSkill?.enEnchant,
+  ]
+    .filter(Boolean)
+    .join('\n')
+    .toLowerCase()
+})
+
+skillsData.forEach((s) => {
   if (s.requirements?.school) {
     if (!schoolsMap.has(s.requirements.school) || !schoolsMap.get(s.requirements.school)) {
       schoolsMap.set(s.requirements.school, s.requirements.schoolEn || '')
@@ -48,7 +65,7 @@ const toOptions = (mapObj) => {
     .map(([val, enVal]) => ({
       value: val,
       label: val,
-      enLabel: enVal
+      enLabel: enVal,
     }))
 }
 

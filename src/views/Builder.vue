@@ -1,10 +1,9 @@
 <script setup>
 import { computed } from 'vue'
-import { useFavoritesStore } from '../stores/favorites'
-import { useToastStore } from '../stores/toast'
-import SkillCard from '../components/SkillCard.vue'
-import ThemeToggle from '../components/ui/ThemeToggle.vue'
-import LangToggle from '../components/ui/LangToggle.vue'
+import { useFavoritesStore } from '@/stores/favorites'
+import { useToastStore } from '@/stores/toast'
+import SkillCard from '@/components/SkillCard.vue'
+import HeaderActions from '@/components/layout/HeaderActions.vue'
 import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
 import { RouterLink } from 'vue-router'
 
@@ -60,7 +59,7 @@ const exportBuild = async () => {
   try {
     await navigator.clipboard.writeText(exportText)
     toastStore.showToast('配裝已複製到剪貼簿！', 'success')
-  } catch (err) {
+  } catch {
     toastStore.showToast('複製失敗，請手動選取複製', 'warning')
   }
 }
@@ -97,8 +96,7 @@ const clearAll = () => {
           <button @click="exportBuild" class="action-btn primary-btn">
             <Share2 :size="18" /> 匯出
           </button>
-          <LangToggle class="compact-toggle" />
-          <ThemeToggle class="compact-toggle" />
+          <HeaderActions compact />
         </div>
       </div>
       <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
@@ -197,11 +195,6 @@ const clearAll = () => {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.header-actions .compact-toggle {
-  width: 40px;
-  height: 40px;
 }
 
 .action-btn {

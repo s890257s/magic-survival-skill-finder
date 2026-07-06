@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import { skillsById } from '../data'
+import { skillsById } from '@/data'
 
+const BASE_SLOTS = 3
 
 const baseSkillsOf = (skill) => {
   return [skill.mainSkill?.name, skill.subSkill?.name].filter(Boolean)
@@ -15,25 +16,27 @@ export const useFavoritesStore = defineStore('favorites', () => {
   if (stored) {
     try {
       favoriteIds.value = JSON.parse(stored)
-    } catch (e) {
+    } catch {
       console.error('Failed to parse favorite_skills from localStorage')
     }
   }
 
   // Save to local storage whenever it changes
-  watch(favoriteIds, (newVal) => {
-    localStorage.setItem('favorite_skills', JSON.stringify(newVal))
-  }, { deep: true })
+  watch(
+    favoriteIds,
+    (newVal) => {
+      localStorage.setItem('favorite_skills', JSON.stringify(newVal))
+    },
+    { deep: true },
+  )
 
   const favoriteSkills = computed(() => {
-    return favoriteIds.value
-      .map(id => skillsById.get(id))
-      .filter(Boolean)
+    return favoriteIds.value.map((id) => skillsById.get(id)).filter(Boolean)
   })
 
+  // 遊戲常規 3 格；帶 slotBonus 的技能（如創造之門）可擴充上限
   const maxSlots = computed(() => {
-    const hasCreationGate = favoriteSkills.value.some(skill => skill.name === '創造之門' || skill.name === '创造之门')
-    return hasCreationGate ? 5 : 3
+    return favoriteSkills.value.reduce((slots, skill) => slots + (skill.slotBonus || 0), BASE_SLOTS)
   })
 
   const count = computed(() => favoriteSkills.value.length)
@@ -44,8 +47,8 @@ export const useFavoritesStore = defineStore('favorites', () => {
     const result = new Map()
     const baseSkillUsage = {} // baseSkillName -> skillIds
 
-    favoriteSkills.value.forEach(skill => {
-      baseSkillsOf(skill).forEach(base => {
+    favoriteSkills.value.forEach((skill) => {
+      baseSkillsOf(skill).forEach((base) => {
         if (!baseSkillUsage[base]) baseSkillUsage[base] = []
         baseSkillUsage[base].push(skill.id)
       })
@@ -53,7 +56,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
 
     Object.entries(baseSkillUsage).forEach(([base, ids]) => {
       if (ids.length > 1) {
-        ids.forEach(id => {
+        ids.forEach((id) => {
           if (!result.has(id)) result.set(id, [])
           result.get(id).push(base)
         })
@@ -68,9 +71,9 @@ export const useFavoritesStore = defineStore('favorites', () => {
   const getConflictingWith = (skill) => {
     const bases = baseSkillsOf(skill)
     const hits = []
-    favoriteSkills.value.forEach(fav => {
+    favoriteSkills.value.forEach((fav) => {
       if (fav.id === skill.id) return
-      baseSkillsOf(fav).forEach(base => {
+      baseSkillsOf(fav).forEach((base) => {
         if (bases.includes(base)) {
           hits.push({ base, skillName: fav.name })
         }

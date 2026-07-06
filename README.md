@@ -1,38 +1,29 @@
-# magic-survival-skill-finder
+# Magic Survival 技能查找工具
 
-This template should help get you started developing with Vue 3 in Vite.
+[Magic Survival（魔法生存戰）](https://play.google.com/store/apps/details?id=com.nekosgame.MagicSurvival)融合技能查詢與配裝模擬工具。純靜態網頁、行動裝置優先，狀態存於瀏覽器 LocalStorage。
 
-## Recommended IDE Setup
+完整功能規格見 [docs/spec.md](docs/spec.md)。
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 功能
 
-## Recommended Browser Setup
+- **圖鑑**：融合技能總覽，支援中英文關鍵字搜尋、基礎技能／附魔連動反查、實驗體篩選、終極技能過濾
+- **配裝**：加入最愛模擬配裝，自動檢測基礎技能衝突、超過格數上限提醒、排序調整、一鍵清空（可復原）、匯出純文字分享
+- **體驗**：深淺色主題（預設跟隨系統）、英文名稱顯示切換、觸控優化
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## 技術
 
-## Customize configuration
+Vue 3（`<script setup>`）+ Vite + Pinia + Vue Router（hash 模式，可部署於任何靜態子路徑）。
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- 技能資料：[src/data/skills.json](src/data/skills.json)，對應遊戲版本記錄於 [src/data/meta.js](src/data/meta.js)
+- 圖示：[src/data/icons.js](src/data/icons.js) 為例外對照表，未提供圖檔的項目自動顯示佔位色塊
 
-## Project Setup
+## 開發
 
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
+npm run dev      # 開發伺服器
+npm run build    # 產出 dist/
+npm run preview  # 預覽 build 結果
+npm run lint     # ESLint（自動修復）
+npm run format   # Prettier 格式化
 ```
