@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import skillsData from '../data/skills.json'
+import { skillsById } from '../data'
 
 export const MAX_SLOTS = 3
 
@@ -28,7 +28,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
 
   const favoriteSkills = computed(() => {
     return favoriteIds.value
-      .map(id => skillsData.find(s => s.id === id))
+      .map(id => skillsById.get(id))
       .filter(Boolean)
   })
 

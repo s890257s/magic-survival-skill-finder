@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Search, Filter, X } from '@lucide/vue'
-import skillsData from '../data/skills.json'
+import { skillsData, schoolOptions, subjectOptions, baseSkillOptions, enchantOptionsFor } from '../data'
 import SkillCard from '../components/SkillCard.vue'
 import FormSelect from '../components/ui/FormSelect.vue'
 import ThemeToggle from '../components/ui/ThemeToggle.vue'
@@ -18,40 +18,10 @@ const hasActiveFilters = computed(() => {
   return selectedSchool.value || selectedSubject.value || selectedBaseSkill.value
 })
 
-// Extract unique values
-const uniqueOptions = (extractFn) => {
-  const set = new Set()
-  skillsData.forEach(skill => {
-    const val = extractFn(skill)
-    if (val) set.add(val)
-  })
-  return Array.from(set).sort().map(v => ({ value: v, label: v }))
-}
-
-const schools = computed(() => uniqueOptions(s => s.requirements?.school))
-const subjects = computed(() => uniqueOptions(s => s.requirements?.subject))
-const baseSkills = computed(() => {
-  const set = new Set()
-  skillsData.forEach(s => {
-    if (s.mainSkill?.name) set.add(s.mainSkill.name)
-    if (s.subSkill?.name) set.add(s.subSkill.name)
-  })
-  return Array.from(set).sort().map(v => ({ value: v, label: v }))
-})
-
 // Dynamic enchants based on selectedBaseSkill
 const enchants = computed(() => {
   if (!selectedBaseSkill.value) return []
-  const set = new Set()
-  skillsData.forEach(s => {
-    if (s.mainSkill?.name === selectedBaseSkill.value && s.mainSkill?.enchant) {
-      set.add(s.mainSkill.enchant)
-    }
-    if (s.subSkill?.name === selectedBaseSkill.value && s.subSkill?.enchant) {
-      set.add(s.subSkill.enchant)
-    }
-  })
-  return Array.from(set).sort().map(v => ({ value: v, label: v }))
+  return enchantOptionsFor(selectedBaseSkill.value)
 })
 
 // Reset enchant when base skill changes
@@ -171,12 +141,12 @@ const filteredSkills = computed(() => {
           <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">清除全部</button>
         </div>
         <div class="filter-grid">
-          <FormSelect v-model="selectedSchool" :options="schools" placeholder="所有學派" />
-          <FormSelect v-model="selectedSubject" :options="subjects" placeholder="所有實驗體" />
+          <FormSelect v-model="selectedSchool" :options="schoolOptions" placeholder="所有學派" />
+          <FormSelect v-model="selectedSubject" :options="subjectOptions" placeholder="所有實驗體" />
           <FormSelect
             :modelValue="selectedBaseSkill"
             @update:modelValue="onBaseSkillChange"
-            :options="baseSkills"
+            :options="baseSkillOptions"
             placeholder="基礎技能"
           />
           <FormSelect

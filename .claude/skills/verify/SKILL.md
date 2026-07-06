@@ -24,5 +24,7 @@ npm run dev   # Vite, http://localhost:5173（背景執行）
 - `.theme-toggle` 切換 `data-theme`，reload 後保持
 
 ## 注意
+- 路由是 hash 模式：配裝頁在 `/#/builder`，導覽連結 selector 是 `a[href="#/builder"]`
+- 主題初始值由 index.html 的 inline script 決定（在 CSS 生效前），theme store 只接手後續切換
 - headless Chrome 的 prefers-color-scheme 預設是 light，初始主題會是淺色
 - 狀態存 LocalStorage（`favorite_skills`、`theme`），可用 `page.addInitScript` 預先種資料

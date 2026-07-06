@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 :root {
   /* Theme Colors (Mystic Dark) */
   --bg-dark: #0B0E14;
@@ -43,9 +41,9 @@
   --name-glow: 0 0 10px rgba(0, 240, 255, 0.3);
   --inset-bg: rgba(0, 0, 0, 0.2);
 
-  /* Font Families */
-  --font-heading: 'Outfit', sans-serif;
-  --font-body: 'Outfit', system-ui, -apple-system, sans-serif;
+  /* Font Families（系統字體堆疊，涵蓋繁中） */
+  --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 
 :root[data-theme="light"] {
@@ -98,7 +96,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+  min-height: 100dvh;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -125,6 +123,7 @@ button, input, select, textarea {
 #app {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding-bottom: 70px; /* Space for BottomNav */
+  min-height: 100dvh;
+  /* BottomNav 高度 + 瀏海機的 home indicator 區 */
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
 }

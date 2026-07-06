@@ -45,7 +45,6 @@ const handleAction = (toast) => {
 <style scoped>
 .content-area {
   flex: 1;
-  overflow-y: auto;
   overflow-x: hidden;
 }
 
