@@ -2,9 +2,9 @@
 name: Deploy static content to Pages
 
 on:
-  # 當有程式碼推送到 main 分支時觸發
+  # 當有程式碼推送到 master 分支時觸發
   push:
-    branches: ['main']
+    branches: ['master']
 
   # 允許從 Actions 頁籤手動執行此工作流程
   workflow_dispatch:
