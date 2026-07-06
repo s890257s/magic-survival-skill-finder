@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { skillsById } from '../data'
 
-export const MAX_SLOTS = 3
 
 const baseSkillsOf = (skill) => {
   return [skill.mainSkill?.name, skill.subSkill?.name].filter(Boolean)
@@ -32,8 +31,13 @@ export const useFavoritesStore = defineStore('favorites', () => {
       .filter(Boolean)
   })
 
+  const maxSlots = computed(() => {
+    const hasCreationGate = favoriteSkills.value.some(skill => skill.name === '創造之門' || skill.name === '创造之门')
+    return hasCreationGate ? 5 : 3
+  })
+
   const count = computed(() => favoriteSkills.value.length)
-  const isOverLimit = computed(() => count.value > MAX_SLOTS)
+  const isOverLimit = computed(() => count.value > maxSlots.value)
 
   // 衝突檢測：Map<skillId, string[]> — 該技能中被重複使用的基礎技能名稱
   const conflicts = computed(() => {
@@ -107,6 +111,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     favoriteIds,
     favoriteSkills,
     count,
+    maxSlots,
     isOverLimit,
     conflicts,
     getConflictingWith,

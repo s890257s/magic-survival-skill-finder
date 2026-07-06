@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { BookOpen, Wrench } from '@lucide/vue'
-import { useFavoritesStore, MAX_SLOTS } from '../../stores/favorites'
+import { useFavoritesStore } from '../../stores/favorites'
 
 const favoritesStore = useFavoritesStore()
 </script>
@@ -19,7 +19,7 @@ const favoritesStore = useFavoritesStore()
           <span
             v-if="favoritesStore.count > 0"
             class="badge"
-            :class="{ over: favoritesStore.count > MAX_SLOTS }"
+            :class="{ over: favoritesStore.isOverLimit }"
           >
             {{ favoritesStore.count }}
           </span>

@@ -91,8 +91,10 @@ const filteredSkills = computed(() => {
     // Keyword match（融合技能名稱或基礎技能名稱）
     if (searchQuery.value) {
       const q = searchQuery.value.trim()
+      const qLower = q.toLowerCase()
       const matched =
         skill.name.includes(q) ||
+        (skill.enName && skill.enName.toLowerCase().includes(qLower)) ||
         skill.mainSkill?.name.includes(q) ||
         skill.subSkill?.name.includes(q)
       if (!matched) return false
@@ -128,13 +130,18 @@ const filteredSkills = computed(() => {
   <div class="dictionary-view">
     <header class="header">
       <div class="search-bar">
-        <Search class="search-icon" :size="20" />
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="搜尋融合或基礎技能名稱..."
-          class="search-input"
-        />
+        <div class="search-wrapper">
+          <Search class="search-icon" :size="20" />
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="搜尋融合或基礎技能名稱 (中/英文)..."
+            class="search-input"
+          />
+          <button v-if="searchQuery" @click="searchQuery = ''" class="clear-search" aria-label="清除搜尋">
+            <X :size="18" />
+          </button>
+        </div>
         <button
           class="filter-toggle"
           @click="isFilterOpen = !isFilterOpen"
@@ -153,7 +160,7 @@ const filteredSkills = computed(() => {
           <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">清除全部</button>
         </div>
         <div class="filter-grid">
-          <IconSelect v-model="selectedSchool" :options="schoolOptions" placeholder="所有學派" category="school" />
+          <IconSelect v-model="selectedSchool" :options="schoolOptions" placeholder="所有學派(目前版本沒有差異)" category="school" disabled />
           <IconSelect v-model="selectedSubject" :options="subjectOptions" placeholder="所有實驗體" category="subject" />
           <IconSelect
             :modelValue="selectedBaseSkill"
@@ -234,6 +241,14 @@ const filteredSkills = computed(() => {
   gap: 12px;
 }
 
+.search-wrapper {
+  flex: 1;
+  display: flex;
+  position: relative;
+  align-items: center;
+  min-width: 0;
+}
+
 .search-icon {
   position: absolute;
   left: 16px;
@@ -242,16 +257,35 @@ const filteredSkills = computed(() => {
 }
 
 .search-input {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   background: var(--bg-surface);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
-  padding: 12px 16px 12px 48px;
+  padding: 12px 40px 12px 48px;
   color: var(--text-primary);
   font-size: 1rem;
   outline: none;
   transition: all 0.3s ease;
+}
+
+.clear-search {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+  color: var(--text-primary);
+  background: var(--glass-border);
 }
 
 .search-input:focus {

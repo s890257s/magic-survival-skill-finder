@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useFavoritesStore, MAX_SLOTS } from '../stores/favorites'
+import { useFavoritesStore } from '../stores/favorites'
 import { useToastStore } from '../stores/toast'
 import SkillCard from '../components/SkillCard.vue'
 import ThemeToggle from '../components/ui/ThemeToggle.vue'
@@ -86,7 +86,7 @@ const clearAll = () => {
             class="slot-count"
             :class="{ over: favoritesStore.isOverLimit }"
           >
-            {{ favoritesStore.count }}/{{ MAX_SLOTS }}
+            {{ favoritesStore.count }}/{{ favoritesStore.maxSlots }}
           </span>
         </div>
         <div class="header-actions">
@@ -101,7 +101,7 @@ const clearAll = () => {
       </div>
       <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
         <Layers :size="20" />
-        <span>超過遊戲常規上限（{{ MAX_SLOTS }} 個），實戰時記得取捨喔。</span>
+        <span>超過遊戲常規上限（{{ favoritesStore.maxSlots }} 個），實戰時記得取捨喔。</span>
       </div>
       <div v-if="conflicts.size > 0" class="banner conflict-banner">
         <AlertTriangle :size="20" />

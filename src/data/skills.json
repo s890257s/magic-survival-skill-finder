@@ -14,7 +14,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Lightning Bolts"
   },
   {
     "id": 2,
@@ -31,7 +32,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Spirit Blade"
   },
   {
     "id": 3,
@@ -48,7 +50,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Snowflake Blossom"
   },
   {
     "id": 4,
@@ -65,7 +68,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Excidium"
   },
   {
     "id": 5,
@@ -82,7 +86,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Genocide"
   },
   {
     "id": 6,
@@ -99,7 +104,8 @@
       "ultimate": "終結者",
       "subject": "電荷術士",
       "school": "電荷術士"
-    }
+    },
+    "enName": "Destroyer"
   },
   {
     "id": 7,
@@ -116,7 +122,8 @@
       "ultimate": "超載",
       "subject": "魔女",
       "school": "魔女"
-    }
+    },
+    "enName": "Age Of The Sun"
   },
   {
     "id": 8,
@@ -133,7 +140,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Ether Blaze"
   },
   {
     "id": 9,
@@ -150,7 +158,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Crazed Spray"
   },
   {
     "id": 10,
@@ -167,7 +176,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Empyrean Wrath"
   },
   {
     "id": 11,
@@ -184,7 +194,8 @@
       "ultimate": "宇宙",
       "subject": "魔學者",
       "school": "魔學者"
-    }
+    },
+    "enName": "Winter Storm"
   },
   {
     "id": 12,
@@ -201,7 +212,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Vortex"
   },
   {
     "id": 13,
@@ -218,7 +230,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Mana Spear"
   },
   {
     "id": 14,
@@ -235,7 +248,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Phoenix"
   },
   {
     "id": 15,
@@ -252,7 +266,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Lightning Breath"
   },
   {
     "id": 16,
@@ -269,7 +284,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Black Death"
   },
   {
     "id": 17,
@@ -286,7 +302,8 @@
       "ultimate": "核心",
       "subject": "天文學者",
       "school": "天文學者"
-    }
+    },
+    "enName": "Lightning Calibration"
   },
   {
     "id": 18,
@@ -303,7 +320,8 @@
       "ultimate": "昇華",
       "subject": "戰鬥法師",
       "school": "戰鬥法師"
-    }
+    },
+    "enName": "Mana Spear"
   },
   {
     "id": 19,
@@ -320,7 +338,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Mana Spear"
   },
   {
     "id": 20,
@@ -337,7 +356,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Pyrotechnics"
   },
   {
     "id": 21,
@@ -354,7 +374,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Flame Storm"
   },
   {
     "id": 22,
@@ -371,7 +392,8 @@
       "ultimate": "幻覺",
       "subject": "傑克燈籠",
       "school": null
-    }
+    },
+    "enName": "Teleport"
   },
   {
     "id": 23,
@@ -388,7 +410,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Super Cyclone"
   },
   {
     "id": 24,
@@ -405,7 +428,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Energy Bombardment"
   },
   {
     "id": 25,
@@ -422,7 +446,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Frozen Heart"
   },
   {
     "id": 26,
@@ -439,7 +464,8 @@
       "ultimate": "巨力衝擊",
       "subject": "巫術師",
       "school": "巫術師"
-    }
+    },
+    "enName": "War Climate"
   },
   {
     "id": 27,
@@ -456,7 +482,8 @@
       "ultimate": "弧光",
       "subject": "術士",
       "school": "術士"
-    }
+    },
+    "enName": "Heart Of Lightning"
   },
   {
     "id": 28,
@@ -473,7 +500,8 @@
       "ultimate": "均衡",
       "subject": "魔法師",
       "school": "魔法師"
-    }
+    },
+    "enName": "Avatar"
   },
   {
     "id": 29,
@@ -490,7 +518,8 @@
       "ultimate": "亞巴頓",
       "subject": "天文學者",
       "school": "天文學者"
-    }
+    },
+    "enName": "Hyperion"
   },
   {
     "id": 30,
@@ -507,7 +536,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Great Rift"
   },
   {
     "id": 31,
@@ -524,7 +554,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Prism Spray"
   },
   {
     "id": 32,
@@ -541,7 +572,8 @@
       "ultimate": "閃擊",
       "subject": "煉金術士",
       "school": "煉金術士"
-    }
+    },
+    "enName": "Demon Equation"
   },
   {
     "id": 33,
@@ -558,7 +590,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Overmind"
   },
   {
     "id": 34,
@@ -575,7 +608,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Ruler Of Storms"
   },
   {
     "id": 35,
@@ -592,7 +626,8 @@
       "ultimate": "零度新星",
       "subject": "冰凍師",
       "school": "冰凍師"
-    }
+    },
+    "enName": "Snowflake Blossom"
   },
   {
     "id": 36,
@@ -609,7 +644,8 @@
       "ultimate": "巨型海嘯",
       "subject": "協調者",
       "school": "協調者"
-    }
+    },
+    "enName": "Great Flood"
   },
   {
     "id": 37,
@@ -626,7 +662,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Telekinetic Sword"
   },
   {
     "id": 38,
@@ -643,7 +680,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Furnace"
   },
   {
     "id": 39,
@@ -660,7 +698,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Lightning Calibration"
   },
   {
     "id": 40,
@@ -677,7 +716,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Quantum Explosion"
   },
   {
     "id": 41,
@@ -694,7 +734,8 @@
       "ultimate": "死亡風暴",
       "subject": "咒術師",
       "school": "咒術師"
-    }
+    },
+    "enName": "Lightning Bolts"
   },
   {
     "id": 42,
@@ -711,7 +752,8 @@
       "ultimate": "量子雷射",
       "subject": "神秘術士",
       "school": "神秘術士"
-    }
+    },
+    "enName": "Plasma Ray"
   },
   {
     "id": 43,
@@ -728,7 +770,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Winter Storm"
   },
   {
     "id": 44,
@@ -745,7 +788,8 @@
       "ultimate": "歐米伽",
       "subject": "德魯伊",
       "school": "德魯伊"
-    }
+    },
+    "enName": "Vortex"
   },
   {
     "id": 45,
@@ -762,7 +806,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Orbital Strike"
   },
   {
     "id": 46,
@@ -779,7 +824,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Ether Blaze"
   },
   {
     "id": 47,
@@ -796,7 +842,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Breath Of Fire"
   },
   {
     "id": 48,
@@ -813,7 +860,8 @@
       "ultimate": "黑暗",
       "subject": "德魯伊",
       "school": "德魯伊"
-    }
+    },
+    "enName": "Vortex"
   },
   {
     "id": 49,
@@ -830,7 +878,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Reaction"
   },
   {
     "id": 50,
@@ -847,7 +896,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Ghastly Rampage"
   },
   {
     "id": 51,
@@ -864,7 +914,8 @@
       "ultimate": "狂戰士",
       "subject": "戰鬥法師",
       "school": "戰鬥法師"
-    }
+    },
+    "enName": "Frenzy"
   },
   {
     "id": 52,
@@ -881,7 +932,8 @@
       "ultimate": "復仇女神",
       "subject": "火焰術士",
       "school": "火焰術士"
-    }
+    },
+    "enName": "Demon Equation"
   },
   {
     "id": 53,
@@ -898,7 +950,8 @@
       "ultimate": "零點地帶",
       "subject": "巫術師",
       "school": "巫術師"
-    }
+    },
+    "enName": "War Climate"
   },
   {
     "id": 54,
@@ -915,7 +968,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Terra Current"
   },
   {
     "id": 55,
@@ -932,7 +986,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Crazed Spray"
   },
   {
     "id": 56,
@@ -949,7 +1004,8 @@
       "ultimate": "風暴使者",
       "subject": "咒術師",
       "school": "咒術師"
-    }
+    },
+    "enName": "Empyrean Wrath"
   },
   {
     "id": 57,
@@ -966,7 +1022,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Overmind"
   },
   {
     "id": 58,
@@ -983,7 +1040,8 @@
       "ultimate": "封鎖",
       "subject": "電荷術士",
       "school": "電荷術士"
-    }
+    },
+    "enName": "Meisner Effect"
   },
   {
     "id": 59,
@@ -1000,7 +1058,8 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Overmind"
   },
   {
     "id": 60,
@@ -1017,7 +1076,8 @@
       "ultimate": "審判者",
       "subject": "戰爭領主",
       "school": "戰爭領主"
-    }
+    },
+    "enName": "Inferno"
   },
   {
     "id": 61,
@@ -1034,7 +1094,8 @@
       "ultimate": "光刃",
       "subject": "召喚師",
       "school": "召喚師"
-    }
+    },
+    "enName": "Telekinetic Sword"
   },
   {
     "id": 62,
@@ -1051,6 +1112,7 @@
       "ultimate": null,
       "subject": null,
       "school": null
-    }
+    },
+    "enName": "Frenzy"
   }
 ]

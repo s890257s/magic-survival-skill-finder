@@ -1,6 +1,6 @@
 <script setup>
-import { computed, ref, onBeforeUnmount } from 'vue'
-import { ChevronDown, Check } from '@lucide/vue'
+import { computed, ref, onBeforeUnmount, nextTick } from 'vue'
+import { ChevronDown, Check, Search } from '@lucide/vue'
 import GameIcon from './GameIcon.vue'
 
 const props = defineProps({
@@ -32,6 +32,10 @@ const emit = defineEmits(['update:modelValue'])
 const isOpen = ref(false)
 const triggerRef = ref(null)
 const panelStyle = ref({})
+const panelRef = ref(null)
+
+const searchQuery = ref('')
+const searchInputRef = ref(null)
 
 const selectedLabel = computed(() => {
   const opt = props.options.find(o => o.value === props.modelValue)
@@ -54,18 +58,35 @@ const positionPanel = () => {
   }
 }
 
+const filteredOptions = computed(() => {
+  if (!searchQuery.value) return props.options
+  const q = searchQuery.value.toLowerCase()
+  return props.options.filter(opt => 
+    opt.label.toLowerCase().includes(q) || 
+    (opt.enLabel && opt.enLabel.toLowerCase().includes(q))
+  )
+})
+
 const close = () => {
   isOpen.value = false
-  window.removeEventListener('scroll', close, true)
+  searchQuery.value = ''
+  window.removeEventListener('scroll', onScroll, true)
   window.removeEventListener('resize', close)
   document.removeEventListener('keydown', onKeydown)
+}
+
+const onScroll = (e) => {
+  if (panelRef.value && (e.target === panelRef.value || panelRef.value.contains(e.target))) {
+    return
+  }
+  close()
 }
 
 const onKeydown = (e) => {
   if (e.key === 'Escape') close()
 }
 
-const toggle = () => {
+const toggle = async () => {
   if (props.disabled) return
   if (isOpen.value) {
     close()
@@ -73,9 +94,14 @@ const toggle = () => {
   }
   positionPanel()
   isOpen.value = true
-  window.addEventListener('scroll', close, true)
+  window.addEventListener('scroll', onScroll, true)
   window.addEventListener('resize', close)
   document.addEventListener('keydown', onKeydown)
+
+  await nextTick()
+  if (searchInputRef.value) {
+    searchInputRef.value.focus()
+  }
 }
 
 const select = (value) => {
@@ -112,28 +138,44 @@ onBeforeUnmount(close)
       <!-- 點擊面板外任意處關閉 -->
       <div v-if="isOpen" class="select-backdrop" @click="close"></div>
       <Transition name="panel-fade">
-        <ul v-if="isOpen" class="select-panel" :style="panelStyle" role="listbox">
-          <li>
-            <button type="button" class="option" :class="{ selected: !modelValue }" @click="select('')">
-              <span class="option-label muted">{{ placeholder }}</span>
-              <Check v-if="!modelValue" :size="16" class="check" />
-            </button>
-          </li>
-          <li v-for="opt in options" :key="opt.value">
-            <button
-              type="button"
-              class="option"
-              :class="{ selected: opt.value === modelValue }"
-              role="option"
-              :aria-selected="opt.value === modelValue"
-              @click="select(opt.value)"
-            >
-              <GameIcon v-if="category" :name="String(opt.value)" :category="category" :size="24" />
-              <span class="option-label">{{ opt.label }}</span>
-              <Check v-if="opt.value === modelValue" :size="16" class="check" />
-            </button>
-          </li>
-        </ul>
+        <div ref="panelRef" v-if="isOpen" class="select-panel" :style="panelStyle" role="listbox">
+          <div class="search-box" v-if="options.length > 5">
+            <Search class="search-icon" :size="16" />
+            <input 
+              ref="searchInputRef"
+              type="text" 
+              v-model="searchQuery"
+              placeholder="搜尋選項..." 
+              class="search-input"
+              @keydown.enter.prevent
+            />
+          </div>
+          <ul class="options-list">
+            <li>
+              <button type="button" class="option" :class="{ selected: !modelValue }" @click="select('')">
+                <span class="option-label muted">{{ placeholder }}</span>
+                <Check v-if="!modelValue" :size="16" class="check" />
+              </button>
+            </li>
+            <li v-for="opt in filteredOptions" :key="opt.value">
+              <button
+                type="button"
+                class="option"
+                :class="{ selected: opt.value === modelValue }"
+                role="option"
+                :aria-selected="opt.value === modelValue"
+                @click="select(opt.value)"
+              >
+                <GameIcon v-if="category" :name="String(opt.value)" :category="category" :size="24" />
+                <span class="option-label">
+                  {{ opt.label }}
+                  <span v-if="opt.enLabel" class="en-label">{{ opt.enLabel }}</span>
+                </span>
+                <Check v-if="opt.value === modelValue" :size="16" class="check" />
+              </button>
+            </li>
+          </ul>
+        </div>
       </Transition>
     </Teleport>
   </div>
@@ -207,15 +249,49 @@ onBeforeUnmount(close)
 
 .select-panel {
   z-index: 1600;
-  max-height: 300px;
-  overflow-y: auto;
   background: var(--bg-surface);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   box-shadow: var(--shadow-strong);
   padding: 6px;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 4px;
+}
+
+.search-icon {
+  color: var(--text-muted);
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.options-list {
+  max-height: 250px;
+  overflow-y: auto;
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .option {
@@ -251,6 +327,15 @@ onBeforeUnmount(close)
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.en-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .option-label.muted {

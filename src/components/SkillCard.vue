@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Heart, AlertTriangle, ChevronUp, ChevronDown, Crown } from '@lucide/vue'
-import { useFavoritesStore, MAX_SLOTS } from '../stores/favorites'
+import { useFavoritesStore } from '../stores/favorites'
 import { useToastStore } from '../stores/toast'
 import GlassCard from './ui/GlassCard.vue'
 import MagicTag from './ui/MagicTag.vue'
@@ -61,9 +61,9 @@ const toggle = () => {
     const detail = hits.map(h => `「${h.base}」與『${h.skillName}』`).join('、')
     toastStore.showToast(`已加入，但 ${detail} 衝突`, 'warning', { duration: 4500 })
   } else if (favoritesStore.isOverLimit) {
-    toastStore.showToast(`已加入配裝（${favoritesStore.count}/${MAX_SLOTS}，超過常規上限）`, 'warning')
+    toastStore.showToast(`已加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}，超過常規上限）`, 'warning')
   } else {
-    toastStore.showToast(`已將「${props.skill.name}」加入配裝（${favoritesStore.count}/${MAX_SLOTS}）`, 'success')
+    toastStore.showToast(`已將「${props.skill.name}」加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}）`, 'success')
   }
 }
 
@@ -80,7 +80,10 @@ const onBaseClick = (name) => {
       <div class="name-area">
         <GameIcon :name="skill.name" category="fusion" :size="40" />
         <div class="name-text">
-          <h3 class="skill-name">{{ skill.name }}</h3>
+          <div class="skill-title-group">
+            <h3 class="skill-name">{{ skill.name }}</h3>
+            <span v-if="skill.enName" class="skill-name-en">{{ skill.enName }}</span>
+          </div>
           <MagicTag v-if="skill.requirements?.subject" :text="skill.requirements.subject" type="secondary">
             <template #icon>
               <GameIcon :name="skill.requirements.subject" category="subject" :size="16" />
@@ -136,7 +139,10 @@ const onBaseClick = (name) => {
         </div>
         <div class="formula-divider">+</div>
         <div class="formula-item">
-          <span class="formula-label">副技能 <em class="consume">消耗</em></span>
+          <span class="formula-label">副技能 
+            <em v-if="skill.subSkill.enchant" class="consume">消耗</em>
+            <em v-else class="keep">保留</em>
+          </span>
           <div class="formula-name-row">
             <GameIcon :name="skill.subSkill.name" category="skill" :size="28" />
             <component
@@ -216,10 +222,24 @@ const onBaseClick = (name) => {
   min-width: 0;
 }
 
+.skill-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .skill-name {
   font-size: 1.25rem;
   margin: 0;
   text-shadow: var(--name-glow);
+  line-height: 1.2;
+}
+
+.skill-name-en {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1;
 }
 
 .header-actions {
@@ -335,7 +355,6 @@ const onBaseClick = (name) => {
 .formula-label .consume {
   background: var(--tag-default-bg);
   color: var(--text-muted);
-  text-decoration: line-through;
 }
 
 .formula-value {
