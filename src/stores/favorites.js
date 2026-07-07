@@ -110,6 +110,66 @@ export const useFavoritesStore = defineStore('favorites', () => {
     favoriteIds.value = []
   }
 
+  // --- Saved Builds ---
+  const savedBuilds = ref([])
+  const storedBuilds = localStorage.getItem('saved_builds')
+  if (storedBuilds) {
+    try {
+      savedBuilds.value = JSON.parse(storedBuilds)
+    } catch {
+      console.error('Failed to parse saved_builds from localStorage')
+    }
+  }
+
+  watch(
+    savedBuilds,
+    (newVal) => {
+      localStorage.setItem('saved_builds', JSON.stringify(newVal))
+    },
+    { deep: true },
+  )
+
+  const saveBuild = (name) => {
+    if (savedBuilds.value.length >= 10) return false
+    savedBuilds.value.push({
+      id: Date.now().toString(),
+      name,
+      date: Date.now(),
+      skills: [...favoriteIds.value]
+    })
+    return true
+  }
+
+  const overwriteBuild = (id) => {
+    const build = savedBuilds.value.find(b => b.id === id)
+    if (build) {
+      build.skills = [...favoriteIds.value]
+      build.date = Date.now()
+    }
+  }
+
+  const deleteSavedBuild = (id) => {
+    savedBuilds.value = savedBuilds.value.filter(b => b.id !== id)
+  }
+
+  const loadSavedBuild = (id) => {
+    const build = savedBuilds.value.find(b => b.id === id)
+    if (build) {
+      setFavorites(build.skills)
+    }
+  }
+
+  const clearSavedBuilds = () => {
+    savedBuilds.value = []
+  }
+
+  const renameBuild = (id, newName) => {
+    const build = savedBuilds.value.find(b => b.id === id)
+    if (build) {
+      build.name = newName
+    }
+  }
+
   return {
     favoriteIds,
     favoriteSkills,
@@ -123,6 +183,13 @@ export const useFavoritesStore = defineStore('favorites', () => {
     moveFavorite,
     setFavorites,
     clearFavorites,
+    savedBuilds,
+    saveBuild,
+    overwriteBuild,
+    deleteSavedBuild,
+    loadSavedBuild,
+    clearSavedBuilds,
+    renameBuild,
   }
 })
 
