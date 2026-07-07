@@ -1,12 +1,14 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import SkillCard from '@/components/SkillCard.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
+import Modal from '@/components/ui/Modal.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/composables/useI18n'
 
 const favoritesStore = useFavoritesStore()
@@ -17,29 +19,12 @@ const router = useRouter()
 const favoriteSkills = computed(() => favoritesStore.favoriteSkills)
 const conflicts = computed(() => favoritesStore.conflicts)
 
-const buildExportText = () => {
-  let exportText = `${t('ui.builder.exportHeader')}\n\n`
-  favoriteSkills.value.forEach((skill, index) => {
-    exportText += `${index + 1}. ${t(skill.name)}\n`
-    exportText += `   - ${t('ui.builder.exportMain')}: ${t(skill.mainSkill.name)} ${skill.mainSkill.enchant ? `(${t(skill.mainSkill.enchant)})` : ''}\n`
-    exportText += `   - ${t('ui.builder.exportSub')}: ${t(skill.subSkill.name)} ${skill.subSkill.enchant ? `(${t(skill.subSkill.enchant)})` : ''}\n`
-    if (skill.requirements?.ultimate) {
-      exportText += `   - ${t('ui.builder.exportUltimate')}: ${t(skill.requirements.ultimate)}\n`
-    }
-    if (skill.requirements?.school) {
-      exportText += `   - ${t('ui.builder.exportSchool')}: ${t(skill.requirements.school)}\n`
-    }
-    if (skill.requirements?.subject) {
-      exportText += `   - ${t('ui.builder.exportSubject')}: ${t(skill.requirements.subject)}\n`
-    }
-    exportText += '\n'
-  })
+const route = useRoute()
 
-  if (conflicts.value.size > 0) {
-    exportText += `${t('ui.builder.exportConflict')}\n`
-  }
-  return exportText
-}
+const showShareModal = ref(false)
+const shareUrl = ref('')
+const showImportConfirm = ref(false)
+const importIds = ref([])
 
 const exportBuild = async () => {
   if (favoriteSkills.value.length === 0) {
@@ -47,26 +32,58 @@ const exportBuild = async () => {
     return
   }
 
-  const exportText = buildExportText()
-
-  // 手機優先走系統分享面板
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: t('ui.builder.title'), text: exportText })
-      return
-    } catch (err) {
-      if (err.name === 'AbortError') return // 使用者取消分享
-      // 其他錯誤退回剪貼簿
-    }
-  }
+  const ids = favoriteSkills.value.map(s => s.id).join(',')
+  const base = window.location.origin + window.location.pathname
+  const url = `${base}#/builder?build=${ids}`
+  
+  shareUrl.value = url
 
   try {
-    await navigator.clipboard.writeText(exportText)
+    await navigator.clipboard.writeText(url)
+    toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
+  } catch {
+    toastStore.showToast(t('ui.builder.exportFail'), 'warning')
+  }
+  
+  showShareModal.value = true
+}
+
+const copyShareUrl = async () => {
+  try {
+    await navigator.clipboard.writeText(shareUrl.value)
     toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
   } catch {
     toastStore.showToast(t('ui.builder.exportFail'), 'warning')
   }
 }
+
+const handleImport = () => {
+  if (importIds.value.length > 0) {
+    favoritesStore.setFavorites(importIds.value)
+    toastStore.showToast(t('ui.builder.importSuccess'), 'success')
+  }
+  router.replace({ query: {} })
+}
+
+const cancelImport = () => {
+  router.replace({ query: {} })
+}
+
+watch(() => route.query.build, (newBuild) => {
+  if (newBuild) {
+    const ids = newBuild.split(',').map(Number).filter(id => !isNaN(id))
+    if (ids.length > 0) {
+      importIds.value = ids
+      if (favoritesStore.favoriteIds.length === 0) {
+        handleImport()
+      } else {
+        showImportConfirm.value = true
+      }
+    } else {
+      router.replace({ query: {} })
+    }
+  }
+}, { immediate: true })
 
 const clearAll = () => {
   const backup = [...favoritesStore.favoriteIds]
@@ -140,6 +157,25 @@ const clearAll = () => {
         />
       </TransitionGroup>
     </div>
+
+    <Modal :show="showShareModal" :title="t('ui.builder.shareModalTitle')" @close="showShareModal = false">
+      <div class="share-content">
+        <input type="text" readonly :value="shareUrl" class="share-input" @click="$event.target.select()" />
+        <button class="btn btn-primary share-copy-btn" @click="copyShareUrl">
+          {{ t('ui.builder.copyUrl') }}
+        </button>
+      </div>
+    </Modal>
+
+    <ConfirmDialog
+      v-model:show="showImportConfirm"
+      :title="t('ui.builder.importConfirmTitle')"
+      :message="t('ui.builder.importConfirmMsg')"
+      :confirmText="t('ui.builder.importConfirmTitle')"
+      :cancelText="t('ui.cancel')"
+      @confirm="handleImport"
+      @cancel="cancelImport"
+    />
   </div>
 </template>
 
@@ -208,7 +244,7 @@ const clearAll = () => {
 }
 
 .action-btn {
-  height: 40px;
+  height: 52px;
 }
 
 
@@ -249,8 +285,30 @@ const clearAll = () => {
   position: relative;
 }
 
+.share-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
+.share-input {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-dark);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 0.9rem;
+}
 
+.share-input:focus {
+  outline: 1px solid var(--accent-cyan);
+}
+
+.share-copy-btn {
+  align-self: flex-end;
+}
 @media (min-width: 768px) {
   .skill-grid {
     display: grid;

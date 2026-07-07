@@ -66,7 +66,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     return result
   })
 
-  // 檢查某技能與目前配裝的衝突（加入前預先偵測用）
+  // 檢查某技能與目前配技的衝突（加入前預先偵測用）
   // 回傳 [{ base, skillName }]
   const getConflictingWith = (skill) => {
     const bases = baseSkillsOf(skill)

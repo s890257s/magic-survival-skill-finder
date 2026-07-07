@@ -4,7 +4,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import LocaleToggle from '@/components/ui/LocaleToggle.vue'
 
 defineProps({
-  // 窄版尺寸（配裝頁 header 空間較擠）
+  // 窄版尺寸（配技頁 header 空間較擠）
   compact: {
     type: Boolean,
     default: false,
@@ -25,13 +25,5 @@ defineProps({
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.compact .toggle,
-.compact :deep(.locale-toggle) {
-  min-width: 40px !important;
-  width: 40px !important;
-  height: 40px !important;
-  padding: 0 !important;
 }
 </style>

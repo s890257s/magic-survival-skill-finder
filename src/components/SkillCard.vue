@@ -19,7 +19,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // 該技能中與配裝其他技能重複的基礎技能名稱
+  // 該技能中與配技其他技能重複的基礎技能名稱
   conflictBases: {
     type: Array,
     default: () => [],
@@ -34,7 +34,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // 顯示排序按鈕（配裝頁）
+  // 顯示排序按鈕（配技頁）
   reorderable: {
     type: Boolean,
     default: false,
@@ -173,7 +173,7 @@ const onSubjectClick = (subjectName) => {
           @click="toggle"
           :class="{ active: isFavorite }"
           :aria-pressed="isFavorite"
-          :aria-label="isFavorite ? '移出配裝' : '加入配裝'"
+          :aria-label="isFavorite ? '移出配技' : '加入配技'"
         >
           <Heart
             :fill="isFavorite ? 'var(--accent-purple)' : 'none'"

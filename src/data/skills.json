@@ -803,6 +803,7 @@
   {
     "id": 59,
     "name": "Gate of Creation",
+    "slotBonus": 2,
     "mainSkill": {
       "name": "Magic Circle",
       "enchant": "Material Synthesis"

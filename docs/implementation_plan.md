@@ -4,9 +4,9 @@
 
 ## 🎯 核心技術棧
 * **框架：** Vue 3 (Composition API) + Vite
-* **路由：** Vue Router (處理「圖鑑」與「配裝」的視圖切換)
+* **路由：** Vue Router (處理「圖鑑」與「配技」的視圖切換)
 * **樣式：** 原生 CSS (Vanilla CSS) 搭配 CSS Variables 實現深色主題與毛玻璃特效。不依賴 Tailwind 或 Vuetify，以確保 100% 的高質感客製化。
-* **資料與狀態：** 直接 `import` 本地的 `skills.json`，使用 `localStorage` 儲存玩家的最愛配裝。
+* **資料與狀態：** 直接 `import` 本地的 `skills.json`，使用 `localStorage` 儲存玩家的最愛配技。
 
 ---
 
@@ -49,7 +49,7 @@ src/
 │   └── SkillCard.vue     # 融合技能專用展示卡片
 ├── views/
 │   ├── Dictionary.vue    # 圖鑑視圖 (總覽、搜尋、過濾)
-│   └── Builder.vue       # 配裝視圖 (我的最愛、衝突檢測、匯出)
+│   └── Builder.vue       # 配技視圖 (我的最愛、衝突檢測、匯出)
 ├── router/
 │   └── index.js          # Vue Router 設定
 ├── data/
@@ -67,13 +67,13 @@ src/
   * **精準反查聯動：** 選中「基礎技能 A」後，依據資料自動過濾出對應的「附魔」選項供第二選單使用。
   * 多條件交集過濾（搜尋字串 + 學派 + 實驗體 + 基礎技能）。
 
-### 2. 配裝衝突檢測 (`Builder.vue`)
+### 2. 配技衝突檢測 (`Builder.vue`)
 * **資料結構：** `localStorage.getItem('favorite_skills')` (存儲 ID 陣列)。
 * **衝突算法：** 
   迴圈遍歷最愛清單中的所有融合技能，提取每個融合技能的 `mainSkill.name` 與 `subSkill.name`。若在不同融合技能中發現相同的基礎技能名稱，即標記為衝突，並在畫面上亮起紅框與 Toast 警告。
 
 ### 3. 建構匯出功能
-* 將配裝清單轉換為 Markdown 或純文字條列，利用瀏覽器的 `navigator.clipboard.writeText()` API 一鍵複製。
+* 將配技清單轉換為 Markdown 或純文字條列，利用瀏覽器的 `navigator.clipboard.writeText()` API 一鍵複製。
 
 ---
 
@@ -87,7 +87,7 @@ src/
 3. **Step 3: 圖鑑頁面實作 (Dictionary)**
    * 串接 JSON，完成卡片列表渲染。
    * 實作關鍵字、學派、實驗體篩選，以及精準反查的連動邏輯。
-4. **Step 4: 配裝頁面實作 (Builder)**
+4. **Step 4: 配技頁面實作 (Builder)**
    * 實作 LocalStorage 存取邏輯。
    * 撰寫衝突檢測算法與警告 UI。
    * 完成清單排序與匯出複製功能。

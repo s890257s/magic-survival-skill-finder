@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 
 const STORAGE_KEY = 'pinned_skills'
 
-// 頂置顯示：純排序偏好，與配裝（favorites）無關，不做衝突檢測、無數量限制
+// 頂置顯示：純排序偏好，與配技（favorites）無關，不做衝突檢測、無數量限制
 export const usePinnedStore = defineStore('pinned', () => {
   const pinnedIds = ref([])
 
