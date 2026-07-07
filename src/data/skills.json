@@ -1,1235 +1,860 @@
 [
   {
     "id": 1,
-    "name": "放電",
+    "name": "Discharge",
     "mainSkill": {
-      "name": "電氣衝擊",
-      "enchant": "高功率",
-      "enName": "Electric Shock",
-      "enEnchant": "High Power"
+      "name": "Electric Shock",
+      "enchant": "High Output"
     },
     "subSkill": {
-      "name": "落雷",
-      "enchant": "閃電爆炸",
-      "enName": "Thunderstorm",
-      "enEnchant": "Lightning Explosion"
-    },
-    "enName": "Discharge"
+      "name": "Thunderstorm",
+      "enchant": "Lightning Explosion"
+    }
   },
   {
     "id": 2,
-    "name": "靈魂之刃",
+    "name": "Soul Blades",
     "mainSkill": {
-      "name": "衛星",
-      "enchant": "怪火",
-      "enName": "Satellite",
-      "enEnchant": "Will-o'-the-wisp"
+      "name": "Satellite",
+      "enchant": "Will o' the Wisp"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "魔力刀刃",
-      "enName": "Spirit",
-      "enEnchant": "Magic Blade"
-    },
-    "enName": "Soul Blades"
+      "name": "Spirit",
+      "enchant": "Magic Blade"
+    }
   },
   {
     "id": 3,
-    "name": "冰川領域",
+    "name": "Glacium",
     "mainSkill": {
-      "name": "海嘯",
-      "enchant": "極點",
-      "enName": "Tsunami",
-      "enEnchant": "Pole"
+      "name": "Tsunami",
+      "enchant": "Pole"
     },
     "subSkill": {
-      "name": "凜霜",
-      "enchant": "冰河期",
-      "enName": "Frost Nova",
-      "enEnchant": "Ice Age"
-    },
-    "enName": "Glacium"
+      "name": "Frost Nova",
+      "enchant": "Ice Age"
+    }
   },
   {
     "id": 4,
-    "name": "厄克西迪姆",
+    "name": "Exidium",
     "mainSkill": {
-      "name": "閃光衝擊",
-      "enchant": "殲滅",
-      "enName": "Flash Shock",
-      "enEnchant": "Annihilation"
+      "name": "Flash Shock",
+      "enchant": "Wipeout"
     },
     "subSkill": {
-      "name": "末日審判",
-      "enchant": "被提",
-      "enName": "Armageddon",
-      "enEnchant": "Rapture"
-    },
-    "enName": "Excidium"
+      "name": "Armageddon",
+      "enchant": "Rapture"
+    }
   },
   {
     "id": 5,
-    "name": "種族滅絕",
+    "name": "Genocide",
     "mainSkill": {
-      "name": "幻視光線",
-      "enchant": "破壞光線",
-      "enName": "Arcane Ray",
-      "enEnchant": "Destruction Ray"
+      "name": "Arcane Ray",
+      "enchant": "Destruction Ray"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "使魔",
-      "enName": "Spirit",
-      "enEnchant": "Familiar"
-    },
-    "enName": "Genocide"
+      "name": "Spirit",
+      "enchant": "Familiar"
+    }
   },
   {
     "id": 6,
-    "name": "毀滅者",
+    "name": "Destroyer",
     "mainSkill": {
-      "name": "導電地帶",
-      "enchant": "電荷排放",
-      "enName": "Electric Zone",
-      "enEnchant": "Discharge"
+      "name": "Electric Zone",
+      "enchant": "Electricity Blast"
     },
     "subSkill": {
-      "name": "護盾",
-      "enchant": "破壞場",
-      "enName": "Shield",
-      "enEnchant": "Destruction Field"
+      "name": "Shield",
+      "enchant": "Destruction Field"
     },
     "requirements": {
-      "ultimate": "終結者",
-      "subject": "電荷術士",
-      "school": "電荷術士",
-      "subjectEn": "Electromancer",
-      "schoolEn": "Electromancer",
-      "ultimateEn": "Terminator"
-    },
-    "enName": "Destroyer"
+      "ultimate": "Terminator",
+      "school": "Electromancer",
+      "subject": "Electromancer"
+    }
   },
   {
     "id": 7,
-    "name": "太陽時代",
+    "name": "Age of the Sun",
     "mainSkill": {
-      "name": "熔岩地帶",
-      "enchant": "噴火口",
-      "enName": "Lava Zone",
-      "enEnchant": "Crater"
+      "name": "Lava Zone",
+      "enchant": "Crater"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "核融合",
-      "enName": "Satellite",
-      "enEnchant": "Nuclear Fusion"
+      "name": "Satellite",
+      "enchant": "Nuclear Fusion"
     },
     "requirements": {
-      "ultimate": "超載",
-      "subject": "魔女",
-      "school": "魔女",
-      "subjectEn": "Witch",
-      "schoolEn": "Witch",
-      "ultimateEn": "Overload"
-    },
-    "enName": "Age of Sun"
+      "ultimate": "Overload",
+      "school": "Witch",
+      "subject": "Witch"
+    }
   },
   {
     "id": 8,
-    "name": "地獄火",
+    "name": "Hellfire",
     "mainSkill": {
-      "name": "焚燒",
-      "enchant": "縱火狂",
-      "enName": "Incineration",
-      "enEnchant": "Pyromaniac"
+      "name": "Incineration",
+      "enchant": "Pyromaniac"
     },
     "subSkill": {
-      "name": "暴風雪",
-      "enchant": "火災",
-      "enName": "Blizzard",
-      "enEnchant": "Blaze"
-    },
-    "enName": "Ether Blaze"
+      "name": "Blizzard",
+      "enchant": "Conflagration"
+    }
   },
   {
     "id": 9,
-    "name": "超新星",
+    "name": "Supernova",
     "mainSkill": {
-      "name": "精靈",
-      "enchant": "使魔",
-      "enName": "Spirit",
-      "enEnchant": "Familiar"
+      "name": "Spirit",
+      "enchant": "Familiar"
     },
     "subSkill": {
-      "name": "能量彈",
-      "enchant": "閃焰",
-      "enName": "Energy Bolt",
-      "enEnchant": "Flare"
-    },
-    "enName": "Supernova"
+      "name": "Energy Bolt",
+      "enchant": "Flare"
+    }
   },
   {
     "id": 10,
-    "name": "阿斯特拉普",
+    "name": "Astrape",
     "mainSkill": {
-      "name": "落雷",
-      "enchant": "審判",
-      "enName": "Thunderstorm",
-      "enEnchant": "Judgment"
+      "name": "Thunderstorm",
+      "enchant": "Judgment"
     },
     "subSkill": {
-      "name": "隕石墜落",
-      "enchant": "小行星",
-      "enName": "Meteor",
-      "enEnchant": "Asteroid"
-    },
-    "enName": "Astrape"
+      "name": "Meteor",
+      "enchant": "Asteroid"
+    }
   },
   {
     "id": 11,
-    "name": "創世紀",
+    "name": "Genesis",
     "mainSkill": {
-      "name": "暴風雪",
-      "enchant": "流星",
-      "enName": "Blizzard",
-      "enEnchant": "Shooting Star"
+      "name": "Blizzard",
+      "enchant": "Shooting Star"
     },
     "subSkill": {
-      "name": "火焰球",
-      "enchant": "星座",
-      "enName": "Fireball",
-      "enEnchant": "Constellation"
+      "name": "Fireball",
+      "enchant": "Constellation"
     },
     "requirements": {
-      "ultimate": "宇宙",
-      "subject": "魔學者",
-      "school": "魔學者",
-      "subjectEn": "Scholar",
-      "schoolEn": "Scholar",
-      "ultimateEn": "Universe"
-    },
-    "enName": "Genesis"
+      "ultimate": "Cosmos",
+      "school": "Mage",
+      "subject": "Mage"
+    }
   },
   {
     "id": 12,
-    "name": "黑洞",
+    "name": "Black Hole",
     "mainSkill": {
-      "name": "旋風",
-      "enchant": "虛無",
-      "enName": "Cyclone",
-      "enEnchant": "Void"
+      "name": "Cyclone",
+      "enchant": "Void"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "核融合",
-      "enName": "Satellite",
-      "enEnchant": "Nuclear Fusion"
-    },
-    "enName": "Black Hole"
+      "name": "Satellite",
+      "enchant": "Nuclear Fusion"
+    }
   },
   {
     "id": 13,
-    "name": "揮舞",
+    "name": "Brandish",
     "mainSkill": {
-      "name": "閃光衝擊",
-      "enchant": "殲滅",
-      "enName": "Flash Shock",
-      "enEnchant": "Annihilation"
+      "name": "Flash Shock",
+      "enchant": "Wipeout"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "魔力刀刃",
-      "enName": "Spirit",
-      "enEnchant": "Magic Blade"
-    },
-    "enName": "Brandish"
+      "name": "Spirit",
+      "enchant": "Magic Blade"
+    }
   },
   {
     "id": 14,
-    "name": "鳳凰",
+    "name": "Phoenix",
     "mainSkill": {
-      "name": "海嘯",
-      "enchant": "大噴發",
-      "enName": "Tsunami",
-      "enEnchant": "Eruption"
+      "name": "Tsunami",
+      "enchant": "Great Eruption"
     },
     "subSkill": {
-      "name": "暴風雪",
-      "enchant": "火災",
-      "enName": "Blizzard",
-      "enEnchant": "Blaze"
-    },
-    "enName": "Phoenix"
+      "name": "Blizzard",
+      "enchant": "Conflagration"
+    }
   },
   {
     "id": 15,
-    "name": "閃電之息",
+    "name": "Lightning Breath",
     "mainSkill": {
-      "name": "電氣衝擊",
-      "enchant": "超導",
-      "enName": "Electric Shock",
-      "enEnchant": "Superconductivity"
+      "name": "Electric Shock",
+      "enchant": "Superconductivity"
     },
     "subSkill": {
-      "name": "焚燒",
-      "enchant": "火焰猛擊",
-      "enName": "Incineration",
-      "enEnchant": "Flame Strike"
-    },
-    "enName": "Lightning Breath"
+      "name": "Incineration",
+      "enchant": "Flamestrike"
+    }
   },
   {
     "id": 16,
-    "name": "鼠疫",
+    "name": "Black Death",
     "mainSkill": {
-      "name": "火焰球",
-      "enchant": "毒氣",
-      "enName": "Fireball",
-      "enEnchant": "Poison Gas"
+      "name": "Fireball",
+      "enchant": "Toxic Gas"
     },
     "subSkill": {
-      "name": "魔力彈",
-      "enchant": "亂射",
-      "enName": "Magic Bolt",
-      "enEnchant": "Spray"
-    },
-    "enName": "Plague"
+      "name": "Magic Bolt",
+      "enchant": "Fire at Bolt"
+    }
   },
   {
     "id": 17,
-    "name": "磁場",
+    "name": "Magnetic Field",
     "mainSkill": {
-      "name": "衛星",
-      "enchant": "反重力",
-      "enName": "Satellite",
-      "enEnchant": "Anti-Gravity"
+      "name": "Satellite",
+      "enchant": "Anti-Gravity"
     },
     "subSkill": {
-      "name": "導電地帶",
-      "enchant": "電荷排放",
-      "enName": "Electric Zone",
-      "enEnchant": "Discharge"
+      "name": "Electric Zone",
+      "enchant": "Electricity Blast"
     },
     "requirements": {
-      "ultimate": "核心",
-      "subject": "天文學者",
-      "school": "天文學者",
-      "subjectEn": "Astronomer",
-      "schoolEn": "Astronomer",
-      "ultimateEn": "Core"
-    },
-    "enName": "Magnetic Field"
+      "ultimate": "Core",
+      "school": "Astronomer",
+      "subject": "Astronomer"
+    }
   },
   {
     "id": 18,
-    "name": "天門",
+    "name": "Gate",
     "mainSkill": {
-      "name": "閃光衝擊",
-      "enchant": "諸神黃昏",
-      "enName": "Flash Shock",
-      "enEnchant": "Ragnarok"
+      "name": "Flash Shock",
+      "enchant": "Ragnarok"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "魔法導彈",
-      "enName": "Spirit",
-      "enEnchant": "Magic Missile"
+      "name": "Spirit",
+      "enchant": "Magic Missile"
     },
     "requirements": {
-      "ultimate": "昇華",
-      "subject": "戰鬥法師",
-      "school": "戰鬥法師",
-      "subjectEn": "Battle Mage",
-      "schoolEn": "Battle Mage",
-      "ultimateEn": "Ascension"
-    },
-    "enName": "Gate of Creation"
+      "ultimate": "Ascension",
+      "school": "Battlemage",
+      "subject": "Battlemage"
+    }
   },
   {
     "id": 19,
-    "name": "魔力之矛",
+    "name": "Mana Spear",
     "mainSkill": {
-      "name": "精靈",
-      "enchant": "魔法導彈",
-      "enName": "Spirit",
-      "enEnchant": "Magic Missile"
+      "name": "Spirit",
+      "enchant": "Magic Missile"
     },
     "subSkill": {
-      "name": "閃光衝擊",
-      "enchant": "殲滅",
-      "enName": "Flash Shock",
-      "enEnchant": "Annihilation"
-    },
-    "enName": "Mana Spear"
+      "name": "Flash Shock",
+      "enchant": "Wipeout"
+    }
   },
   {
     "id": 20,
-    "name": "煙火秀",
+    "name": "Pyrotechnics",
     "mainSkill": {
-      "name": "魔力彈",
-      "enchant": "爆竹",
-      "enName": "Magic Bolt",
-      "enEnchant": "Firecracker"
+      "name": "Magic Bolt",
+      "enchant": "Fireworks"
     },
     "subSkill": {
-      "name": "能量彈",
-      "enchant": "閃焰",
-      "enName": "Energy Bolt",
-      "enEnchant": "Flare"
-    },
-    "enName": "Fireworks"
+      "name": "Energy Bolt",
+      "enchant": "Flare"
+    }
   },
   {
     "id": 21,
-    "name": "火焰風暴",
+    "name": "Fire Storm",
     "mainSkill": {
-      "name": "隕石墜落",
-      "enchant": "火山爆炸",
-      "enName": "Meteor",
-      "enEnchant": "Volcanic Eruption"
+      "name": "Meteor",
+      "enchant": "Volcanic Eruption"
     },
     "subSkill": {
-      "name": "焚燒",
-      "enchant": "地獄三頭犬之焰",
-      "enName": "Incineration",
-      "enEnchant": "Cerberus Flame"
-    },
-    "enName": "Fire Storm"
+      "name": "Incineration",
+      "enchant": "Cerberus Flame"
+    }
   },
   {
     "id": 22,
-    "name": "瞬間移動",
+    "name": "Teleport",
     "mainSkill": {
-      "name": "急行",
-      "enchant": "空間扭曲",
-      "enName": "Cloaking",
-      "enEnchant": "Space Distortion"
+      "name": "Cloaking",
+      "enchant": "Space Warp"
     },
     "subSkill": {
-      "name": "集中",
-      "enName": "Concentration"
+      "name": "Concentration"
     },
     "requirements": {
-      "ultimate": "幻覺",
-      "subject": "傑克燈籠",
-      "subjectEn": "Jack-o-lantern",
-      "ultimateEn": "Illusion"
-    },
-    "enName": "Teleport"
+      "ultimate": "Hallucination",
+      "subject": "Jack o' Lantern"
+    }
   },
   {
     "id": 23,
-    "name": "超級颱風",
+    "name": "Super Cyclone",
     "mainSkill": {
-      "name": "旋風",
-      "enchant": "極端天氣",
-      "enName": "Cyclone",
-      "enEnchant": "Extreme Weather"
+      "name": "Cyclone",
+      "enchant": "Extreme Weather"
     },
     "subSkill": {
-      "name": "導電地帶",
-      "enchant": "火之光環",
-      "enName": "Electric Zone",
-      "enEnchant": "Fire Aura"
-    },
-    "enName": "Super Cyclone"
+      "name": "Electric Zone",
+      "enchant": "Fire Aura"
+    }
   },
   {
     "id": 24,
-    "name": "能量飽和",
+    "name": "Energy Bombardment",
     "mainSkill": {
-      "name": "幻視光線",
-      "enchant": "破壞光線",
-      "enName": "Arcane Ray",
-      "enEnchant": "Destruction Ray"
+      "name": "Arcane Ray",
+      "enchant": "Destruction Ray"
     },
     "subSkill": {
-      "name": "閃光衝擊",
-      "enchant": "諸神黃昏",
-      "enName": "Flash Shock",
-      "enEnchant": "Ragnarok"
-    },
-    "enName": "Energy Saturation"
+      "name": "Flash Shock",
+      "enchant": "Ragnarok"
+    }
   },
   {
     "id": 25,
-    "name": "冰凍之心",
+    "name": "Frozen Heart",
     "mainSkill": {
-      "name": "導電地帶",
-      "enchant": "火之光環",
-      "enName": "Electric Zone",
-      "enEnchant": "Fire Aura"
+      "name": "Electric Zone",
+      "enchant": "Fire Aura"
     },
     "subSkill": {
-      "name": "凜霜",
-      "enchant": "冰河期",
-      "enName": "Frost Nova",
-      "enEnchant": "Ice Age"
-    },
-    "enName": "Heart of Ice"
+      "name": "Frost Nova",
+      "enchant": "Ice Age"
+    }
   },
   {
     "id": 26,
-    "name": "大碰撞",
+    "name": "Great Impact",
     "mainSkill": {
-      "name": "隕石墜落",
-      "enchant": "小行星",
-      "enName": "Meteor",
-      "enEnchant": "Asteroid"
+      "name": "Meteor",
+      "enchant": "Asteroid"
     },
     "subSkill": {
-      "name": "暴風雪",
-      "enchant": "流星",
-      "enName": "Blizzard",
-      "enEnchant": "Shooting Star"
+      "name": "Blizzard",
+      "enchant": "Shooting Star"
     },
     "requirements": {
-      "ultimate": "巨力衝擊",
-      "subject": "巫術師",
-      "school": "巫術師",
-      "subjectEn": "Warlock",
-      "schoolEn": "Warlock",
-      "ultimateEn": "Heavy Impact"
-    },
-    "enName": "Great Collision"
+      "ultimate": "Giant Impact",
+      "school": "Warlock",
+      "subject": "Warlock"
+    }
   },
   {
     "id": 27,
-    "name": "閃電之心",
+    "name": "Heart of Lightning",
     "mainSkill": {
-      "name": "電氣衝擊",
-      "enchant": "連鎖閃電",
-      "enName": "Electric Shock",
-      "enEnchant": "Chain Lightning"
+      "name": "Electric Shock",
+      "enchant": "Chain Lightning"
     },
     "subSkill": {
-      "name": "能量彈",
-      "enchant": "帶電粒子",
-      "enName": "Energy Bolt",
-      "enEnchant": "Charged Particles"
+      "name": "Energy Bolt",
+      "enchant": "Charged Particle"
     },
     "requirements": {
-      "ultimate": "弧光",
-      "subject": "術士",
-      "school": "術士",
-      "subjectEn": "Magician",
-      "schoolEn": "Magician",
-      "ultimateEn": "Arc"
-    },
-    "enName": "Heart of Lightning"
+      "ultimate": "Arc",
+      "school": "Sorcerer",
+      "subject": "Sorcerer"
+    }
   },
   {
     "id": 28,
-    "name": "分身",
+    "name": "Avatar",
     "mainSkill": {
-      "name": "魔力彈",
-      "enchant": "分身",
-      "enName": "Magic Bolt",
-      "enEnchant": "Doppelganger"
+      "name": "Magic Bolt",
+      "enchant": "Avatar"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "魔法導彈",
-      "enName": "Spirit",
-      "enEnchant": "Magic Missile"
+      "name": "Spirit",
+      "enchant": "Magic Missile"
     },
     "requirements": {
-      "ultimate": "均衡",
-      "subject": "魔法師",
-      "school": "魔法師",
-      "subjectEn": "Wizard",
-      "schoolEn": "Wizard",
-      "ultimateEn": "Equilibrium"
-    },
-    "enName": "Doppelganger"
+      "ultimate": "Equilibrium",
+      "school": "Wizard",
+      "subject": "Wizard"
+    }
   },
   {
     "id": 29,
-    "name": "海柏利昂",
+    "name": "Hyperion",
     "mainSkill": {
-      "name": "衛星",
-      "enchant": "核融合",
-      "enName": "Satellite",
-      "enEnchant": "Nuclear Fusion"
+      "name": "Satellite",
+      "enchant": "Nuclear Fusion"
     },
     "subSkill": {
-      "name": "隕石墜落",
-      "enchant": "小行星",
-      "enName": "Meteor",
-      "enEnchant": "Asteroid"
+      "name": "Meteor",
+      "enchant": "Asteroid"
     },
     "requirements": {
-      "ultimate": "亞巴頓",
-      "subject": "天文學者",
-      "school": "天文學者",
-      "subjectEn": "Astronomer",
-      "schoolEn": "Astronomer",
-      "ultimateEn": "Abaddon"
-    },
-    "enName": "Hyperion"
+      "ultimate": "Abaddon",
+      "school": "Astronomer",
+      "subject": "Astronomer"
+    }
   },
   {
     "id": 30,
-    "name": "大崩裂",
+    "name": "Great Rift",
     "mainSkill": {
-      "name": "凜霜",
-      "enchant": "地震",
-      "enName": "Frost Nova",
-      "enEnchant": "Earthquake"
+      "name": "Frost Nova",
+      "enchant": "Earthquake"
     },
     "subSkill": {
-      "name": "隕石墜落",
-      "enchant": "火山爆炸",
-      "enName": "Meteor",
-      "enEnchant": "Volcanic Eruption"
-    },
-    "enName": "Great Rift"
+      "name": "Meteor",
+      "enchant": "Volcanic Eruption"
+    }
   },
   {
     "id": 31,
-    "name": "棱鏡亂射",
+    "name": "Prism Spray",
     "mainSkill": {
-      "name": "幻視光線",
-      "enchant": "反射",
-      "enName": "Arcane Ray",
-      "enEnchant": "Reflection"
+      "name": "Arcane Ray",
+      "enchant": "Reflect"
     },
     "subSkill": {
-      "name": "魔力彈",
-      "enchant": "亂射",
-      "enName": "Magic Bolt",
-      "enEnchant": "Spray"
-    },
-    "enName": "Prism Spree"
+      "name": "Magic Bolt",
+      "enchant": "Fire at Bolt"
+    }
   },
   {
     "id": 32,
-    "name": "原點爆炸",
+    "name": "Origin Explosion",
     "mainSkill": {
-      "name": "能量彈",
-      "enchant": "閃焰",
-      "enName": "Energy Bolt",
-      "enEnchant": "Flare"
+      "name": "Energy Bolt",
+      "enchant": "Flare"
     },
     "subSkill": {
-      "name": "火焰球",
-      "enchant": "星座",
-      "enName": "Fireball",
-      "enEnchant": "Constellation"
+      "name": "Fireball",
+      "enchant": "Constellation"
     },
     "requirements": {
-      "ultimate": "閃擊",
-      "subject": "煉金術士",
-      "school": "煉金術士",
-      "subjectEn": "Alchemist",
-      "schoolEn": "Alchemist",
-      "ultimateEn": "Blitz"
-    },
-    "enName": "Origin Explosion"
+      "ultimate": "Blitz",
+      "school": "Alchemist",
+      "subject": "Alchemist"
+    }
   },
   {
     "id": 33,
-    "name": "無限動力",
+    "name": "Perpetual Engine",
     "mainSkill": {
-      "name": "魔法陣",
-      "enchant": "魔力釋放",
-      "enName": "Magic Circle"
+      "name": "Magic Circle",
+      "enchant": "Unleash Mana"
     },
     "subSkill": {
-      "name": "智力",
-      "enName": "Intelligence"
-    },
-    "enName": "Infinite Power"
+      "name": "Intelligence"
+    }
   },
   {
     "id": 34,
-    "name": "暴風支配者",
+    "name": "Ruler of Storms",
     "mainSkill": {
-      "name": "旋風",
-      "enchant": "極端天氣",
-      "enName": "Cyclone",
-      "enEnchant": "Extreme Weather"
+      "name": "Cyclone",
+      "enchant": "Extreme Weather"
     },
     "subSkill": {
-      "name": "魔力彈",
-      "enchant": "亂射",
-      "enName": "Magic Bolt",
-      "enEnchant": "Spray"
-    },
-    "enName": "Ruler of Storms"
+      "name": "Magic Bolt",
+      "enchant": "Fire at Bolt"
+    }
   },
   {
     "id": 35,
-    "name": "雪花綻放",
+    "name": "Snowflake Blossom",
     "mainSkill": {
-      "name": "凜霜",
-      "enchant": "冰河期",
-      "enName": "Frost Nova",
-      "enEnchant": "Ice Age"
+      "name": "Frost Nova",
+      "enchant": "Ice Age"
     },
     "subSkill": {
-      "name": "海嘯",
-      "enchant": "極點",
-      "enName": "Tsunami",
-      "enEnchant": "Pole"
+      "name": "Tsunami",
+      "enchant": "Pole"
     },
     "requirements": {
-      "ultimate": "零度新星",
-      "subject": "冰凍師",
-      "school": "冰凍師",
-      "subjectEn": "Frost Mage",
-      "schoolEn": "Frost Mage",
-      "ultimateEn": "Absolute Zero Nova"
-    },
-    "enName": "Snowflake Blossom"
+      "ultimate": "Zero Nova",
+      "school": "Cryomancer",
+      "subject": "Cryomancer"
+    }
   },
   {
     "id": 36,
-    "name": "大洪水",
+    "name": "Great Flood",
     "mainSkill": {
-      "name": "海嘯",
-      "enchant": "賽蓮之歌",
-      "enName": "Tsunami",
-      "enEnchant": "Siren's Song"
+      "name": "Tsunami",
+      "enchant": "Siren's Song"
     },
     "subSkill": {
-      "name": "旋風",
-      "enchant": "極端天氣",
-      "enName": "Cyclone",
-      "enEnchant": "Extreme Weather"
+      "name": "Cyclone",
+      "enchant": "Extreme Weather"
     },
     "requirements": {
-      "ultimate": "巨型海嘯",
-      "subject": "協調者",
-      "school": "協調者",
-      "subjectEn": "Arbitrator",
-      "schoolEn": "Arbitrator",
-      "ultimateEn": "Mega Tsunami"
-    },
-    "enName": "Great Flood"
+      "ultimate": "Mega Tsunami",
+      "school": "Arbitrator",
+      "subject": "Arbitrator"
+    }
   },
   {
     "id": 37,
-    "name": "電流暴走",
+    "name": "Current Overload",
     "mainSkill": {
-      "name": "電氣衝擊",
-      "enchant": "連鎖閃電",
-      "enName": "Electric Shock",
-      "enEnchant": "Chain Lightning"
+      "name": "Electric Shock",
+      "enchant": "Chain Lightning"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "使魔",
-      "enName": "Spirit",
-      "enEnchant": "Familiar"
-    },
-    "enName": "Runaway Electricity"
+      "name": "Spirit",
+      "enchant": "Familiar"
+    }
   },
   {
     "id": 38,
-    "name": "熔爐",
+    "name": "Furnace",
     "mainSkill": {
-      "name": "熔岩地帶",
-      "enchant": "岩漿噴湧",
-      "enName": "Lava Zone",
-      "enEnchant": "Magma Eruption"
+      "name": "Lava Zone",
+      "enchant": "Magma Eruption"
     },
     "subSkill": {
-      "name": "隕石墜落",
-      "enchant": "火山爆炸",
-      "enName": "Meteor",
-      "enEnchant": "Volcanic Eruption"
-    },
-    "enName": "Furnace"
+      "name": "Meteor",
+      "enchant": "Volcanic Eruption"
+    }
   },
   {
     "id": 39,
-    "name": "閃電韻律",
+    "name": "Lightning Calibration",
     "mainSkill": {
-      "name": "導電地帶",
-      "enchant": "電荷排放",
-      "enName": "Electric Zone",
-      "enEnchant": "Discharge"
+      "name": "Electric Zone",
+      "enchant": "Electricity Blast"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "怪火",
-      "enName": "Satellite",
-      "enEnchant": "Will-o'-the-wisp"
-    },
-    "enName": "Lightning Calibration"
+      "name": "Satellite",
+      "enchant": "Will o' the Wisp"
+    }
   },
   {
     "id": 40,
-    "name": "量子爆炸",
+    "name": "Photon Explosion",
     "mainSkill": {
-      "name": "護盾",
-      "enchant": "破壞場",
-      "enName": "Shield",
-      "enEnchant": "Destruction Field"
+      "name": "Shield",
+      "enchant": "Destruction Field"
     },
     "subSkill": {
-      "name": "魔力發散",
-      "enName": "Magic Release"
-    },
-    "enName": "Quantum Explosion"
+      "name": "Arcane Effuse"
+    }
   },
   {
     "id": 41,
-    "name": "閃電轟炸",
+    "name": "Lightning Bolts",
     "mainSkill": {
-      "name": "落雷",
-      "enchant": "晴天霹靂",
-      "enName": "Thunderstorm",
-      "enEnchant": "Thunderbolt"
+      "name": "Thunderstorm",
+      "enchant": "Thunderclap"
     },
     "subSkill": {
-      "name": "電氣衝擊",
-      "enchant": "連鎖閃電",
-      "enName": "Electric Shock",
-      "enEnchant": "Chain Lightning"
+      "name": "Electric Shock",
+      "enchant": "Chain Lightning"
     },
     "requirements": {
-      "ultimate": "死亡風暴",
-      "subject": "咒術師",
-      "school": "咒術師",
-      "subjectEn": "Shaman",
-      "schoolEn": "Shaman",
-      "ultimateEn": "Death Storm"
-    },
-    "enName": "Lightning Bombardment"
+      "ultimate": "Death Storm",
+      "school": "Shaman",
+      "subject": "Shaman"
+    }
   },
   {
     "id": 42,
-    "name": "等離子光線",
+    "name": "Plasma Ray",
     "mainSkill": {
-      "name": "幻視光線",
-      "enchant": "破壞光線",
-      "enName": "Arcane Ray",
-      "enEnchant": "Destruction Ray"
+      "name": "Arcane Ray",
+      "enchant": "Destruction Ray"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "核融合",
-      "enName": "Satellite",
-      "enEnchant": "Nuclear Fusion"
+      "name": "Satellite",
+      "enchant": "Nuclear Fusion"
     },
     "requirements": {
-      "ultimate": "量子雷射",
-      "subject": "神秘術士",
-      "school": "神秘術士",
-      "subjectEn": "Mystic",
-      "schoolEn": "Mystic",
-      "ultimateEn": "Quantum Laser"
-    },
-    "enName": "Plasma Ray"
+      "ultimate": "Quantum Laser",
+      "school": "Occultist",
+      "subject": "Occultist"
+    }
   },
   {
     "id": 43,
-    "name": "寒冬風暴",
+    "name": "Winter Storm",
     "mainSkill": {
-      "name": "暴風雪",
-      "enchant": "嚴寒期",
-      "enName": "Blizzard",
-      "enEnchant": "Severe Cold"
+      "name": "Blizzard",
+      "enchant": "Sub-Zero"
     },
     "subSkill": {
-      "name": "火焰球",
-      "enchant": "毒氣",
-      "enName": "Fireball",
-      "enEnchant": "Poison Gas"
-    },
-    "enName": "Winter Storm"
+      "name": "Fireball",
+      "enchant": "Toxic Gas"
+    }
   },
   {
     "id": 44,
-    "name": "中子產生",
+    "name": "Neutron Generation",
     "mainSkill": {
-      "name": "旋風",
-      "enchant": "電氣球",
-      "enName": "Cyclone",
-      "enEnchant": "Electric Ball"
+      "name": "Cyclone",
+      "enchant": "Electric Orb"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "核融合",
-      "enName": "Satellite",
-      "enEnchant": "Nuclear Fusion"
+      "name": "Satellite",
+      "enchant": "Nuclear Fusion"
     },
     "requirements": {
-      "ultimate": "歐米伽",
-      "subject": "德魯伊",
-      "school": "德魯伊",
-      "subjectEn": "Druid",
-      "schoolEn": "Druid",
-      "ultimateEn": "Omega"
-    },
-    "enName": "Neutron Generation"
+      "ultimate": "Omega",
+      "school": "Druid",
+      "subject": "Druid"
+    }
   },
   {
     "id": 45,
-    "name": "軌道轟炸",
+    "name": "Orbital Strike",
     "mainSkill": {
-      "name": "落雷",
-      "enchant": "閃電爆炸",
-      "enName": "Thunderstorm",
-      "enEnchant": "Lightning Explosion"
+      "name": "Thunderstorm",
+      "enchant": "Lightning Explosion"
     },
     "subSkill": {
-      "name": "暴風雪",
-      "enchant": "流星",
-      "enName": "Blizzard",
-      "enEnchant": "Shooting Star"
-    },
-    "enName": "Orbital Bombing"
+      "name": "Blizzard",
+      "enchant": "Shooting Star"
+    }
   },
   {
     "id": 46,
-    "name": "以太縱火",
+    "name": "Ether Blaze",
     "mainSkill": {
-      "name": "暴風雪",
-      "enchant": "火災",
-      "enName": "Blizzard",
-      "enEnchant": "Blaze"
+      "name": "Blizzard",
+      "enchant": "Conflagration"
     },
     "subSkill": {
-      "name": "焚燒",
-      "enchant": "火焰猛擊",
-      "enName": "Incineration",
-      "enEnchant": "Flame Strike"
-    },
-    "enName": "Ether Fire"
+      "name": "Incineration",
+      "enchant": "Flamestrike"
+    }
   },
   {
     "id": 47,
-    "name": "火之息",
+    "name": "Breath of Fire",
     "mainSkill": {
-      "name": "焚燒",
-      "enchant": "地獄三頭犬之焰",
-      "enName": "Incineration",
-      "enEnchant": "Cerberus Flame"
+      "name": "Incineration",
+      "enchant": "Cerberus Flame"
     },
     "subSkill": {
-      "name": "幻視光線",
-      "enchant": "反射",
-      "enName": "Arcane Ray",
-      "enEnchant": "Reflection"
-    },
-    "enName": "Breath of Fire"
+      "name": "Arcane Ray",
+      "enchant": "Reflect"
+    }
   },
   {
     "id": 48,
-    "name": "渦流",
+    "name": "Vortex",
     "mainSkill": {
-      "name": "旋風",
-      "enchant": "虛無",
-      "enName": "Cyclone",
-      "enEnchant": "Void"
+      "name": "Cyclone",
+      "enchant": "Void"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "反重力",
-      "enName": "Satellite",
-      "enEnchant": "Anti-Gravity"
+      "name": "Satellite",
+      "enchant": "Anti-Gravity"
     },
     "requirements": {
-      "ultimate": "黑暗",
-      "subject": "德魯伊",
-      "school": "德魯伊",
-      "subjectEn": "Druid",
-      "schoolEn": "Druid",
-      "ultimateEn": "黑暗"
-    },
-    "enName": "Vortex"
+      "ultimate": "Darkness",
+      "school": "Druid",
+      "subject": "Druid"
+    }
   },
   {
     "id": 49,
-    "name": "反作用",
+    "name": "Reaction",
     "mainSkill": {
-      "name": "能量彈",
-      "enchant": "火星飛濺",
-      "enName": "Energy Bolt"
+      "name": "Energy Bolt",
+      "enchant": "Spark"
     },
     "subSkill": {
-      "name": "護盾",
-      "enchant": "破壞場",
-      "enName": "Shield",
-      "enEnchant": "Destruction Field"
-    },
-    "enName": "Reaction"
+      "name": "Shield",
+      "enchant": "Destruction Field"
+    }
   },
   {
     "id": 50,
-    "name": "百鬼夜行",
+    "name": "Ghastly Rampage",
     "mainSkill": {
-      "name": "火焰球",
-      "enchant": "星座",
-      "enName": "Fireball",
-      "enEnchant": "Constellation"
+      "name": "Fireball",
+      "enchant": "Constellation"
     },
     "subSkill": {
-      "name": "衛星",
-      "enchant": "怪火",
-      "enName": "Satellite",
-      "enEnchant": "Will-o'-the-wisp"
-    },
-    "enName": "Pandemonium"
+      "name": "Satellite",
+      "enchant": "Will o' the Wisp"
+    }
   },
   {
     "id": 51,
-    "name": "狂暴",
+    "name": "Frenzy",
     "mainSkill": {
-      "name": "閃光衝擊",
-      "enchant": "惡魔利爪",
-      "enName": "Flash Shock",
-      "enEnchant": "Demon's Claw"
+      "name": "Flash Shock",
+      "enchant": "Satan's Nails"
     },
     "subSkill": {
-      "name": "魔力彈",
-      "enchant": "亂射",
-      "enName": "Magic Bolt",
-      "enEnchant": "Spray"
+      "name": "Magic Bolt",
+      "enchant": "Fire at Bolt"
     },
     "requirements": {
-      "ultimate": "狂戰士",
-      "subject": "戰鬥法師",
-      "school": "戰鬥法師",
-      "subjectEn": "Battle Mage",
-      "schoolEn": "Battle Mage",
-      "ultimateEn": "狂戰士"
-    },
-    "enName": "Frenzy"
+      "ultimate": "Berserk",
+      "school": "Battlemage",
+      "subject": "Battlemage"
+    }
   },
   {
     "id": 52,
-    "name": "邪靈方程式",
+    "name": "Demon Equation",
     "mainSkill": {
-      "name": "火焰球",
-      "enchant": "大爆炸",
-      "enName": "Fireball",
-      "enEnchant": "Big Bang"
+      "name": "Fireball",
+      "enchant": "Big Bang"
     },
     "subSkill": {
-      "name": "能量彈",
-      "enchant": "閃焰",
-      "enName": "Energy Bolt",
-      "enEnchant": "Flare"
+      "name": "Energy Bolt",
+      "enchant": "Flare"
     },
     "requirements": {
-      "ultimate": "復仇女神",
-      "subject": "火焰術士",
-      "school": "火焰術士",
-      "subjectEn": "Pyromancer",
-      "schoolEn": "Pyromancer",
-      "ultimateEn": "復仇女神"
-    },
-    "enName": "Demon Equation"
+      "ultimate": "Nemesis",
+      "school": "Pyromancer",
+      "subject": "Pyromancer"
+    }
   },
   {
     "id": 53,
-    "name": "戰爭之後",
+    "name": "War Climate",
     "mainSkill": {
-      "name": "隕石墜落",
-      "enchant": "流星雨",
-      "enName": "Meteor",
-      "enEnchant": "Meteor Shower"
+      "name": "Meteor",
+      "enchant": "Meteor Shower"
     },
     "subSkill": {
-      "name": "暴風雪",
-      "enchant": "流星",
-      "enName": "Blizzard",
-      "enEnchant": "Shooting Star"
+      "name": "Blizzard",
+      "enchant": "Shooting Star"
     },
     "requirements": {
-      "ultimate": "零點地帶",
-      "subject": "巫術師",
-      "school": "巫術師",
-      "subjectEn": "Warlock",
-      "schoolEn": "Warlock",
-      "ultimateEn": "零點地帶"
-    },
-    "enName": "War Climate"
+      "ultimate": "Ground Zero",
+      "school": "Warlock",
+      "subject": "Warlock"
+    }
   },
   {
     "id": 54,
-    "name": "大地電流",
+    "name": "Terra Current",
     "mainSkill": {
-      "name": "幻視光線",
-      "enchant": "電磁放射",
-      "enName": "Arcane Ray",
-      "enEnchant": "Electromagnetic Emission"
+      "name": "Arcane Ray",
+      "enchant": "Electromagnetic Burst"
     },
     "subSkill": {
-      "name": "電氣衝擊",
-      "enchant": "超導",
-      "enName": "Electric Shock",
-      "enEnchant": "Superconductivity"
-    },
-    "enName": "Terra Current"
+      "name": "Electric Shock",
+      "enchant": "Superconductivity"
+    }
   },
   {
     "id": 55,
-    "name": "光彈亂射",
+    "name": "Crazed Spray",
     "mainSkill": {
-      "name": "能量彈",
-      "enchant": "帶電粒子",
-      "enName": "Energy Bolt",
-      "enEnchant": "Charged Particles"
+      "name": "Energy Bolt",
+      "enchant": "Charged Particle"
     },
     "subSkill": {
-      "name": "精靈",
-      "enchant": "使魔",
-      "enName": "Spirit",
-      "enEnchant": "Familiar"
-    },
-    "enName": "Crazed Spray"
+      "name": "Spirit",
+      "enchant": "Familiar"
+    }
   },
   {
     "id": 56,
-    "name": "蒼穹之怒",
+    "name": "Empyrean Wrath",
     "mainSkill": {
-      "name": "落雷",
-      "enchant": "閃電爆炸",
-      "enName": "Thunderstorm",
-      "enEnchant": "Lightning Explosion"
+      "name": "Thunderstorm",
+      "enchant": "Lightning Explosion"
     },
     "subSkill": {
-      "name": "隕石墜落",
-      "enchant": "流星雨",
-      "enName": "Meteor",
-      "enEnchant": "Meteor Shower"
+      "name": "Meteor",
+      "enchant": "Meteor Shower"
     },
     "requirements": {
-      "ultimate": "風暴使者",
-      "subject": "咒術師",
-      "school": "咒術師",
-      "subjectEn": "Shaman",
-      "schoolEn": "Shaman",
-      "ultimateEn": "風暴使者"
-    },
-    "enName": "Empyrean Wrath"
+      "ultimate": "Stormbringer",
+      "school": "Shaman",
+      "subject": "Shaman"
+    }
   },
   {
     "id": 57,
-    "name": "主宰",
+    "name": "Overmind",
     "mainSkill": {
-      "name": "魔法陣",
-      "enchant": "大魔法陣",
-      "enName": "Magic Circle",
-      "enEnchant": "Great Magic Circle"
+      "name": "Magic Circle",
+      "enchant": "Great Magic Circle"
     },
     "subSkill": {
-      "name": "智力",
-      "enName": "Intelligence"
-    },
-    "enName": "Overmind"
+      "name": "Intelligence"
+    }
   },
   {
     "id": 58,
-    "name": "邁斯納效應",
+    "name": "Meisner Effect",
     "mainSkill": {
-      "name": "導電地帶",
-      "enchant": "EMP",
-      "enName": "Electric Zone",
-      "enEnchant": "EMP"
+      "name": "Electric Zone",
+      "enchant": "EMP"
     },
     "subSkill": {
-      "name": "電氣衝擊",
-      "enchant": "超導",
-      "enName": "Electric Shock",
-      "enEnchant": "Superconductivity"
+      "name": "Electric Shock",
+      "enchant": "Superconductivity"
     },
     "requirements": {
-      "ultimate": "封鎖",
-      "subject": "電荷術士",
-      "school": "電荷術士",
-      "subjectEn": "Electromancer",
-      "schoolEn": "Electromancer",
-      "ultimateEn": "封鎖"
-    },
-    "enName": "Meissner Effect"
+      "ultimate": "Lockdown",
+      "school": "Electromancer",
+      "subject": "Electromancer"
+    }
   },
   {
     "id": 59,
-    "name": "創造之門",
+    "name": "Gate of Creation",
     "mainSkill": {
-      "name": "魔法陣",
-      "enchant": "物質彈性",
-      "enName": "Magic Circle",
-      "enEnchant": "Material Transmutation"
+      "name": "Magic Circle",
+      "enchant": "Material Synthesis"
     },
     "subSkill": {
-      "name": "智力",
-      "enName": "Intelligence"
-    },
-    "enName": "Gate of Creation",
-    "slotBonus": 2
+      "name": "Intelligence"
+    }
   },
   {
     "id": 60,
-    "name": "煉獄",
+    "name": "Inferno",
     "mainSkill": {
-      "name": "焚燒",
-      "enchant": "火焰猛擊",
-      "enName": "Incineration",
-      "enEnchant": "Flame Strike"
+      "name": "Incineration",
+      "enchant": "Flamestrike"
     },
     "subSkill": {
-      "name": "熔岩地帶",
-      "enchant": "融解",
-      "enName": "Lava Zone",
-      "enEnchant": "Melting"
+      "name": "Lava Zone",
+      "enchant": "Melt"
     },
     "requirements": {
-      "ultimate": "審判者",
-      "subject": "戰爭領主",
-      "school": "戰爭領主",
-      "subjectEn": "Warlord",
-      "schoolEn": "Warlord",
-      "ultimateEn": "審判者"
-    },
-    "enName": "Inferno"
+      "ultimate": "Inquisitor",
+      "school": "Warlord",
+      "subject": "Warlord"
+    }
   },
   {
     "id": 61,
-    "name": "以氣馭劍",
+    "name": "Telekinetic Sword",
     "mainSkill": {
-      "name": "精靈",
-      "enchant": "魔力刀刃",
-      "enName": "Spirit",
-      "enEnchant": "Magic Blade"
+      "name": "Spirit",
+      "enchant": "Magic Blade"
     },
     "subSkill": {
-      "name": "電氣衝擊",
-      "enchant": "連鎖閃電",
-      "enName": "Electric Shock",
-      "enEnchant": "Chain Lightning"
+      "name": "Electric Shock",
+      "enchant": "Chain Lightning"
     },
     "requirements": {
-      "ultimate": "光刃",
-      "subject": "召喚師",
-      "school": "召喚師",
-      "subjectEn": "Summoner",
-      "schoolEn": "Summoner",
-      "ultimateEn": "光刃"
-    },
-    "enName": "Telekinetic Sword"
+      "ultimate": "Aura Blade",
+      "school": "Summoner",
+      "subject": "Summoner"
+    }
   },
   {
     "id": 62,
-    "name": "爆能槍",
+    "name": "Blaster",
     "mainSkill": {
-      "name": "魔力彈",
-      "enchant": "魔力箭矢",
-      "enName": "Magic Bolt",
-      "enEnchant": "Magic Arrow"
+      "name": "Magic Bolt",
+      "enchant": "Magic Arrow"
     },
     "subSkill": {
-      "name": "閃光衝擊",
-      "enchant": "殲滅",
-      "enName": "Flash Shock",
-      "enEnchant": "Annihilation"
-    },
-    "enName": "Blaster"
+      "name": "Flash Shock",
+      "enchant": "Wipeout"
+    }
   }
 ]

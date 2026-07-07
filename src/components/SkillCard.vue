@@ -8,6 +8,7 @@ import { useSettingsStore } from '@/stores/settings'
 import GlassCard from '@/components/ui/GlassCard.vue'
 import MagicTag from '@/components/ui/MagicTag.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
+import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
   skill: {
@@ -53,13 +54,14 @@ const favoritesStore = useFavoritesStore()
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const settingsStore = useSettingsStore()
+const { t } = useI18n()
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
 
 const togglePin = () => {
   pinnedStore.togglePin(props.skill.id)
   toastStore.showToast(
-    isPinned.value ? `已頂置「${props.skill.name}」` : `已取消頂置「${props.skill.name}」`,
+    isPinned.value ? `已頂置「${t(props.skill.name)}」` : `已取消頂置「${t(props.skill.name)}」`,
     'info',
   )
 }
@@ -67,7 +69,7 @@ const togglePin = () => {
 const toggle = () => {
   if (isFavorite.value) {
     favoritesStore.toggleFavorite(props.skill.id)
-    toastStore.showToast(`已將「${props.skill.name}」移出配裝`, 'info')
+    toastStore.showToast(`已將「${t(props.skill.name)}」移出配裝`, 'info')
     return
   }
 
@@ -75,7 +77,7 @@ const toggle = () => {
   favoritesStore.toggleFavorite(props.skill.id)
 
   if (hits.length > 0) {
-    const detail = hits.map((h) => `「${h.base}」與『${h.skillName}』`).join('、')
+    const detail = hits.map((h) => `「${t(h.base)}」與『${t(h.skillName)}』`).join('、')
     toastStore.showToast(`已加入，但 ${detail} 衝突`, 'danger', { duration: 4500 })
   } else if (favoritesStore.isOverLimit) {
     toastStore.showToast(
@@ -84,7 +86,7 @@ const toggle = () => {
     )
   } else {
     toastStore.showToast(
-      `已將「${props.skill.name}」加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}）`,
+      `已將「${t(props.skill.name)}」加入配裝（${favoritesStore.count}/${favoritesStore.maxSlots}）`,
       'success',
     )
   }
@@ -116,14 +118,14 @@ const onSubjectClick = (subjectName) => {
         <GameIcon :name="skill.name" category="fusion" :size="40" />
         <div class="name-text">
           <div class="skill-title-group">
-            <h3 class="skill-name">{{ skill.name }}</h3>
-            <span v-if="skill.enName && settingsStore.showEnglish" class="skill-name-en">{{
-              skill.enName
+            <h3 class="skill-name">{{ t(skill.name) }}</h3>
+            <span v-if="settingsStore.showEnglish" class="skill-name-en">{{
+              skill.name
             }}</span>
           </div>
           <MagicTag
             v-if="skill.requirements?.subject"
-            :text="skill.requirements.subject"
+            :text="t(skill.requirements.subject)"
             type="secondary"
             :class="{ 'clickable-tag': clickableBases }"
             @click="onSubjectClick(skill.requirements.subject)"
@@ -194,17 +196,17 @@ const onSubjectClick = (subjectName) => {
                 }"
                 @click="onBaseClick(skill.mainSkill.name)"
               >
-                {{ skill.mainSkill.name }}
+                {{ t(skill.mainSkill.name) }}
               </component>
-              <span v-if="skill.mainSkill.enName && settingsStore.showEnglish" class="formula-en">{{
-                skill.mainSkill.enName
+              <span v-if="settingsStore.showEnglish" class="formula-en">{{
+                skill.mainSkill.name
               }}</span>
             </div>
           </div>
           <MagicTag
             v-if="skill.mainSkill.enchant"
-            :text="skill.mainSkill.enchant"
-            :enText="settingsStore.showEnglish ? skill.mainSkill.enEnchant : ''"
+            :text="t(skill.mainSkill.enchant)"
+            :enText="settingsStore.showEnglish ? skill.mainSkill.enchant : ''"
             type="primary"
             :class="{ 'clickable-tag': clickableBases }"
             @click="onEnchantClick(skill.mainSkill.name, skill.mainSkill.enchant)"
@@ -229,17 +231,17 @@ const onSubjectClick = (subjectName) => {
                 }"
                 @click="onBaseClick(skill.subSkill.name)"
               >
-                {{ skill.subSkill.name }}
+                {{ t(skill.subSkill.name) }}
               </component>
-              <span v-if="skill.subSkill.enName && settingsStore.showEnglish" class="formula-en">{{
-                skill.subSkill.enName
+              <span v-if="settingsStore.showEnglish" class="formula-en">{{
+                skill.subSkill.name
               }}</span>
             </div>
           </div>
           <MagicTag
             v-if="skill.subSkill.enchant"
-            :text="skill.subSkill.enchant"
-            :enText="settingsStore.showEnglish ? skill.subSkill.enEnchant : ''"
+            :text="t(skill.subSkill.enchant)"
+            :enText="settingsStore.showEnglish ? skill.subSkill.enchant : ''"
             type="primary"
             :class="{ 'clickable-tag': clickableBases }"
             @click="onEnchantClick(skill.subSkill.name, skill.subSkill.enchant)"
@@ -250,13 +252,13 @@ const onSubjectClick = (subjectName) => {
 
     <div v-if="conflictBases.length > 0" class="conflict-detail">
       <AlertTriangle :size="14" />
-      <span>基礎技能重複：{{ conflictBases.join('、') }}</span>
+      <span>基礎技能重複：{{ conflictBases.map(t).join('、') }}</span>
     </div>
 
     <div class="skill-footer" v-if="skill.requirements?.ultimate">
       <div class="ultimate-area">
         <Crown :size="14" class="ultimate-icon" />
-        <MagicTag :text="`【終極技能】 ${skill.requirements.ultimate}`" type="gold" />
+        <MagicTag :text="`【終極技能】 ${t(skill.requirements.ultimate)}`" type="gold" />
       </div>
     </div>
   </GlassCard>

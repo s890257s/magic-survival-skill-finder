@@ -8,7 +8,7 @@ export const iconMap = {
   // public/icons/skills/ — 基礎技能
   skill: {
     // 示範項目：拿到真圖後直接替換 public/icons/skills/ 下的檔案即可
-    落雷: 'sample-lightning.png',
+    Thunderstorm: 'sample-lightning.png',
   },
   // public/icons/subjects/ — 實驗體
   subject: {},

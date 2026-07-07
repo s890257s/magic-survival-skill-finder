@@ -6,9 +6,11 @@ import SkillCard from '@/components/SkillCard.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
 import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from '@/composables/useI18n'
 
 const favoritesStore = useFavoritesStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const favoriteSkills = computed(() => favoritesStore.favoriteSkills)
 const conflicts = computed(() => favoritesStore.conflicts)
@@ -16,17 +18,17 @@ const conflicts = computed(() => favoritesStore.conflicts)
 const buildExportText = () => {
   let exportText = '【Magic Survival 我的配裝】\n\n'
   favoriteSkills.value.forEach((skill, index) => {
-    exportText += `${index + 1}. ${skill.name}\n`
-    exportText += `   - 主: ${skill.mainSkill.name} ${skill.mainSkill.enchant ? `(${skill.mainSkill.enchant})` : ''}\n`
-    exportText += `   - 副: ${skill.subSkill.name} ${skill.subSkill.enchant ? `(${skill.subSkill.enchant})` : ''}\n`
+    exportText += `${index + 1}. ${t(skill.name)}\n`
+    exportText += `   - 主: ${t(skill.mainSkill.name)} ${skill.mainSkill.enchant ? `(${t(skill.mainSkill.enchant)})` : ''}\n`
+    exportText += `   - 副: ${t(skill.subSkill.name)} ${skill.subSkill.enchant ? `(${t(skill.subSkill.enchant)})` : ''}\n`
     if (skill.requirements?.ultimate) {
-      exportText += `   - 終極: ${skill.requirements.ultimate}\n`
+      exportText += `   - 終極: ${t(skill.requirements.ultimate)}\n`
     }
     if (skill.requirements?.school) {
-      exportText += `   - 學派: ${skill.requirements.school}\n`
+      exportText += `   - 學派: ${t(skill.requirements.school)}\n`
     }
     if (skill.requirements?.subject) {
-      exportText += `   - 實驗體: ${skill.requirements.subject}\n`
+      exportText += `   - 實驗體: ${t(skill.requirements.subject)}\n`
     }
     exportText += '\n'
   })

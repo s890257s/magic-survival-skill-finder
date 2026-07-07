@@ -1,44 +1,40 @@
 import skillsData from './skills.json'
+import zhTW from './zh-TW.json'
 
 export { skillsData }
 
 export const skillsById = new Map(skillsData.map((s) => [s.id, s]))
 
-const schoolsMap = new Map()
-const subjectsMap = new Map()
-const basesMap = new Map()
-const enchantsByBase = new Map() // baseName -> Map(enchantName -> enEnchant)
+const schoolsMap = new Set()
+const subjectsMap = new Set()
+const basesMap = new Set()
+const enchantsByBase = new Map() // baseName -> Set(enchantName)
+
+const t = (key) => zhTW[key] || key
 
 const collectPart = (part) => {
   if (!part?.name) return
 
-  if (!basesMap.has(part.name) || !basesMap.get(part.name)) {
-    basesMap.set(part.name, part.enName || '')
-  }
+  basesMap.add(part.name)
 
   if (part.enchant) {
     if (!enchantsByBase.has(part.name)) {
-      enchantsByBase.set(part.name, new Map())
+      enchantsByBase.set(part.name, new Set())
     }
-    const enchantMap = enchantsByBase.get(part.name)
-    if (!enchantMap.has(part.enchant) || !enchantMap.get(part.enchant)) {
-      enchantMap.set(part.enchant, part.enEnchant || '')
-    }
+    enchantsByBase.get(part.name).add(part.enchant)
   }
 }
 
-// 預組搜尋字串：融合技能與主副技能的中英文名稱、附魔英文，一次 includes 就能比對
+// 預組搜尋字串：包含英文 Key 與翻譯後的中文名稱
 skillsData.forEach((s) => {
-  s.searchText = [
-    s.name,
-    s.enName,
-    s.mainSkill?.name,
-    s.mainSkill?.enName,
-    s.mainSkill?.enEnchant,
-    s.subSkill?.name,
-    s.subSkill?.enName,
-    s.subSkill?.enEnchant,
+  const parts = [
+    s.name, t(s.name),
+    s.mainSkill?.name, t(s.mainSkill?.name),
+    s.mainSkill?.enchant, t(s.mainSkill?.enchant),
+    s.subSkill?.name, t(s.subSkill?.name),
+    s.subSkill?.enchant, t(s.subSkill?.enchant),
   ]
+  s.searchText = parts
     .filter(Boolean)
     .join('\n')
     .toLowerCase()
@@ -46,26 +42,21 @@ skillsData.forEach((s) => {
 
 skillsData.forEach((s) => {
   if (s.requirements?.school) {
-    if (!schoolsMap.has(s.requirements.school) || !schoolsMap.get(s.requirements.school)) {
-      schoolsMap.set(s.requirements.school, s.requirements.schoolEn || '')
-    }
+    schoolsMap.add(s.requirements.school)
   }
   if (s.requirements?.subject) {
-    if (!subjectsMap.has(s.requirements.subject) || !subjectsMap.get(s.requirements.subject)) {
-      subjectsMap.set(s.requirements.subject, s.requirements.subjectEn || '')
-    }
+    subjectsMap.add(s.requirements.subject)
   }
   collectPart(s.mainSkill)
   collectPart(s.subSkill)
 })
 
-const toOptions = (mapObj) => {
-  return Array.from(mapObj.entries())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([val, enVal]) => ({
+const toOptions = (setObj) => {
+  return Array.from(setObj)
+    .sort((a, b) => t(a).localeCompare(t(b), 'zh-TW'))
+    .map((val) => ({
       value: val,
-      label: val,
-      enLabel: enVal,
+      label: val, // We will translate this in the UI
     }))
 }
 
@@ -74,7 +65,7 @@ export const subjectOptions = toOptions(subjectsMap)
 export const baseSkillOptions = toOptions(basesMap)
 
 export const enchantOptionsFor = (baseSkillName) => {
-  const enchantMap = enchantsByBase.get(baseSkillName)
-  if (!enchantMap) return []
-  return toOptions(enchantMap)
+  const enchantSet = enchantsByBase.get(baseSkillName)
+  if (!enchantSet) return []
+  return toOptions(enchantSet)
 }

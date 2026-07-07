@@ -1,0 +1,233 @@
+魔法師	Wizard
+天文學者	Astronomer
+冰凍師	Cryomancer
+咒術師	Shaman
+巫術師	Warlock
+魔道學者	Arcanist
+召喚師	Summoner
+大主教	Bishop
+神秘術士	Occultist
+德魯伊	Druid
+火焰術士	Pyromancer
+術士	Sorcerer
+煉金術士	Alchemist
+學者	Scholar
+魔女	Witch
+電荷術士	Electromancer
+協調者	Arbitrator
+大魔法師	Archmage
+考古學者	Archaeologist
+魔術師	Magician
+魔學者	Mage
+戰鬥法師	Battlemage
+戰爭領主	Warlord
+黑魔法師	Black Mage
+傑克燈籠	Jack o' Lantern
+魔力彈	Magic Bolt
+火焰球	Fireball
+落雷	Thunderstorm
+隕石墜落	Meteor
+旋風	Cyclone
+電氣衝擊	Electric Shock
+能量彈	Energy Bolt
+焚燒	Incineration
+暴風雪	Blizzard
+海嘯	Tsunami
+精靈	Spirit
+衛星	Satellite
+幻視光線	Arcane Ray
+導電地帶	Electric Zone
+凜霜	Frost Nova
+熔岩地帶	Lava Zone
+護盾	Shield
+疾行	Cloaking
+魔法陣	Magic Circle
+末日審判	Armageddon
+閃光衝擊	Flash Shock
+智力	Intelligence
+高速施展	Fast Casting
+生命力	Vitality
+加速	Haste
+魔力發散	Arcane Effuse
+集中	Concentration
+狙擊	Snipe
+探索	Explorer
+破裂	Rupture
+高級魔法	Advanced Magic
+火之支配者	Lord of Fire
+烏雲	Stormy Clouds
+自然之怒	Nature's Wrath
+能源工學	Energy Engineering
+奧秘	Arcana
+守護天使	Guardian Angel
+默言詠唱	Silent Casting
+戰爭魔法	War Magic
+計時者	Timekeeper
+開拓者	Pioneer
+猛擊	Smite
+封印	Seal
+詛咒	Curse
+脈輪	Chakra
+法力工廠	Mana Factory
+博士	Doctor
+血魔法	Blood Magic
+腎上腺素	Adrenaline
+巨型主宰	Juggernaut
+聖職者	Priest
+艾亞德里奇	Eldritch
+貴族	Noblesse
+道士	Taoist
+花藝師	Florist
+魔力箭矢	Magic Arrow
+爆竹	Fireworks
+分裂	Fission
+連續施展	Chain Casting
+亂射	Fire at Bolt
+分身	Doppelganger
+大爆炸	Big Bang
+毒氣	Toxic Gas
+星座	Constellation
+晴天霹靂	Thunderclap
+閃電爆炸	Lightning Explosion
+審判	Judgment
+火山爆炸	Volcanic Eruption
+流星雨	Meteor Shower
+小行星	Asteroid
+極端天氣	Extreme Weather
+電氣球	Electric Orb
+虛無	Void
+連鎖閃電	Chain Lightning
+高功率	High Output
+超導	Superconductivity
+帶電粒子	Charged Particle
+火星飛濺	Spark
+閃焰	Flare
+火焰猛擊	Flamestrike
+縱火狂	Pyromaniac
+地獄三頭犬之焰	Cerberus Flame
+嚴寒期	Sub-Zero
+流星	Shooting Star
+火災	Conflagration
+極點	Pole
+賽蓮之歌	Siren's Song
+大噴發	Great Eruption
+魔法導彈	Magic Missile
+魔力刀刃	Magic Blade
+使魔	Familiar
+反重力	Anti-Gravity
+怪火	Will o' the Wisp
+核融合	Nuclear Fusion
+反射	Reflect
+破壞光線	Destruction Ray
+電磁放射	Electromagnetic Burst
+電荷排放	Electricity Blast
+EMP	EMP
+火之光環	Fire Aura
+絕對零度	Absolute Zero
+冰河期	Ice Age
+地震	Earthquake
+融解	Melt
+噴火口	Crater
+岩漿噴湧	Magma Eruption
+屏障	Barrier
+重築	Reconstruct
+破壞場	Destruction Field
+海市蜃樓	Mirage
+空間扭曲	Space Warp
+靈魂收割	Soul Harvest
+魔力釋放	Unleash Mana
+物質彈性	Material Synthesis
+大魔法陣	Great Magic Circle
+末世	Apocalypse
+被提	Rapture
+末日預言	Doom Prophet
+殲滅	Wipeout
+諸神黃昏	Ragnarok
+惡魔利爪	Satan's Nails
+蒼穹之怒	Empyrean Wrath
+以氣馭劍	Telekinetic Sword
+光彈亂射	Crazed Spray
+大地電流	Terra Current
+戰爭之後	War Climate
+邪靈方程式	Demon Equation
+狂暴	Frenzy
+百鬼夜行	Ghastly Rampage
+反作用	Reaction
+渦流	Vortex
+火之息	Breath of Fire
+以太縱火	Ether Blaze
+軌道轟炸	Orbital Strike
+中子產生	Neutron Generation
+寒冬風暴	Winter Storm
+等離子光線	Plasma Ray
+閃電轟炸	Lightning Bolts
+量子爆炸	Photon Explosion
+煉獄	Inferno
+閃電韻律	Lightning Calibration
+熔爐	Furnace
+電流暴走	Current Overload
+大洪水	Great Flood
+雪花綻放	Snowflake Blossom
+暴風支配者	Ruler of Storms
+主宰	Overmind
+無限動力	Perpetual Engine
+創造之門	Gate of Creation
+原點爆炸	Origin Explosion
+棱鏡亂射	Prism Spray
+大崩裂	Great Rift
+海柏利昂	Hyperion
+分身	Avatar
+閃電之心	Heart of Lightning
+大碰撞	Great Impact
+冰凍之心	Frozen Heart
+邁斯納效應	Meisner Effect
+能量飽和	Energy Bombardment
+超級颱風	Super Cyclone
+瞬間移動	Teleport
+火焰風暴	Fire Storm
+煙火秀	Pyrotechnics
+魔力之矛	Mana Spear
+天門	Gate
+磁場	Magnetic Field
+鼠疫	Black Death
+閃電之息	Lightning Breath
+鳳凰	Phoenix
+揮舞	Brandish
+黑洞	Black Hole
+創世紀	Genesis
+阿斯特拉普	Astrape
+超新星	Supernova
+爆能槍	Blaster
+地獄火	Hellfire
+太陽時代	Age of the Sun
+毀滅者	Destroyer
+種族滅絕	Genocide
+厄克西迪姆	Exidium
+機械降神	Deus Ex Machina
+冰川領域	Glacium
+靈魂之刃	Soul Blades
+放電	Discharge
+風暴使者	Stormbringer
+光刃	Aura Blade
+零點地帶	Ground Zero
+復仇女神	Nemesis
+狂戰士	Berserk
+黑暗	Darkness
+歐米伽	Omega
+量子雷射	Quantum Laser
+死亡風暴	Death Storm
+審判者	Inquisitor
+巨型海嘯	Mega Tsunami
+零度新星	Zero Nova
+閃擊	Blitz
+亞巴頓	Abaddon
+均衡	Equilibrium
+弧光	Arc
+巨力衝擊	Giant Impact
+封鎖	Lockdown
+幻覺	Hallucination
+昇華	Ascension
+核心	Core
+宇宙	Cosmos
+超載	Overload
+終結者	Terminator

@@ -2,6 +2,7 @@
 import { computed, ref, onBeforeUnmount, nextTick } from 'vue'
 import { ChevronDown, Check, Search } from '@lucide/vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
+import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
   modelValue: {
@@ -28,6 +29,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const { t } = useI18n()
 
 const isOpen = ref(false)
 const triggerRef = ref(null)
@@ -39,7 +41,7 @@ const searchInputRef = ref(null)
 
 const selectedLabel = computed(() => {
   const opt = props.options.find((o) => o.value === props.modelValue)
-  return opt?.label ?? ''
+  return opt?.label ? t(opt.label) : ''
 })
 
 const positionPanel = () => {
@@ -63,7 +65,7 @@ const filteredOptions = computed(() => {
   const q = searchQuery.value.toLowerCase()
   return props.options.filter(
     (opt) =>
-      opt.label.toLowerCase().includes(q) || (opt.enLabel && opt.enLabel.toLowerCase().includes(q)),
+      t(opt.label).toLowerCase().includes(q) || opt.label.toLowerCase().includes(q),
   )
 })
 
@@ -182,8 +184,7 @@ onBeforeUnmount(close)
                   :size="24"
                 />
                 <span class="option-label">
-                  {{ opt.label }}
-                  <span v-if="opt.enLabel" class="en-label">{{ opt.enLabel }}</span>
+                  {{ t(opt.label) }}
                 </span>
                 <Check v-if="opt.value === modelValue" :size="16" class="check" />
               </button>

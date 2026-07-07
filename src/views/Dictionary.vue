@@ -15,9 +15,11 @@ import { useToastStore } from '@/stores/toast'
 import IconSelect from '@/components/ui/IconSelect.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
+import { useI18n } from '@/composables/useI18n'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const searchQuery = ref('')
 const selectedSchool = ref('')
@@ -92,7 +94,7 @@ const activeChips = computed(() => {
   if (selectedSchool.value) {
     chips.push({
       key: 'school',
-      label: `學派：${selectedSchool.value}`,
+      label: `學派：${t(selectedSchool.value)}`,
       icon: { name: selectedSchool.value, category: 'school' },
       clear: () => (selectedSchool.value = ''),
     })
@@ -100,7 +102,7 @@ const activeChips = computed(() => {
   if (selectedSubject.value) {
     chips.push({
       key: 'subject',
-      label: `實驗體：${selectedSubject.value}`,
+      label: `實驗體：${t(selectedSubject.value)}`,
       icon: { name: selectedSubject.value, category: 'subject' },
       clear: () => (selectedSubject.value = ''),
     })
@@ -108,7 +110,7 @@ const activeChips = computed(() => {
   if (selectedBaseSkill.value) {
     chips.push({
       key: 'base',
-      label: `技能：${selectedBaseSkill.value}`,
+      label: `技能：${t(selectedBaseSkill.value)}`,
       icon: { name: selectedBaseSkill.value, category: 'skill' },
       clear: () => {
         selectedBaseSkill.value = ''
@@ -119,7 +121,7 @@ const activeChips = computed(() => {
   if (selectedEnchant.value) {
     chips.push({
       key: 'enchant',
-      label: `附魔：${selectedEnchant.value}`,
+      label: `附魔：${t(selectedEnchant.value)}`,
       icon: null,
       clear: () => (selectedEnchant.value = ''),
     })
