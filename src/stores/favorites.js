@@ -170,6 +170,10 @@ export const useFavoritesStore = defineStore('favorites', () => {
     }
   }
 
+  const setSavedBuilds = (builds) => {
+    savedBuilds.value = [...builds]
+  }
+
   return {
     favoriteIds,
     favoriteSkills,
@@ -190,6 +194,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     loadSavedBuild,
     clearSavedBuilds,
     renameBuild,
+    setSavedBuilds,
   }
 })
 

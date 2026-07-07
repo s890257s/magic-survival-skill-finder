@@ -25,7 +25,9 @@ const route = useRoute()
 const showShareModal = ref(false)
 const shareUrl = ref('')
 const showImportConfirm = ref(false)
-const importIds = ref([])
+const showImportSavesConfirm = ref(false)
+const importData = ref(null)
+const showExportChoiceModal = ref(false)
 
 const savedBuilds = computed(() => favoritesStore.savedBuilds)
 const showSaveModal = ref(false)
@@ -111,15 +113,34 @@ const formatDate = (ts) => {
   return new Date(ts).toLocaleString(undefined, { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
-const exportBuild = async () => {
-  if (favoriteSkills.value.length === 0) {
+const openExportModal = () => {
+  if (favoriteSkills.value.length === 0 && savedBuilds.value.length === 0) {
     toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
     return
   }
+  if (savedBuilds.value.length === 0) {
+    doExport('current')
+  } else {
+    showExportChoiceModal.value = true
+  }
+}
 
-  const ids = favoriteSkills.value.map(s => s.id).join(',')
+const doExport = async (type) => {
+  showExportChoiceModal.value = false
+  let dataObj
+  if (type === 'current') {
+    if (favoriteSkills.value.length === 0) {
+      toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+      return
+    }
+    dataObj = { type: 'current', data: favoriteSkills.value.map(s => s.id) }
+  } else if (type === 'saves') {
+    dataObj = { type: 'saves', data: savedBuilds.value }
+  }
+  
+  const base64Str = btoa(encodeURIComponent(JSON.stringify(dataObj)))
   const base = window.location.origin + window.location.pathname
-  const url = `${base}#/builder?build=${ids}`
+  const url = `${base}#/builder?share=${base64Str}`
   
   shareUrl.value = url
 
@@ -142,29 +163,50 @@ const copyShareUrl = async () => {
   }
 }
 
-const handleImport = () => {
-  if (importIds.value.length > 0) {
-    favoritesStore.setFavorites(importIds.value)
-    toastStore.showToast(t('ui.builder.importSuccess'), 'success')
-  }
-  router.replace({ query: {} })
-}
-
-const cancelImport = () => {
-  router.replace({ query: {} })
-}
-
-watch(() => route.query.build, (newBuild) => {
-  if (newBuild) {
-    const ids = newBuild.split(',').map(Number).filter(id => !isNaN(id))
-    if (ids.length > 0) {
-      importIds.value = ids
-      if (favoritesStore.favoriteIds.length === 0) {
-        handleImport()
-      } else {
-        showImportConfirm.value = true
-      }
+const processImportData = (obj) => {
+  if (!obj || !obj.type || !obj.data) return
+  importData.value = obj
+  
+  if (obj.type === 'current') {
+    if (favoritesStore.favoriteIds.length === 0) {
+      executeImport()
     } else {
+      showImportConfirm.value = true
+    }
+  } else if (obj.type === 'saves') {
+    if (favoritesStore.savedBuilds.length === 0) {
+      executeImport()
+    } else {
+      showImportSavesConfirm.value = true
+    }
+  }
+}
+
+const executeImport = () => {
+  if (!importData.value) return
+  if (importData.value.type === 'current') {
+    favoritesStore.setFavorites(importData.value.data)
+  } else if (importData.value.type === 'saves') {
+    favoritesStore.setSavedBuilds(importData.value.data)
+  }
+  toastStore.showToast(t('ui.builder.importSuccess'), 'success')
+  router.replace({ query: {} })
+  importData.value = null
+}
+
+const cancelImportAny = () => {
+  router.replace({ query: {} })
+  importData.value = null
+}
+
+watch(() => route.query.share, (newShare) => {
+  if (newShare) {
+    try {
+      const jsonStr = decodeURIComponent(atob(newShare))
+      const obj = JSON.parse(jsonStr)
+      processImportData(obj)
+    } catch (e) {
+      console.error('Failed to parse share query', e)
       router.replace({ query: {} })
     }
   }
@@ -202,7 +244,7 @@ const clearAll = () => {
           <button @click="handleSaveClick" class="btn btn-primary action-btn" v-if="favoriteSkills.length > 0">
             <Save :size="18" /> <span class="btn-text-content">{{ t('ui.builder.save') }}</span>
           </button>
-          <button @click="exportBuild" class="btn btn-primary action-btn">
+          <button @click="openExportModal" class="btn btn-primary action-btn">
             <Share2 :size="18" /> <span class="btn-text-content">{{ t('ui.builder.export') }}</span>
           </button>
           <HeaderActions compact />
@@ -322,8 +364,18 @@ const clearAll = () => {
       :message="t('ui.builder.importConfirmMsg')"
       :confirmText="t('ui.builder.importConfirmTitle')"
       :cancelText="t('ui.cancel')"
-      @confirm="handleImport"
-      @cancel="cancelImport"
+      @confirm="executeImport"
+      @cancel="cancelImportAny"
+    />
+
+    <ConfirmDialog
+      v-model:show="showImportSavesConfirm"
+      :title="t('ui.builder.importConfirmTitle')"
+      :message="t('ui.builder.importSavesConfirmMsg')"
+      :confirmText="t('ui.builder.importConfirmTitle')"
+      :cancelText="t('ui.cancel')"
+      @confirm="executeImport"
+      @cancel="cancelImportAny"
     />
 
     <ConfirmDialog
@@ -370,6 +422,19 @@ const clearAll = () => {
           <button class="btn btn-text" @click="showSaveModal = false">{{ t('ui.cancel') }}</button>
           <button class="btn btn-primary" @click="confirmSave">{{ t('ui.builder.save') }}</button>
         </div>
+      </div>
+    </Modal>
+
+    <Modal :show="showExportChoiceModal" :title="t('ui.builder.exportChoiceTitle')" @close="showExportChoiceModal = false">
+      <div class="export-choice-content">
+        <button class="btn btn-primary export-btn" @click="doExport('current')" :disabled="favoriteSkills.length === 0">
+          <Share2 :size="18" />
+          {{ t('ui.builder.exportCurrent') }}
+        </button>
+        <button class="btn btn-primary export-btn" @click="doExport('saves')">
+          <Save :size="18" />
+          {{ t('ui.builder.exportSaves') }} ({{ savedBuilds.length }})
+        </button>
       </div>
     </Modal>
   </div>
@@ -749,6 +814,22 @@ const clearAll = () => {
   justify-content: flex-end;
   gap: 8px;
   margin-top: 8px;
+}
+
+.export-choice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.export-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  font-size: 1.05rem;
 }
 @media (min-width: 768px) {
   .skill-grid {
