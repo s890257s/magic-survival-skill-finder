@@ -16,16 +16,37 @@ const close = () => {
   emit('close')
 }
 
+let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0
+
 const onScroll = (e) => {
   if (panelRef.value && (e.target === panelRef.value || panelRef.value.contains(e.target))) {
     return
   }
+
+  // 防止手機版點擊輸入框時，因為瀏覽器自動捲動導致面板關閉
+  if (panelRef.value && document.activeElement && panelRef.value.contains(document.activeElement)) {
+    return
+  }
+
   // 忽略不可捲動容器的假捲動事件（如 overflow:hidden 的篩選面板在焦點移動時觸發）
   const el = e.target
   if (el instanceof Element && el.scrollHeight <= el.clientHeight) {
     return
   }
   close()
+}
+
+const onResize = () => {
+  // 防止手機版鍵盤彈出觸發 resize 導致面板關閉
+  if (panelRef.value && document.activeElement && panelRef.value.contains(document.activeElement)) {
+    return
+  }
+
+  // 只在視窗寬度改變時才關閉（忽略因手機鍵盤彈出造成的單純高度改變）
+  if (window.innerWidth !== lastWindowWidth) {
+    lastWindowWidth = window.innerWidth
+    close()
+  }
 }
 
 const onKeydown = (e) => {
@@ -37,12 +58,13 @@ watch(
   () => props.isOpen,
   (newVal) => {
     if (newVal) {
+      lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0
       window.addEventListener('scroll', onScroll, true)
-      window.addEventListener('resize', close)
+      window.addEventListener('resize', onResize)
       document.addEventListener('keydown', onKeydown)
     } else {
       window.removeEventListener('scroll', onScroll, true)
-      window.removeEventListener('resize', close)
+      window.removeEventListener('resize', onResize)
       document.removeEventListener('keydown', onKeydown)
     }
   },
@@ -51,7 +73,7 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll, true)
-  window.removeEventListener('resize', close)
+  window.removeEventListener('resize', onResize)
   document.removeEventListener('keydown', onKeydown)
 })
 
