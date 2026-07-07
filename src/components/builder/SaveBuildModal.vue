@@ -1,0 +1,182 @@
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useFavoritesStore } from '@/stores/favorites'
+import { useToastStore } from '@/stores/toast'
+import Modal from '@/components/ui/Modal.vue'
+import { useI18n } from '@/composables/useI18n'
+
+const props = defineProps({
+  show: Boolean
+})
+
+const emit = defineEmits(['update:show'])
+
+const favoritesStore = useFavoritesStore()
+const toastStore = useToastStore()
+const { t } = useI18n()
+
+const saveNameInput = ref('')
+const saveMode = ref('new')
+
+const savedBuilds = computed(() => favoritesStore.savedBuilds)
+
+watch(() => props.show, (newShow) => {
+  if (newShow) {
+    if (savedBuilds.value.length >= favoritesStore.maxSavedBuilds) {
+      saveMode.value = savedBuilds.value[0].id
+      saveNameInput.value = savedBuilds.value[0].name
+    } else {
+      saveMode.value = 'new'
+      saveNameInput.value = `${t('ui.builder.defaultSaveName')} ${savedBuilds.value.length + 1}`
+    }
+  }
+})
+
+watch(saveMode, (newMode) => {
+  if (newMode === 'new') {
+    saveNameInput.value = `${t('ui.builder.defaultSaveName')} ${savedBuilds.value.length + 1}`
+  } else {
+    const build = savedBuilds.value.find(b => b.id === newMode)
+    if (build) saveNameInput.value = build.name
+  }
+})
+
+const confirmSave = () => {
+  const name = saveNameInput.value.trim() || t('ui.builder.defaultSaveName')
+  if (saveMode.value === 'new') {
+    if (favoritesStore.saveBuild(name)) {
+      toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
+      emit('update:show', false)
+    }
+  } else {
+    favoritesStore.overwriteBuild(saveMode.value)
+    favoritesStore.renameBuild(saveMode.value, name)
+    toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
+    emit('update:show', false)
+  }
+}
+
+const formatDate = (ts) => {
+  return new Date(ts).toLocaleString(undefined, { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
+}
+</script>
+
+<template>
+  <Modal :show="show" :title="t('ui.builder.saveTitle')" @close="$emit('update:show', false)">
+    <div class="save-content">
+      <div class="save-field">
+        <label>{{ t('ui.builder.savePlaceholder') }}</label>
+        <input 
+          type="text" 
+          v-model="saveNameInput" 
+          :placeholder="t('ui.builder.savePlaceholder')"
+          class="share-input" 
+          @keyup.enter="confirmSave"
+          v-focus
+        />
+      </div>
+      <div class="save-field">
+        <label>{{ t('ui.builder.saveTarget') }}</label>
+        <div class="save-options">
+          <label v-if="savedBuilds.length < favoritesStore.maxSavedBuilds" class="save-option-label glass-panel" :class="{ active: saveMode === 'new' }">
+            <input type="radio" v-model="saveMode" value="new" class="hidden-radio" />
+            <div class="save-option-content">
+              <span class="save-option-name">{{ t('ui.builder.createNewSave') }}</span>
+            </div>
+          </label>
+          <label v-for="build in savedBuilds" :key="build.id" class="save-option-label glass-panel" :class="{ active: saveMode === build.id }">
+            <input type="radio" v-model="saveMode" :value="build.id" class="hidden-radio" />
+            <div class="save-option-content">
+              <span class="save-option-name">{{ build.name }}</span>
+              <span class="save-option-date">{{ formatDate(build.date) }}</span>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-text" @click="$emit('update:show', false)">{{ t('ui.cancel') }}</button>
+        <button class="btn btn-primary" @click="confirmSave">{{ t('ui.builder.save') }}</button>
+      </div>
+    </div>
+  </Modal>
+</template>
+
+<style scoped>
+.save-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.save-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.save-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.share-input {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-dark);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.share-input:focus {
+  outline: 1px solid var(--accent-cyan);
+}
+
+.save-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.save-option-label {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.save-option-label:hover {
+  background: var(--bg-hover);
+}
+
+.save-option-label.active {
+  border-color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+}
+
+.hidden-radio {
+  display: none;
+}
+
+.save-option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.save-option-name {
+  font-weight: 700;
+}
+.save-option-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+</style>

@@ -129,8 +129,10 @@ export const useFavoritesStore = defineStore('favorites', () => {
     { deep: true },
   )
 
+  const MAX_SAVED_BUILDS = 10
+
   const saveBuild = (name) => {
-    if (savedBuilds.value.length >= 10) return false
+    if (savedBuilds.value.length >= MAX_SAVED_BUILDS) return false
     savedBuilds.value.push({
       id: Date.now().toString(),
       name,
@@ -195,6 +197,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     clearSavedBuilds,
     renameBuild,
     setSavedBuilds,
+    maxSavedBuilds: MAX_SAVED_BUILDS,
   }
 })
 

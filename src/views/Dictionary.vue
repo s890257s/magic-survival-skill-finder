@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
 import { Search, Filter, X, Pin } from '@lucide/vue'
 import {
   skillsData,
@@ -22,178 +22,168 @@ const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const { t } = useI18n()
 
-const searchQuery = ref('')
-const selectedSchool = ref('')
-const selectedSubject = ref('')
-const selectedBaseSkill = ref('')
-const selectedEnchant = ref('')
-const onlyUltimate = ref(false)
+const filters = reactive({
+  search: '',
+  school: '',
+  subject: '',
+  baseSkill: '',
+  enchant: '',
+  ultimate: false
+})
 
-// 記住上次的展開狀態，首次進入預設收合
 const FILTER_PANEL_KEY = 'filter_panel_open'
 const isFilterOpen = ref(localStorage.getItem(FILTER_PANEL_KEY) === 'true')
 watch(isFilterOpen, (val) => localStorage.setItem(FILTER_PANEL_KEY, val))
 
 const hasActiveFilters = computed(() => {
   return (
-    selectedSchool.value || selectedSubject.value || selectedBaseSkill.value || onlyUltimate.value
+    filters.school || filters.subject || filters.baseSkill || filters.ultimate
   )
 })
 
-// Dynamic enchants based on selectedBaseSkill
 const enchants = computed(() => {
-  if (!selectedBaseSkill.value) return []
-  return enchantOptionsFor(selectedBaseSkill.value)
+  if (!filters.baseSkill) return []
+  return enchantOptionsFor(filters.baseSkill)
 })
 
-// Reset enchant when base skill changes
 const onBaseSkillChange = (val) => {
-  selectedBaseSkill.value = val
-  selectedEnchant.value = ''
+  filters.baseSkill = val
+  filters.enchant = ''
 }
 
 const clearFilters = () => {
-  selectedSchool.value = ''
-  selectedSubject.value = ''
-  selectedBaseSkill.value = ''
-  selectedEnchant.value = ''
-  onlyUltimate.value = false
+  filters.school = ''
+  filters.subject = ''
+  filters.baseSkill = ''
+  filters.enchant = ''
+  filters.ultimate = false
 }
 
 const resetAll = () => {
   clearFilters()
-  searchQuery.value = ''
+  filters.search = ''
 }
 
-// 卡片上點擊基礎技能名稱 → 直接反查
 const listTop = ref(null)
 
 const onSelectBase = (name) => {
-  if (selectedBaseSkill.value !== name) {
-    selectedBaseSkill.value = name
-    selectedEnchant.value = ''
+  if (filters.baseSkill !== name) {
+    filters.baseSkill = name
+    filters.enchant = ''
   }
   listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 const onSelectEnchant = ({ baseName, enchantName }) => {
-  selectedBaseSkill.value = baseName
-  selectedEnchant.value = enchantName
+  filters.baseSkill = baseName
+  filters.enchant = enchantName
   listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 const onSelectSubject = (name) => {
-  if (selectedSubject.value !== name) {
-    selectedSubject.value = name
+  if (filters.subject !== name) {
+    filters.subject = name
   }
   listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-// 目前套用中的篩選 chips
 const activeChips = computed(() => {
   const chips = []
-  if (selectedSchool.value) {
+  if (filters.school) {
     chips.push({
       key: 'school',
-      label: t('ui.chip.school').replace('{0}', t(selectedSchool.value)),
-      icon: { name: selectedSchool.value, category: 'school' },
-      clear: () => (selectedSchool.value = ''),
+      label: t('ui.chip.school').replace('{0}', t(filters.school)),
+      icon: { name: filters.school, category: 'school' },
     })
   }
-  if (selectedSubject.value) {
+  if (filters.subject) {
     chips.push({
       key: 'subject',
-      label: t('ui.chip.subject').replace('{0}', t(selectedSubject.value)),
-      icon: { name: selectedSubject.value, category: 'subject' },
-      clear: () => (selectedSubject.value = ''),
+      label: t('ui.chip.subject').replace('{0}', t(filters.subject)),
+      icon: { name: filters.subject, category: 'subject' },
     })
   }
-  if (selectedBaseSkill.value) {
+  if (filters.baseSkill) {
     chips.push({
-      key: 'base',
-      label: t('ui.chip.base').replace('{0}', t(selectedBaseSkill.value)),
-      icon: { name: selectedBaseSkill.value, category: 'skill' },
-      clear: () => {
-        selectedBaseSkill.value = ''
-        selectedEnchant.value = ''
-      },
+      key: 'baseSkill',
+      label: t('ui.chip.base').replace('{0}', t(filters.baseSkill)),
+      icon: { name: filters.baseSkill, category: 'skill' },
     })
   }
-  if (selectedEnchant.value) {
+  if (filters.enchant) {
     chips.push({
       key: 'enchant',
-      label: t('ui.chip.enchant').replace('{0}', t(selectedEnchant.value)),
+      label: t('ui.chip.enchant').replace('{0}', t(filters.enchant)),
       icon: null,
-      clear: () => (selectedEnchant.value = ''),
     })
   }
-  if (onlyUltimate.value) {
+  if (filters.ultimate) {
     chips.push({
       key: 'ultimate',
       label: t('ui.dict.onlyUltimate'),
       icon: null,
-      clear: () => (onlyUltimate.value = false),
     })
   }
   return chips
 })
 
-// Filtered Skills
+const removeFilter = (key) => {
+  if (key === 'baseSkill') {
+    filters.baseSkill = ''
+    filters.enchant = ''
+  } else {
+    filters[key] = typeof filters[key] === 'boolean' ? false : ''
+  }
+}
+
 const filteredSkills = computed(() => {
   return skillsData.filter((skill) => {
-    // Keyword match（融合技能名稱或基礎技能名稱，中英文；searchText 於 data 層預組）
-    if (searchQuery.value) {
-      const q = searchQuery.value.trim().toLowerCase()
+    if (filters.search) {
+      const q = filters.search.trim().toLowerCase()
       if (q && !skill.searchText.includes(q)) return false
     }
-    // School match：顯示該學派專屬 + 無限制的通用技能
     if (
-      selectedSchool.value &&
+      filters.school &&
       skill.requirements?.school &&
-      skill.requirements.school !== selectedSchool.value
+      skill.requirements.school !== filters.school
     ) {
       return false
     }
-    // Subject match
-    if (selectedSubject.value && skill.requirements?.subject !== selectedSubject.value) {
+    if (filters.subject && skill.requirements?.subject !== filters.subject) {
       return false
     }
-    // Base skill match
-    if (selectedBaseSkill.value) {
-      const matchMain = skill.mainSkill?.name === selectedBaseSkill.value
-      const matchSub = skill.subSkill?.name === selectedBaseSkill.value
+    if (filters.baseSkill) {
+      const matchMain = skill.mainSkill?.name === filters.baseSkill
+      const matchSub = skill.subSkill?.name === filters.baseSkill
       if (!matchMain && !matchSub) return false
 
-      // Enchant match
-      if (selectedEnchant.value) {
+      if (filters.enchant) {
         let enchantMatched = false
-        if (matchMain && skill.mainSkill?.enchant === selectedEnchant.value) enchantMatched = true
-        if (matchSub && skill.subSkill?.enchant === selectedEnchant.value) enchantMatched = true
+        if (matchMain && skill.mainSkill?.enchant === filters.enchant) enchantMatched = true
+        if (matchSub && skill.subSkill?.enchant === filters.enchant) enchantMatched = true
         if (!enchantMatched) return false
       }
     }
-    // Ultimate match
-    if (onlyUltimate.value && !skill.requirements?.ultimate) {
+    if (filters.ultimate && !skill.requirements?.ultimate) {
       return false
     }
     return true
   })
 })
 
-// 篩選結果中的頂置技能，依 pinnedIds 的順序排列（可由使用者調整）
 const pinnedInView = computed(() => {
-  const byId = new Map(filteredSkills.value.map((s) => [s.id, s]))
-  return pinnedStore.pinnedIds.map((id) => byId.get(id)).filter(Boolean)
+  // Directly map and filter instead of creating a new Map for small datasets
+  return pinnedStore.pinnedIds
+    .map(id => filteredSkills.value.find(s => s.id === id))
+    .filter(Boolean)
 })
 
-// 頂置的浮到最上方（只影響排序，仍遵循篩選條件）
 const displaySkills = computed(() => {
   if (pinnedInView.value.length === 0) return filteredSkills.value
   const rest = filteredSkills.value.filter((s) => !pinnedStore.isPinned(s.id))
   return [...pinnedInView.value, ...rest]
 })
 
-// 調整頂置順序：與「畫面上可見的鄰居」交換，篩選中被隱藏的頂置卡不參與
 const onMovePinned = (skill, delta) => {
   const visible = pinnedInView.value
   const index = visible.findIndex((s) => s.id === skill.id)
@@ -202,7 +192,6 @@ const onMovePinned = (skill, delta) => {
   pinnedStore.swapPins(skill.id, target.id)
 }
 
-// 解除全部頂置：直接執行，靠 toast 的「復原」防誤觸
 const unpinAll = () => {
   const backup = [...pinnedStore.pinnedIds]
   pinnedStore.clearPins()
@@ -228,13 +217,13 @@ const unpinAll = () => {
           <Search class="search-icon" :size="20" />
           <input
             type="text"
-            v-model="searchQuery"
+            v-model="filters.search"
             :placeholder="t('ui.dict.searchPlaceholder')"
             class="search-input"
           />
           <button
-            v-if="searchQuery"
-            @click="searchQuery = ''"
+            v-if="filters.search"
+            @click="filters.search = ''"
             class="btn btn-icon-rounded clear-search"
             :aria-label="t('ui.dict.clearSearch')"
           >
@@ -261,35 +250,35 @@ const unpinAll = () => {
         </div>
         <div class="filter-grid">
           <IconSelect
-            v-model="selectedSchool"
+            v-model="filters.school"
             :options="schoolOptions"
             :placeholder="t('ui.dict.schoolAll')"
             category="school"
             disabled
           />
           <IconSelect
-            v-model="selectedSubject"
+            v-model="filters.subject"
             :options="subjectOptions"
             :placeholder="t('ui.dict.subjectAll')"
             category="subject"
           />
           <IconSelect
-            :modelValue="selectedBaseSkill"
+            :modelValue="filters.baseSkill"
             @update:modelValue="onBaseSkillChange"
             :options="baseSkillOptions"
             :placeholder="t('ui.dict.baseSkill')"
             category="skill"
           />
           <IconSelect
-            v-model="selectedEnchant"
+            v-model="filters.enchant"
             :options="enchants"
             :placeholder="t('ui.dict.enchant')"
-            :disabled="!selectedBaseSkill || enchants.length === 0"
+            :disabled="!filters.baseSkill || enchants.length === 0"
           />
         </div>
         <div class="filter-options">
           <label class="checkbox-label">
-            <input type="checkbox" v-model="onlyUltimate" />
+            <input type="checkbox" v-model="filters.ultimate" />
             <span class="checkbox-text">{{ t('ui.dict.onlyUltimate') }}</span>
           </label>
         </div>
@@ -302,7 +291,7 @@ const unpinAll = () => {
             v-for="chip in activeChips"
             :key="chip.key"
             class="filter-chip"
-            @click="chip.clear"
+            @click="removeFilter(chip.key)"
             :aria-label="t('ui.dict.removeFilter').replace('{0}', chip.label)"
           >
             <GameIcon
@@ -322,7 +311,7 @@ const unpinAll = () => {
       <EmptyState
         v-if="filteredSkills.length === 0"
         :text="t('ui.dict.noResults')"
-        :showAction="hasActiveFilters || searchQuery"
+        :showAction="hasActiveFilters || filters.search"
         :actionText="t('ui.resetSearchAndFilter')"
         @action="resetAll"
       >
@@ -586,8 +575,6 @@ const unpinAll = () => {
   flex-direction: column;
   gap: 16px;
 }
-
-
 
 @media (min-width: 768px) {
   .skill-list {
