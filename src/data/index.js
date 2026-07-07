@@ -1,5 +1,7 @@
 import skillsData from './skills.json'
 import zhTW from './zh-TW.json'
+import zhCN from './zh-CN.json'
+import en from './en.json'
 
 export { skillsData }
 
@@ -10,7 +12,12 @@ const subjectsMap = new Set()
 const basesMap = new Set()
 const enchantsByBase = new Map() // baseName -> Set(enchantName)
 
-const t = (key) => zhTW[key] || key
+const t_tw = (key) => zhTW[key] || key
+const t_cn = (key) => zhCN[key] || key
+const t_en = (key) => en[key] || key
+
+// Provide a default t for sorting options (fallback to tw)
+const t = t_tw
 
 const collectPart = (part) => {
   if (!part?.name) return
@@ -25,16 +32,25 @@ const collectPart = (part) => {
   }
 }
 
-// 預組搜尋字串：包含英文 Key 與翻譯後的中文名稱
+// 預組搜尋字串：包含所有語系翻譯與英文 Key (全語系混合搜尋)
 skillsData.forEach((s) => {
-  const parts = [
-    s.name, t(s.name),
-    s.mainSkill?.name, t(s.mainSkill?.name),
-    s.mainSkill?.enchant, t(s.mainSkill?.enchant),
-    s.subSkill?.name, t(s.subSkill?.name),
-    s.subSkill?.enchant, t(s.subSkill?.enchant),
-  ]
-  s.searchText = parts
+  const parts = new Set()
+  
+  const addParts = (key) => {
+    if (!key) return
+    parts.add(key)
+    parts.add(t_tw(key))
+    parts.add(t_cn(key))
+    parts.add(t_en(key))
+  }
+
+  addParts(s.name)
+  addParts(s.mainSkill?.name)
+  addParts(s.mainSkill?.enchant)
+  addParts(s.subSkill?.name)
+  addParts(s.subSkill?.enchant)
+
+  s.searchText = Array.from(parts)
     .filter(Boolean)
     .join('\n')
     .toLowerCase()

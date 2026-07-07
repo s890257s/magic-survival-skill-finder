@@ -15,7 +15,7 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: '請選擇',
+    default: 'ui.select.placeholder',
   },
   disabled: {
     type: Boolean,
@@ -133,7 +133,7 @@ onBeforeUnmount(close)
         :size="22"
       />
       <span class="trigger-label" :class="{ 'is-placeholder': !modelValue }">
-        {{ selectedLabel || placeholder }}
+        {{ selectedLabel || t(placeholder) }}
       </span>
       <ChevronDown class="select-icon" :class="{ flipped: isOpen }" :size="18" />
     </button>
@@ -149,7 +149,7 @@ onBeforeUnmount(close)
               ref="searchInputRef"
               type="text"
               v-model="searchQuery"
-              placeholder="搜尋選項..."
+              :placeholder="t('ui.select.search')"
               class="search-input"
               @keydown.enter.prevent
             />
@@ -164,7 +164,7 @@ onBeforeUnmount(close)
                 :aria-selected="!modelValue"
                 @click="select('')"
               >
-                <span class="option-label muted">{{ placeholder }}</span>
+                <span class="option-label muted">{{ t(placeholder) }}</span>
                 <Check v-if="!modelValue" :size="16" class="check" />
               </button>
             </li>

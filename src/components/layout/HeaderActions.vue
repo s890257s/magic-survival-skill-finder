@@ -28,7 +28,9 @@ defineProps({
 }
 
 .compact .toggle {
-  width: 40px;
-  height: 40px;
+  min-width: 40px !important;
+  width: auto !important;
+  height: 40px !important;
+  padding: 0 8px !important;
 }
 </style>

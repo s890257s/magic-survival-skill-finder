@@ -16,32 +16,32 @@ const favoriteSkills = computed(() => favoritesStore.favoriteSkills)
 const conflicts = computed(() => favoritesStore.conflicts)
 
 const buildExportText = () => {
-  let exportText = '【Magic Survival 我的配裝】\n\n'
+  let exportText = `${t('ui.builder.exportHeader')}\n\n`
   favoriteSkills.value.forEach((skill, index) => {
     exportText += `${index + 1}. ${t(skill.name)}\n`
-    exportText += `   - 主: ${t(skill.mainSkill.name)} ${skill.mainSkill.enchant ? `(${t(skill.mainSkill.enchant)})` : ''}\n`
-    exportText += `   - 副: ${t(skill.subSkill.name)} ${skill.subSkill.enchant ? `(${t(skill.subSkill.enchant)})` : ''}\n`
+    exportText += `   - ${t('ui.builder.exportMain')}: ${t(skill.mainSkill.name)} ${skill.mainSkill.enchant ? `(${t(skill.mainSkill.enchant)})` : ''}\n`
+    exportText += `   - ${t('ui.builder.exportSub')}: ${t(skill.subSkill.name)} ${skill.subSkill.enchant ? `(${t(skill.subSkill.enchant)})` : ''}\n`
     if (skill.requirements?.ultimate) {
-      exportText += `   - 終極: ${t(skill.requirements.ultimate)}\n`
+      exportText += `   - ${t('ui.builder.exportUltimate')}: ${t(skill.requirements.ultimate)}\n`
     }
     if (skill.requirements?.school) {
-      exportText += `   - 學派: ${t(skill.requirements.school)}\n`
+      exportText += `   - ${t('ui.builder.exportSchool')}: ${t(skill.requirements.school)}\n`
     }
     if (skill.requirements?.subject) {
-      exportText += `   - 實驗體: ${t(skill.requirements.subject)}\n`
+      exportText += `   - ${t('ui.builder.exportSubject')}: ${t(skill.requirements.subject)}\n`
     }
     exportText += '\n'
   })
 
   if (conflicts.value.size > 0) {
-    exportText += '⚠️ 注意：目前配裝存在基礎技能衝突！\n'
+    exportText += `${t('ui.builder.exportConflict')}\n`
   }
   return exportText
 }
 
 const exportBuild = async () => {
   if (favoriteSkills.value.length === 0) {
-    toastStore.showToast('配裝清單為空，無法匯出', 'warning')
+    toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
     return
   }
 
@@ -50,7 +50,7 @@ const exportBuild = async () => {
   // 手機優先走系統分享面板
   if (navigator.share) {
     try {
-      await navigator.share({ title: 'Magic Survival 我的配裝', text: exportText })
+      await navigator.share({ title: t('ui.builder.title'), text: exportText })
       return
     } catch (err) {
       if (err.name === 'AbortError') return // 使用者取消分享
@@ -60,18 +60,18 @@ const exportBuild = async () => {
 
   try {
     await navigator.clipboard.writeText(exportText)
-    toastStore.showToast('配裝已複製到剪貼簿！', 'success')
+    toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
   } catch {
-    toastStore.showToast('複製失敗，請手動選取複製', 'warning')
+    toastStore.showToast(t('ui.builder.exportFail'), 'warning')
   }
 }
 
 const clearAll = () => {
   const backup = [...favoritesStore.favoriteIds]
   favoritesStore.clearFavorites()
-  toastStore.showToast('已清空配裝', 'info', {
+  toastStore.showToast(t('ui.builder.clearedMsg'), 'info', {
     duration: 6000,
-    actionLabel: '復原',
+    actionLabel: t('ui.restore'),
     onAction: () => favoritesStore.setFavorites(backup),
   })
 }
@@ -82,7 +82,7 @@ const clearAll = () => {
     <header class="builder-header">
       <div class="header-content">
         <div class="title-area">
-          <h2>我的配裝</h2>
+          <h2>{{ t('ui.builder.title') }}</h2>
           <span
             v-if="favoritesStore.count > 0"
             class="slot-count"
@@ -93,21 +93,21 @@ const clearAll = () => {
         </div>
         <div class="header-actions">
           <button @click="clearAll" class="action-btn text-btn" v-if="favoriteSkills.length > 0">
-            <Trash2 :size="18" /> 清空
+            <Trash2 :size="18" /> <span class="btn-text">{{ t('ui.builder.clear') }}</span>
           </button>
           <button @click="exportBuild" class="action-btn primary-btn">
-            <Share2 :size="18" /> 匯出
+            <Share2 :size="18" /> <span class="btn-text">{{ t('ui.builder.export') }}</span>
           </button>
           <HeaderActions compact />
         </div>
       </div>
       <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
         <Layers :size="20" />
-        <span>超過遊戲常規上限（{{ favoritesStore.maxSlots }} 個），實戰時記得取捨喔。</span>
+        <span>{{ t('ui.builder.limitWarning').replace('{0}', favoritesStore.maxSlots) }}</span>
       </div>
       <div v-if="conflicts.size > 0" class="banner conflict-banner">
         <AlertTriangle :size="20" />
-        <span>檢測到基礎技能被重複使用，衝突技能已標記紅框。</span>
+        <span>{{ t('ui.builder.conflictWarning') }}</span>
       </div>
     </header>
 
@@ -116,8 +116,8 @@ const clearAll = () => {
         <div class="empty-icon-wrap">
           <BookOpen :size="48" />
         </div>
-        <p>尚未添加任何技能到配裝中</p>
-        <RouterLink to="/" class="go-dictionary-btn">前往圖鑑添加</RouterLink>
+        <p>{{ t('ui.builder.empty') }}</p>
+        <RouterLink to="/" class="go-dictionary-btn">{{ t('ui.builder.goDictionary') }}</RouterLink>
       </div>
 
       <TransitionGroup v-else tag="div" name="card-move" class="skill-grid">
@@ -161,7 +161,8 @@ const clearAll = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .title-area {
@@ -197,6 +198,7 @@ const clearAll = () => {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .action-btn {
@@ -329,6 +331,15 @@ const clearAll = () => {
 
   .card-move-leave-active {
     width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-text {
+    display: none;
+  }
+  .action-btn {
+    padding: 8px;
   }
 }
 </style>

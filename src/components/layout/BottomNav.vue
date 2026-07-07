@@ -2,15 +2,17 @@
 import { RouterLink } from 'vue-router'
 import { BookOpen, Wrench } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
+import { useI18n } from '@/composables/useI18n'
 
 const favoritesStore = useFavoritesStore()
+const { t } = useI18n()
 </script>
 
 <template>
   <nav class="bottom-nav">
     <RouterLink to="/" class="nav-item">
       <BookOpen class="nav-icon" :size="24" />
-      <span>圖鑑</span>
+      <span>{{ t('ui.nav.dictionary') }}</span>
     </RouterLink>
     <RouterLink to="/builder" class="nav-item">
       <div class="icon-wrap">
@@ -25,7 +27,7 @@ const favoritesStore = useFavoritesStore()
           </span>
         </Transition>
       </div>
-      <span>配裝</span>
+      <span>{{ t('ui.nav.builder') }}</span>
     </RouterLink>
   </nav>
 </template>

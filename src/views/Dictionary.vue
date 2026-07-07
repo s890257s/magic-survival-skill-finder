@@ -94,7 +94,7 @@ const activeChips = computed(() => {
   if (selectedSchool.value) {
     chips.push({
       key: 'school',
-      label: `學派：${t(selectedSchool.value)}`,
+      label: t('ui.chip.school').replace('{0}', t(selectedSchool.value)),
       icon: { name: selectedSchool.value, category: 'school' },
       clear: () => (selectedSchool.value = ''),
     })
@@ -102,7 +102,7 @@ const activeChips = computed(() => {
   if (selectedSubject.value) {
     chips.push({
       key: 'subject',
-      label: `實驗體：${t(selectedSubject.value)}`,
+      label: t('ui.chip.subject').replace('{0}', t(selectedSubject.value)),
       icon: { name: selectedSubject.value, category: 'subject' },
       clear: () => (selectedSubject.value = ''),
     })
@@ -110,7 +110,7 @@ const activeChips = computed(() => {
   if (selectedBaseSkill.value) {
     chips.push({
       key: 'base',
-      label: `技能：${t(selectedBaseSkill.value)}`,
+      label: t('ui.chip.base').replace('{0}', t(selectedBaseSkill.value)),
       icon: { name: selectedBaseSkill.value, category: 'skill' },
       clear: () => {
         selectedBaseSkill.value = ''
@@ -121,7 +121,7 @@ const activeChips = computed(() => {
   if (selectedEnchant.value) {
     chips.push({
       key: 'enchant',
-      label: `附魔：${t(selectedEnchant.value)}`,
+      label: t('ui.chip.enchant').replace('{0}', t(selectedEnchant.value)),
       icon: null,
       clear: () => (selectedEnchant.value = ''),
     })
@@ -129,7 +129,7 @@ const activeChips = computed(() => {
   if (onlyUltimate.value) {
     chips.push({
       key: 'ultimate',
-      label: '僅顯示終極技能',
+      label: t('ui.dict.onlyUltimate'),
       icon: null,
       clear: () => (onlyUltimate.value = false),
     })
@@ -205,9 +205,9 @@ const onMovePinned = (skill, delta) => {
 const unpinAll = () => {
   const backup = [...pinnedStore.pinnedIds]
   pinnedStore.clearPins()
-  toastStore.showToast('已解除全部頂置', 'info', {
+  toastStore.showToast(t('ui.dict.unpinnedAllMsg'), 'info', {
     duration: 6000,
-    actionLabel: '復原',
+    actionLabel: t('ui.restore'),
     onAction: () => pinnedStore.setPins(backup),
   })
 }
@@ -218,7 +218,7 @@ const unpinAll = () => {
     <header class="header">
       <div class="app-header">
         <h1 class="app-title">
-          Magic Survival 魔法生存戰
+          {{ t('ui.magicSurvival') }}
           <span class="version-tag">v{{ gameVersion }}</span>
         </h1>
       </div>
@@ -228,14 +228,14 @@ const unpinAll = () => {
           <input
             type="text"
             v-model="searchQuery"
-            placeholder="搜尋融合或基礎技能名稱 (中/英文)..."
+            :placeholder="t('ui.dict.searchPlaceholder')"
             class="search-input"
           />
           <button
             v-if="searchQuery"
             @click="searchQuery = ''"
             class="clear-search"
-            aria-label="清除搜尋"
+            :aria-label="t('ui.dict.clearSearch')"
           >
             <X :size="18" />
           </button>
@@ -244,7 +244,7 @@ const unpinAll = () => {
           class="filter-toggle"
           @click="isFilterOpen = !isFilterOpen"
           :class="{ active: isFilterOpen || hasActiveFilters }"
-          aria-label="進階篩選"
+          :aria-label="t('ui.dict.advancedFilter')"
           :aria-expanded="isFilterOpen"
         >
           <Filter :size="20" />
@@ -255,54 +255,54 @@ const unpinAll = () => {
 
       <div class="filter-panel" :class="{ 'is-open': isFilterOpen }">
         <div class="filter-header">
-          <h3>進階篩選</h3>
-          <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">清除全部</button>
+          <h3>{{ t('ui.dict.advancedFilter') }}</h3>
+          <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">{{ t('ui.clearAll') }}</button>
         </div>
         <div class="filter-grid">
           <IconSelect
             v-model="selectedSchool"
             :options="schoolOptions"
-            placeholder="所有學派(目前版本沒有差異)"
+            :placeholder="t('ui.dict.schoolAll')"
             category="school"
             disabled
           />
           <IconSelect
             v-model="selectedSubject"
             :options="subjectOptions"
-            placeholder="所有實驗體"
+            :placeholder="t('ui.dict.subjectAll')"
             category="subject"
           />
           <IconSelect
             :modelValue="selectedBaseSkill"
             @update:modelValue="onBaseSkillChange"
             :options="baseSkillOptions"
-            placeholder="基礎技能"
+            :placeholder="t('ui.dict.baseSkill')"
             category="skill"
           />
           <IconSelect
             v-model="selectedEnchant"
             :options="enchants"
-            placeholder="指定附魔"
+            :placeholder="t('ui.dict.enchant')"
             :disabled="!selectedBaseSkill || enchants.length === 0"
           />
         </div>
         <div class="filter-options">
           <label class="checkbox-label">
             <input type="checkbox" v-model="onlyUltimate" />
-            <span class="checkbox-text">僅顯示終極技能</span>
+            <span class="checkbox-text">{{ t('ui.dict.onlyUltimate') }}</span>
           </label>
         </div>
       </div>
 
       <div class="result-bar">
-        <span class="result-count">符合 {{ filteredSkills.length }} 筆</span>
+        <span class="result-count">{{ t('ui.dict.resultCount').replace('{0}', filteredSkills.length) }}</span>
         <div v-if="activeChips.length > 0" class="chip-list">
           <button
             v-for="chip in activeChips"
             :key="chip.key"
             class="filter-chip"
             @click="chip.clear"
-            :aria-label="`移除篩選 ${chip.label}`"
+            :aria-label="t('ui.dict.removeFilter').replace('{0}', chip.label)"
           >
             <GameIcon
               v-if="chip.icon"
@@ -322,18 +322,18 @@ const unpinAll = () => {
         <div class="empty-icon-wrap">
           <Search :size="48" />
         </div>
-        <p>找不到符合條件的技能</p>
+        <p>{{ t('ui.dict.noResults') }}</p>
         <button v-if="hasActiveFilters || searchQuery" class="reset-btn" @click="resetAll">
-          清除搜尋與篩選
+          {{ t('ui.resetSearchAndFilter') }}
         </button>
       </div>
       <template v-else>
         <div v-if="pinnedInView.length > 0" class="pinned-bar">
           <span class="pinned-info">
             <Pin :size="14" />
-            已頂置 {{ pinnedStore.pinnedIds.length }} 個技能
+            {{ t('ui.dict.pinnedCount').replace('{0}', pinnedStore.pinnedIds.length) }}
           </span>
-          <button class="unpin-all-btn" @click="unpinAll">全部解除</button>
+          <button class="unpin-all-btn" @click="unpinAll">{{ t('ui.dict.unpinAll') }}</button>
         </div>
         <TransitionGroup tag="div" name="card-move" class="skill-list">
           <SkillCard

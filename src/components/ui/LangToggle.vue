@@ -27,7 +27,8 @@ const { locale } = useI18n()
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 64px;
+  padding: 0 12px;
+  min-width: 64px;
   height: 48px;
   flex-shrink: 0;
   border-radius: 12px;

@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import zhTW from '@/data/zh-TW.json'
 import zhCN from '@/data/zh-CN.json'
+import en from '@/data/en.json'
 
 const LOCALE_KEY = 'app_locale'
 // 全域狀態，確保切換時所有元件一起響應
@@ -14,7 +15,7 @@ export function useI18n() {
 
   const t = (key) => {
     if (!key) return ''
-    if (currentLocale.value === 'en') return key
+    if (currentLocale.value === 'en') return en[key] || key
     if (currentLocale.value === 'zh-CN') return zhCN[key] || key
     return zhTW[key] || key
   }
