@@ -448,4 +448,14 @@ const clearAll = () => {
   justify-content: center;
   gap: 12px;
 }
+
+@media (max-width: 640px) {
+  .btn-text-content {
+    display: none;
+  }
+  .action-btn {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
 </style>
