@@ -7,7 +7,7 @@ const themeStore = useThemeStore()
 
 <template>
   <button
-    class="theme-toggle"
+    class="glass-icon-btn theme-toggle"
     @click="themeStore.toggleTheme"
     :aria-label="themeStore.theme === 'dark' ? '切換至淺色模式' : '切換至深色模式'"
   >
@@ -19,26 +19,6 @@ const themeStore = useThemeStore()
 </template>
 
 <style scoped>
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.theme-toggle:hover {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-}
-
 .icon-swap-enter-active,
 .icon-swap-leave-active {
   transition:

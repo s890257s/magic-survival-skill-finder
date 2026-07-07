@@ -1,13 +1,13 @@
 <script setup>
-import { computed, ref, onBeforeUnmount } from 'vue'
+import { computed, ref } from 'vue'
 import { Globe, Check } from '@lucide/vue'
+import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
 
 const { locale, setLocale } = useI18n()
 
 const isOpen = ref(false)
 const triggerRef = ref(null)
-const panelRef = ref(null)
 
 const options = [
   { value: 'zh-TW', label: '繁體中文' },
@@ -22,20 +22,6 @@ const currentLabel = computed(() => {
 
 const close = () => {
   isOpen.value = false
-  window.removeEventListener('scroll', onScroll, true)
-  window.removeEventListener('resize', close)
-  document.removeEventListener('keydown', onKeydown)
-}
-
-const onScroll = (e) => {
-  if (panelRef.value && (e.target === panelRef.value || panelRef.value.contains(e.target))) {
-    return
-  }
-  close()
-}
-
-const onKeydown = (e) => {
-  if (e.key === 'Escape') close()
 }
 
 const toggle = () => {
@@ -44,17 +30,12 @@ const toggle = () => {
     return
   }
   isOpen.value = true
-  window.addEventListener('scroll', onScroll, true)
-  window.addEventListener('resize', close)
-  document.addEventListener('keydown', onKeydown)
 }
 
 const select = (value) => {
   setLocale(value)
   close()
 }
-
-onBeforeUnmount(close)
 </script>
 
 <template>
@@ -62,7 +43,7 @@ onBeforeUnmount(close)
     <button
       ref="triggerRef"
       type="button"
-      class="locale-toggle"
+      class="glass-icon-btn locale-toggle"
       :class="{ 'is-open': isOpen }"
       @click="toggle"
       :aria-label="`切換語系，目前為 ${locale}`"
@@ -71,35 +52,29 @@ onBeforeUnmount(close)
       <span class="locale-text">{{ currentLabel }}</span>
     </button>
 
-    <Teleport to="body">
-      <div v-if="isOpen" class="dropdown-backdrop" @click="close"></div>
-      <Transition name="panel-fade">
-        <div 
-          ref="panelRef" 
-          v-if="isOpen" 
-          class="dropdown-panel"
-          :style="{ 
-            position: 'absolute',
-            top: triggerRef?.getBoundingClientRect().bottom + 8 + 'px',
-            left: triggerRef?.getBoundingClientRect().left - 40 + 'px'
-          }"
-        >
-          <ul class="options-list">
-            <li v-for="opt in options" :key="opt.value">
-              <button
-                type="button"
-                class="option"
-                :class="{ selected: opt.value === locale }"
-                @click="select(opt.value)"
-              >
-                <span class="option-label">{{ opt.label }}</span>
-                <Check v-if="opt.value === locale" :size="16" class="check" />
-              </button>
-            </li>
-          </ul>
-        </div>
-      </Transition>
-    </Teleport>
+    <DropdownPanel
+      :isOpen="isOpen"
+      @close="close"
+      :style="{ 
+        position: 'absolute',
+        top: triggerRef?.getBoundingClientRect().bottom + 8 + 'px',
+        left: triggerRef?.getBoundingClientRect().left - 40 + 'px'
+      }"
+    >
+      <ul class="options-list">
+        <li v-for="opt in options" :key="opt.value">
+          <button
+            type="button"
+            class="option"
+            :class="{ selected: opt.value === locale }"
+            @click="select(opt.value)"
+          >
+            <span class="option-label">{{ opt.label }}</span>
+            <Check v-if="opt.value === locale" :size="16" class="check" />
+          </button>
+        </li>
+      </ul>
+    </DropdownPanel>
   </div>
 </template>
 
@@ -108,32 +83,11 @@ onBeforeUnmount(close)
   position: relative;
 }
 
-.locale-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 0 12px;
-  min-width: 64px;
-  height: 48px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
 .locale-toggle.is-open {
   border-color: var(--accent-cyan);
   box-shadow: 0 0 0 2px var(--accent-cyan-glow);
 }
 
-.locale-toggle:hover {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-}
 
 .locale-text {
   font-size: 0.8rem;
@@ -141,24 +95,7 @@ onBeforeUnmount(close)
   line-height: 1;
 }
 
-.dropdown-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1500;
-  background: transparent;
-}
 
-.dropdown-panel {
-  z-index: 1600;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-strong);
-  padding: 6px;
-  min-width: 120px;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
 
 .options-list {
   list-style: none;
@@ -202,14 +139,5 @@ onBeforeUnmount(close)
   flex-shrink: 0;
 }
 
-.panel-fade-enter-active,
-.panel-fade-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
 
-.panel-fade-enter-from,
-.panel-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
 </style>

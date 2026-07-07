@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref, onBeforeUnmount, nextTick } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import { ChevronDown, Check, Search } from '@lucide/vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
+import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -34,7 +35,6 @@ const { t } = useI18n()
 const isOpen = ref(false)
 const triggerRef = ref(null)
 const panelStyle = ref({})
-const panelRef = ref(null)
 
 const searchQuery = ref('')
 const searchInputRef = ref(null)
@@ -72,20 +72,6 @@ const filteredOptions = computed(() => {
 const close = () => {
   isOpen.value = false
   searchQuery.value = ''
-  window.removeEventListener('scroll', onScroll, true)
-  window.removeEventListener('resize', close)
-  document.removeEventListener('keydown', onKeydown)
-}
-
-const onScroll = (e) => {
-  if (panelRef.value && (e.target === panelRef.value || panelRef.value.contains(e.target))) {
-    return
-  }
-  close()
-}
-
-const onKeydown = (e) => {
-  if (e.key === 'Escape') close()
 }
 
 const toggle = async () => {
@@ -96,9 +82,6 @@ const toggle = async () => {
   }
   positionPanel()
   isOpen.value = true
-  window.addEventListener('scroll', onScroll, true)
-  window.addEventListener('resize', close)
-  document.addEventListener('keydown', onKeydown)
 
   await nextTick()
   if (searchInputRef.value) {
@@ -110,8 +93,6 @@ const select = (value) => {
   emit('update:modelValue', value)
   close()
 }
-
-onBeforeUnmount(close)
 </script>
 
 <template>
@@ -138,61 +119,59 @@ onBeforeUnmount(close)
       <ChevronDown class="select-icon" :class="{ flipped: isOpen }" :size="18" />
     </button>
 
-    <Teleport to="body">
-      <!-- 點擊面板外任意處關閉 -->
-      <div v-if="isOpen" class="select-backdrop" @click="close"></div>
-      <Transition name="panel-fade">
-        <div ref="panelRef" v-if="isOpen" class="select-panel" :style="panelStyle" role="listbox">
-          <div class="search-box" v-if="options.length > 5">
-            <Search class="search-icon" :size="16" />
-            <input
-              ref="searchInputRef"
-              type="text"
-              v-model="searchQuery"
-              :placeholder="t('ui.select.search')"
-              class="search-input"
-              @keydown.enter.prevent
+    <DropdownPanel
+      :isOpen="isOpen"
+      @close="close"
+      :style="panelStyle"
+    >
+      <div class="search-box" v-if="options.length > 5">
+        <Search class="search-icon" :size="16" />
+        <input
+          ref="searchInputRef"
+          type="text"
+          v-model="searchQuery"
+          :placeholder="t('ui.select.search')"
+          class="search-input"
+          @keydown.enter.prevent
+        />
+      </div>
+      <ul class="options-list">
+        <li>
+          <button
+            type="button"
+            class="option"
+            :class="{ selected: !modelValue }"
+            role="option"
+            :aria-selected="!modelValue"
+            @click="select('')"
+          >
+            <span class="option-label muted">{{ t(placeholder) }}</span>
+            <Check v-if="!modelValue" :size="16" class="check" />
+          </button>
+        </li>
+        <li v-for="opt in filteredOptions" :key="opt.value">
+          <button
+            type="button"
+            class="option"
+            :class="{ selected: opt.value === modelValue }"
+            role="option"
+            :aria-selected="opt.value === modelValue"
+            @click="select(opt.value)"
+          >
+            <GameIcon
+              v-if="category"
+              :name="String(opt.value)"
+              :category="category"
+              :size="24"
             />
-          </div>
-          <ul class="options-list">
-            <li>
-              <button
-                type="button"
-                class="option"
-                :class="{ selected: !modelValue }"
-                role="option"
-                :aria-selected="!modelValue"
-                @click="select('')"
-              >
-                <span class="option-label muted">{{ t(placeholder) }}</span>
-                <Check v-if="!modelValue" :size="16" class="check" />
-              </button>
-            </li>
-            <li v-for="opt in filteredOptions" :key="opt.value">
-              <button
-                type="button"
-                class="option"
-                :class="{ selected: opt.value === modelValue }"
-                role="option"
-                :aria-selected="opt.value === modelValue"
-                @click="select(opt.value)"
-              >
-                <GameIcon
-                  v-if="category"
-                  :name="String(opt.value)"
-                  :category="category"
-                  :size="24"
-                />
-                <span class="option-label">
-                  {{ t(opt.label) }}
-                </span>
-                <Check v-if="opt.value === modelValue" :size="16" class="check" />
-              </button>
-            </li>
-          </ul>
-        </div>
-      </Transition>
-    </Teleport>
+            <span class="option-label">
+              {{ t(opt.label) }}
+            </span>
+            <Check v-if="opt.value === modelValue" :size="16" class="check" />
+          </button>
+        </li>
+      </ul>
+    </DropdownPanel>
   </div>
 </template>
 
@@ -257,24 +236,7 @@ onBeforeUnmount(close)
   transform: rotate(180deg);
 }
 
-.select-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1500;
-  background: transparent;
-}
 
-.select-panel {
-  z-index: 1600;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-strong);
-  padding: 6px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
 
 .search-box {
   display: flex;
@@ -367,16 +329,5 @@ onBeforeUnmount(close)
   flex-shrink: 0;
 }
 
-.panel-fade-enter-active,
-.panel-fade-leave-active {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
 
-.panel-fade-enter-from,
-.panel-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
 </style>

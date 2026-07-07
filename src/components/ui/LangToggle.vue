@@ -9,7 +9,7 @@ const { locale } = useI18n()
 
 <template>
   <button
-    class="lang-toggle"
+    class="glass-icon-btn lang-toggle"
     :class="{ active: settingsStore.showEnglish, disabled: locale === 'en' }"
     :disabled="locale === 'en'"
     @click="settingsStore.toggleEnglish"
@@ -22,33 +22,12 @@ const { locale } = useI18n()
 </template>
 
 <style scoped>
-.lang-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 0 12px;
-  min-width: 64px;
-  height: 48px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
 .lang-toggle.active {
   color: var(--accent-cyan);
   border-color: var(--accent-cyan);
   background: var(--accent-cyan-bg);
 }
 
-.lang-toggle:hover:not(:disabled) {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-}
 
 .lang-toggle:disabled {
   opacity: 0.4;

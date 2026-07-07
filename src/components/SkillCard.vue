@@ -143,14 +143,14 @@ const onSubjectClick = (subjectName) => {
       <div class="header-actions">
         <div v-if="reorderable" class="reorder-group">
           <button
-            class="reorder-btn"
+            class="btn btn-icon"
             :disabled="isFirst"
             @click="emit('move', -1)"
             aria-label="上移"
           >
             <ChevronUp :size="18" />
           </button>
-          <button class="reorder-btn" :disabled="isLast" @click="emit('move', 1)" aria-label="下移">
+          <button class="btn btn-icon" :disabled="isLast" @click="emit('move', 1)" aria-label="下移">
             <ChevronDown :size="18" />
           </button>
         </div>
@@ -356,29 +356,7 @@ const onSubjectClick = (subjectName) => {
   gap: 2px;
 }
 
-.reorder-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
-.reorder-btn:hover:not(:disabled) {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan-border);
-}
-
-.reorder-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
 
 .favorite-btn,
 .pin-btn {

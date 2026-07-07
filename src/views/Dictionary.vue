@@ -15,6 +15,7 @@ import { useToastStore } from '@/stores/toast'
 import IconSelect from '@/components/ui/IconSelect.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
 import { useI18n } from '@/composables/useI18n'
 
 const pinnedStore = usePinnedStore()
@@ -234,14 +235,14 @@ const unpinAll = () => {
           <button
             v-if="searchQuery"
             @click="searchQuery = ''"
-            class="clear-search"
+            class="btn btn-icon-rounded clear-search"
             :aria-label="t('ui.dict.clearSearch')"
           >
             <X :size="18" />
           </button>
         </div>
         <button
-          class="filter-toggle"
+          class="btn btn-icon filter-toggle"
           @click="isFilterOpen = !isFilterOpen"
           :class="{ active: isFilterOpen || hasActiveFilters }"
           :aria-label="t('ui.dict.advancedFilter')"
@@ -256,7 +257,7 @@ const unpinAll = () => {
       <div class="filter-panel" :class="{ 'is-open': isFilterOpen }">
         <div class="filter-header">
           <h3>{{ t('ui.dict.advancedFilter') }}</h3>
-          <button v-if="hasActiveFilters" @click="clearFilters" class="clear-btn">{{ t('ui.clearAll') }}</button>
+          <button v-if="hasActiveFilters" @click="clearFilters" class="btn btn-text clear-btn">{{ t('ui.clearAll') }}</button>
         </div>
         <div class="filter-grid">
           <IconSelect
@@ -318,22 +319,24 @@ const unpinAll = () => {
     </header>
 
     <div class="list-area" ref="listTop">
-      <div v-if="filteredSkills.length === 0" class="empty-state">
-        <div class="empty-icon-wrap">
+      <EmptyState
+        v-if="filteredSkills.length === 0"
+        :text="t('ui.dict.noResults')"
+        :showAction="hasActiveFilters || searchQuery"
+        :actionText="t('ui.resetSearchAndFilter')"
+        @action="resetAll"
+      >
+        <template #icon>
           <Search :size="48" />
-        </div>
-        <p>{{ t('ui.dict.noResults') }}</p>
-        <button v-if="hasActiveFilters || searchQuery" class="reset-btn" @click="resetAll">
-          {{ t('ui.resetSearchAndFilter') }}
-        </button>
-      </div>
+        </template>
+      </EmptyState>
       <template v-else>
         <div v-if="pinnedInView.length > 0" class="pinned-bar">
           <span class="pinned-info">
             <Pin :size="14" />
             {{ t('ui.dict.pinnedCount').replace('{0}', pinnedStore.pinnedIds.length) }}
           </span>
-          <button class="unpin-all-btn" @click="unpinAll">{{ t('ui.dict.unpinAll') }}</button>
+          <button class="btn btn-danger-text unpin-all-btn" @click="unpinAll">{{ t('ui.dict.unpinAll') }}</button>
         </div>
         <TransitionGroup tag="div" name="card-move" class="skill-list">
           <SkillCard
@@ -366,7 +369,7 @@ const unpinAll = () => {
 .header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-header);
   background: var(--bg-dark);
   padding: 16px;
   border-bottom: 1px solid var(--glass-border);
@@ -439,21 +442,6 @@ const unpinAll = () => {
 .clear-search {
   position: absolute;
   right: 12px;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.clear-search:hover {
-  color: var(--text-primary);
-  background: var(--glass-border);
 }
 
 .search-input:focus {
@@ -463,18 +451,8 @@ const unpinAll = () => {
 
 .filter-toggle {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 48px;
   height: 48px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .filter-toggle.active {
@@ -524,15 +502,8 @@ const unpinAll = () => {
 }
 
 .clear-btn {
-  background: none;
-  border: none;
-  color: var(--accent-purple);
   font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background 0.2s ease;
+  color: var(--accent-purple);
 }
 
 .clear-btn:hover {
@@ -606,21 +577,7 @@ const unpinAll = () => {
 }
 
 .unpin-all-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
   font-size: 0.8rem;
-  font-weight: 600;
-  font-family: var(--font-body);
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.unpin-all-btn:hover {
-  color: var(--danger);
-  background: var(--danger-bg);
 }
 
 .skill-list {
@@ -630,53 +587,7 @@ const unpinAll = () => {
   gap: 16px;
 }
 
-/* 頂置/取消頂置時卡片平滑移動（FLIP） */
-.card-move-move {
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-/* 搜尋/篩選屬大量增刪，離場即時移除（覆蓋 .skill-card 的 transition: all，
-   否則 Vue 會等它跑完才移除節點，造成殘影） */
-.card-move-leave-active {
-  transition: none;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: var(--text-muted);
-  gap: 16px;
-}
-
-.empty-icon-wrap {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--bg-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--card-shadow);
-}
-
-.reset-btn {
-  padding: 10px 24px;
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-  border: 1px solid var(--accent-cyan-border);
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.reset-btn:hover {
-  background: var(--accent-cyan-bg-strong);
-}
 
 @media (min-width: 768px) {
   .skill-list {

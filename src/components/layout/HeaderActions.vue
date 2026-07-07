@@ -27,10 +27,11 @@ defineProps({
   gap: 8px;
 }
 
-.compact .toggle {
+.compact .toggle,
+.compact :deep(.locale-toggle) {
   min-width: 40px !important;
-  width: auto !important;
+  width: 40px !important;
   height: 40px !important;
-  padding: 0 8px !important;
+  padding: 0 !important;
 }
 </style>

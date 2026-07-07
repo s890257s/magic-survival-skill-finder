@@ -27,6 +27,13 @@
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.55); /* ≥ 4.5:1 對比（WCAG AA） */
 
+  /* Z-index */
+  --z-header: 100;
+  --z-bottom-nav: 1000;
+  --z-dropdown-backdrop: 1500;
+  --z-dropdown: 1600;
+  --z-toast: 2000;
+
   /* Glassmorphism Variables */
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
@@ -142,3 +149,158 @@ textarea {
   /* BottomNav 高度 + 瀏海機的 home indicator 區 */
   padding-bottom: calc(70px + env(safe-area-inset-bottom));
 }
+
+/* Shared Glass Icon Button */
+.glass-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.glass-icon-btn:hover:not(:disabled) {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+/* -----------------------------
+   Utility Classes
+----------------------------- */
+
+/* Flexbox */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Glass Panel */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+/* -----------------------------
+   Button System
+----------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  padding: 10px 24px;
+  background: var(--accent-cyan-bg);
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan-border);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-cyan-bg-strong);
+}
+
+.btn-text {
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-text:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.btn-danger-text {
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-danger-text:hover:not(:disabled) {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+}
+
+.btn-icon:hover:not(:disabled) {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan-border);
+}
+
+.btn-icon-rounded {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-icon-rounded:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: var(--glass-border);
+}
+
+/* -----------------------------
+   Global Transitions
+----------------------------- */
+
+/* Card Move (Vue TransitionGroup) */
+.card-move-move {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-move-leave-active {
+  transition: none; /* Default for instant leave, components can override */
+}
+
+/* Panel Fade */
+.panel-fade-enter-active,
+.panel-fade-leave-active {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.panel-fade-enter-from,
+.panel-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+

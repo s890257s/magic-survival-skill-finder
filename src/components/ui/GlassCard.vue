@@ -1,17 +1,13 @@
 <script setup></script>
 
 <template>
-  <div class="glass-card">
+  <div class="glass-card glass-panel">
     <slot></slot>
   </div>
 </template>
 
 <style scoped>
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 20px;
   box-shadow: var(--card-shadow);

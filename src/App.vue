@@ -72,7 +72,7 @@ const handleAction = (toast) => {
   bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2000;
+  z-index: var(--z-toast, 2000);
   display: flex;
   flex-direction: column;
   align-items: center;

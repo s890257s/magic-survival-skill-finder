@@ -4,13 +4,15 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import SkillCard from '@/components/SkillCard.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
 import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from '@/composables/useI18n'
 
 const favoritesStore = useFavoritesStore()
 const toastStore = useToastStore()
 const { t } = useI18n()
+const router = useRouter()
 
 const favoriteSkills = computed(() => favoritesStore.favoriteSkills)
 const conflicts = computed(() => favoritesStore.conflicts)
@@ -92,11 +94,11 @@ const clearAll = () => {
           </span>
         </div>
         <div class="header-actions">
-          <button @click="clearAll" class="action-btn text-btn" v-if="favoriteSkills.length > 0">
-            <Trash2 :size="18" /> <span class="btn-text">{{ t('ui.builder.clear') }}</span>
+          <button @click="clearAll" class="btn btn-text action-btn" v-if="favoriteSkills.length > 0">
+            <Trash2 :size="18" /> <span class="btn-text-content">{{ t('ui.builder.clear') }}</span>
           </button>
-          <button @click="exportBuild" class="action-btn primary-btn">
-            <Share2 :size="18" /> <span class="btn-text">{{ t('ui.builder.export') }}</span>
+          <button @click="exportBuild" class="btn btn-primary action-btn">
+            <Share2 :size="18" /> <span class="btn-text-content">{{ t('ui.builder.export') }}</span>
           </button>
           <HeaderActions compact />
         </div>
@@ -112,13 +114,17 @@ const clearAll = () => {
     </header>
 
     <div class="build-content">
-      <div v-if="favoriteSkills.length === 0" class="empty-state">
-        <div class="empty-icon-wrap">
+      <EmptyState
+        v-if="favoriteSkills.length === 0"
+        :text="t('ui.builder.empty')"
+        :showAction="true"
+        :actionText="t('ui.builder.goDictionary')"
+        @action="router.push('/')"
+      >
+        <template #icon>
           <BookOpen :size="48" />
-        </div>
-        <p>{{ t('ui.builder.empty') }}</p>
-        <RouterLink to="/" class="go-dictionary-btn">{{ t('ui.builder.goDictionary') }}</RouterLink>
-      </div>
+        </template>
+      </EmptyState>
 
       <TransitionGroup v-else tag="div" name="card-move" class="skill-grid">
         <SkillCard
@@ -147,7 +153,7 @@ const clearAll = () => {
 .builder-header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-header);
   background: var(--bg-dark);
   padding: 16px;
   border-bottom: 1px solid var(--glass-border);
@@ -202,39 +208,10 @@ const clearAll = () => {
 }
 
 .action-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  height: 40px;
 }
 
-.primary-btn {
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-  border: 1px solid var(--accent-cyan-border);
-}
 
-.primary-btn:hover {
-  background: var(--accent-cyan-bg-strong);
-}
-
-.text-btn {
-  background: transparent;
-  color: var(--text-secondary);
-}
-
-.text-btn:hover {
-  background: var(--surface-hover);
-  color: var(--text-primary);
-}
 
 .banner {
   display: flex;
@@ -263,43 +240,7 @@ const clearAll = () => {
   flex: 1;
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: var(--text-muted);
-  gap: 16px;
-  height: 100%;
-}
 
-.empty-icon-wrap {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--bg-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--card-shadow);
-}
-
-.go-dictionary-btn {
-  margin-top: 8px;
-  padding: 10px 24px;
-  background: var(--accent-purple-bg);
-  color: var(--accent-purple);
-  border: 1px solid var(--accent-purple-border);
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.go-dictionary-btn:hover {
-  background: var(--accent-purple-bg-strong);
-}
 
 .skill-grid {
   display: flex;
@@ -308,20 +249,7 @@ const clearAll = () => {
   position: relative;
 }
 
-.card-move-move {
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-.card-move-leave-active {
-  transition: all 0.25s ease;
-  position: absolute;
-  width: 100%;
-}
-
-.card-move-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
 
 @media (min-width: 768px) {
   .skill-grid {
@@ -335,11 +263,12 @@ const clearAll = () => {
 }
 
 @media (max-width: 480px) {
-  .btn-text {
+  .btn-text-content {
     display: none;
   }
   .action-btn {
-    padding: 8px;
+    padding: 0 8px;
+    min-width: 40px;
   }
 }
 </style>

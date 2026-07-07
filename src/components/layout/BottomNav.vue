@@ -46,7 +46,7 @@ const { t } = useI18n()
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 1000;
+  z-index: var(--z-bottom-nav);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
