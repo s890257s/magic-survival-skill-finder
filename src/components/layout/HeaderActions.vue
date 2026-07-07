@@ -1,6 +1,7 @@
 <script setup>
 import LangToggle from '@/components/ui/LangToggle.vue'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
+import LocaleToggle from '@/components/ui/LocaleToggle.vue'
 
 defineProps({
   // 窄版尺寸（配裝頁 header 空間較擠）
@@ -13,6 +14,7 @@ defineProps({
 
 <template>
   <div class="header-actions-group" :class="{ compact }">
+    <LocaleToggle class="toggle" />
     <LangToggle class="toggle" />
     <ThemeToggle class="toggle" />
   </div>
