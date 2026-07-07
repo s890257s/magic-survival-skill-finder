@@ -40,6 +40,7 @@
   "ui.builder.createNewSave": "➕ Create New Save",
   "ui.builder.saveTarget": "Save Location",
   "ui.builder.saveSuccess": "Build saved successfully!",
+  "ui.builder.saveLimitMsg": "Save limit reached ({0}). Please overwrite an existing save.",
   "ui.builder.clearSavedConfirm": "Are you sure you want to clear all saved builds? This cannot be undone.",
   "ui.builder.goDictionary": "Go to Dictionary",
   "ui.builder.exportHeader": "[Magic Survival Build]",

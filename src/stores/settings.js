@@ -21,7 +21,7 @@ export const useSettingsStore = defineStore('settings', () => {
     localStorage.setItem(STORAGE_KEY, _showEnglish.value)
   }
 
-  return { showEnglish, toggleEnglish, _showEnglish }
+  return { showEnglish, toggleEnglish }
 })
 
 // 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）

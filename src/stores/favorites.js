@@ -1,34 +1,18 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { skillsById } from '@/data'
+import { usePersistedRef } from '@/composables/usePersistedRef'
+import { toggleInArray, swapInArray } from '@/utils/array'
 
 const BASE_SLOTS = 3
+const MAX_SAVED_BUILDS = 10
 
 const baseSkillsOf = (skill) => {
   return [skill.mainSkill?.name, skill.subSkill?.name].filter(Boolean)
 }
 
 export const useFavoritesStore = defineStore('favorites', () => {
-  const favoriteIds = ref([])
-
-  // Load from local storage
-  const stored = localStorage.getItem('favorite_skills')
-  if (stored) {
-    try {
-      favoriteIds.value = JSON.parse(stored)
-    } catch {
-      console.error('Failed to parse favorite_skills from localStorage')
-    }
-  }
-
-  // Save to local storage whenever it changes
-  watch(
-    favoriteIds,
-    (newVal) => {
-      localStorage.setItem('favorite_skills', JSON.stringify(newVal))
-    },
-    { deep: true },
-  )
+  const favoriteIds = usePersistedRef('favorite_skills', [])
 
   const favoriteSkills = computed(() => {
     return favoriteIds.value.map((id) => skillsById.get(id)).filter(Boolean)
@@ -82,24 +66,17 @@ export const useFavoritesStore = defineStore('favorites', () => {
     return hits
   }
 
-  const toggleFavorite = (id) => {
-    const index = favoriteIds.value.indexOf(id)
-    if (index === -1) {
-      favoriteIds.value.push(id)
-    } else {
-      favoriteIds.value.splice(index, 1)
-    }
-  }
+  const toggleFavorite = (id) => toggleInArray(favoriteIds.value, id)
 
   const isFavorite = (id) => favoriteIds.value.includes(id)
 
   // 調整順序：delta 為 -1（上移）或 1（下移）
   const moveFavorite = (id, delta) => {
     const index = favoriteIds.value.indexOf(id)
-    const target = index + delta
-    if (index === -1 || target < 0 || target >= favoriteIds.value.length) return
-    const list = favoriteIds.value
-    ;[list[index], list[target]] = [list[target], list[index]]
+    if (index === -1) return
+    const target = favoriteIds.value[index + delta]
+    if (target === undefined) return
+    swapInArray(favoriteIds.value, id, target)
   }
 
   const setFavorites = (ids) => {
@@ -111,25 +88,9 @@ export const useFavoritesStore = defineStore('favorites', () => {
   }
 
   // --- Saved Builds ---
-  const savedBuilds = ref([])
-  const storedBuilds = localStorage.getItem('saved_builds')
-  if (storedBuilds) {
-    try {
-      savedBuilds.value = JSON.parse(storedBuilds)
-    } catch {
-      console.error('Failed to parse saved_builds from localStorage')
-    }
-  }
+  const savedBuilds = usePersistedRef('saved_builds', [])
 
-  watch(
-    savedBuilds,
-    (newVal) => {
-      localStorage.setItem('saved_builds', JSON.stringify(newVal))
-    },
-    { deep: true },
-  )
-
-  const MAX_SAVED_BUILDS = 10
+  const findBuild = (id) => savedBuilds.value.find((b) => b.id === id)
 
   const saveBuild = (name) => {
     if (savedBuilds.value.length >= MAX_SAVED_BUILDS) return false
@@ -143,7 +104,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
   }
 
   const overwriteBuild = (id) => {
-    const build = savedBuilds.value.find(b => b.id === id)
+    const build = findBuild(id)
     if (build) {
       build.skills = [...favoriteIds.value]
       build.date = Date.now()
@@ -155,7 +116,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
   }
 
   const loadSavedBuild = (id) => {
-    const build = savedBuilds.value.find(b => b.id === id)
+    const build = findBuild(id)
     if (build) {
       setFavorites(build.skills)
     }
@@ -166,7 +127,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
   }
 
   const renameBuild = (id, newName) => {
-    const build = savedBuilds.value.find(b => b.id === id)
+    const build = findBuild(id)
     if (build) {
       build.name = newName
     }

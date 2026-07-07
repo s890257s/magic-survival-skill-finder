@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, reactive } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { Search, Filter, X, Pin } from '@lucide/vue'
 import {
   skillsData,
@@ -17,6 +17,7 @@ import GameIcon from '@/components/ui/GameIcon.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { useI18n } from '@/composables/useI18n'
+import { usePersistedRef } from '@/composables/usePersistedRef'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
@@ -31,14 +32,10 @@ const filters = reactive({
   ultimate: false
 })
 
-const FILTER_PANEL_KEY = 'filter_panel_open'
-const isFilterOpen = ref(localStorage.getItem(FILTER_PANEL_KEY) === 'true')
-watch(isFilterOpen, (val) => localStorage.setItem(FILTER_PANEL_KEY, val))
+const isFilterOpen = usePersistedRef('filter_panel_open', false)
 
 const hasActiveFilters = computed(() => {
-  return (
-    filters.school || filters.subject || filters.baseSkill || filters.ultimate
-  )
+  return Boolean(filters.school || filters.subject || filters.baseSkill || filters.ultimate)
 })
 
 const enchants = computed(() => {
@@ -65,64 +62,47 @@ const resetAll = () => {
 }
 
 const listTop = ref(null)
+const scrollToListTop = () => {
+  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 const onSelectBase = (name) => {
   if (filters.baseSkill !== name) {
     filters.baseSkill = name
     filters.enchant = ''
   }
-  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  scrollToListTop()
 }
 
 const onSelectEnchant = ({ baseName, enchantName }) => {
   filters.baseSkill = baseName
   filters.enchant = enchantName
-  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  scrollToListTop()
 }
 
 const onSelectSubject = (name) => {
   if (filters.subject !== name) {
     filters.subject = name
   }
-  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  scrollToListTop()
 }
 
+// 篩選 chips 設定表：key 對應 filters 欄位，category 為 GameIcon 分類（null 表示無圖示）
+const CHIP_DEFS = [
+  { key: 'school', i18nKey: 'ui.chip.school', category: 'school' },
+  { key: 'subject', i18nKey: 'ui.chip.subject', category: 'subject' },
+  { key: 'baseSkill', i18nKey: 'ui.chip.base', category: 'skill' },
+  { key: 'enchant', i18nKey: 'ui.chip.enchant', category: null },
+]
+
 const activeChips = computed(() => {
-  const chips = []
-  if (filters.school) {
-    chips.push({
-      key: 'school',
-      label: t('ui.chip.school').replace('{0}', t(filters.school)),
-      icon: { name: filters.school, category: 'school' },
-    })
-  }
-  if (filters.subject) {
-    chips.push({
-      key: 'subject',
-      label: t('ui.chip.subject').replace('{0}', t(filters.subject)),
-      icon: { name: filters.subject, category: 'subject' },
-    })
-  }
-  if (filters.baseSkill) {
-    chips.push({
-      key: 'baseSkill',
-      label: t('ui.chip.base').replace('{0}', t(filters.baseSkill)),
-      icon: { name: filters.baseSkill, category: 'skill' },
-    })
-  }
-  if (filters.enchant) {
-    chips.push({
-      key: 'enchant',
-      label: t('ui.chip.enchant').replace('{0}', t(filters.enchant)),
-      icon: null,
-    })
-  }
+  const chips = CHIP_DEFS.filter((def) => filters[def.key]).map((def) => ({
+    key: def.key,
+    label: t(def.i18nKey, t(filters[def.key])),
+    icon: def.category ? { name: filters[def.key], category: def.category } : null,
+  }))
   if (filters.ultimate) {
-    chips.push({
-      key: 'ultimate',
-      label: t('ui.dict.onlyUltimate'),
-      icon: null,
-    })
+    chips.push({ key: 'ultimate', label: t('ui.dict.onlyUltimate'), icon: null })
   }
   return chips
 })
@@ -142,6 +122,7 @@ const filteredSkills = computed(() => {
       const q = filters.search.trim().toLowerCase()
       if (q && !skill.searchText.includes(q)) return false
     }
+    // 學派篩選（暫時停用，見下方 IconSelect 的說明）：無學派需求的技能一律通過
     if (
       filters.school &&
       skill.requirements?.school &&
@@ -195,11 +176,9 @@ const onMovePinned = (skill, delta) => {
 const unpinAll = () => {
   const backup = [...pinnedStore.pinnedIds]
   pinnedStore.clearPins()
-  toastStore.showToast(t('ui.dict.unpinnedAllMsg'), 'info', {
-    duration: 6000,
-    actionLabel: t('ui.restore'),
-    onAction: () => pinnedStore.setPins(backup),
-  })
+  toastStore.showUndoToast(t('ui.dict.unpinnedAllMsg'), t('ui.restore'), () =>
+    pinnedStore.setPins(backup),
+  )
 }
 </script>
 
@@ -249,6 +228,8 @@ const unpinAll = () => {
           <button v-if="hasActiveFilters" @click="clearFilters" class="btn btn-text clear-btn">{{ t('ui.clearAll') }}</button>
         </div>
         <div class="filter-grid">
+          <!-- 學派篩選：等待遊戲學派資料補齊，暫時停用；資料到位後移除 disabled 即可
+               （filteredSkills、activeChips、clearFilters 的 school 邏輯都已就緒） -->
           <IconSelect
             v-model="filters.school"
             :options="schoolOptions"
@@ -285,14 +266,14 @@ const unpinAll = () => {
       </div>
 
       <div class="result-bar">
-        <span class="result-count">{{ t('ui.dict.resultCount').replace('{0}', filteredSkills.length) }}</span>
+        <span class="result-count">{{ t('ui.dict.resultCount', filteredSkills.length) }}</span>
         <div v-if="activeChips.length > 0" class="chip-list">
           <button
             v-for="chip in activeChips"
             :key="chip.key"
             class="filter-chip"
             @click="removeFilter(chip.key)"
-            :aria-label="t('ui.dict.removeFilter').replace('{0}', chip.label)"
+            :aria-label="t('ui.dict.removeFilter', chip.label)"
           >
             <GameIcon
               v-if="chip.icon"
@@ -311,7 +292,7 @@ const unpinAll = () => {
       <EmptyState
         v-if="filteredSkills.length === 0"
         :text="t('ui.dict.noResults')"
-        :showAction="hasActiveFilters || filters.search"
+        :showAction="hasActiveFilters || filters.search !== ''"
         :actionText="t('ui.resetSearchAndFilter')"
         @action="resetAll"
       >
@@ -323,7 +304,7 @@ const unpinAll = () => {
         <div v-if="pinnedInView.length > 0" class="pinned-bar">
           <span class="pinned-info">
             <Pin :size="14" />
-            {{ t('ui.dict.pinnedCount').replace('{0}', pinnedStore.pinnedIds.length) }}
+            {{ t('ui.dict.pinnedCount', pinnedStore.pinnedIds.length) }}
           </span>
           <button class="btn btn-danger-text unpin-all-btn" @click="unpinAll">{{ t('ui.dict.unpinAll') }}</button>
         </div>

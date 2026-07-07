@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   isOpen: {
@@ -20,6 +20,11 @@ const onScroll = (e) => {
   if (panelRef.value && (e.target === panelRef.value || panelRef.value.contains(e.target))) {
     return
   }
+  // 忽略不可捲動容器的假捲動事件（如 overflow:hidden 的篩選面板在焦點移動時觸發）
+  const el = e.target
+  if (el instanceof Element && el.scrollHeight <= el.clientHeight) {
+    return
+  }
   close()
 }
 
@@ -27,20 +32,22 @@ const onKeydown = (e) => {
   if (e.key === 'Escape') close()
 }
 
-// Watch for isOpen changes to bind/unbind events
-import { watch, onBeforeUnmount } from 'vue'
-
-watch(() => props.isOpen, (newVal) => {
-  if (newVal) {
-    window.addEventListener('scroll', onScroll, true)
-    window.addEventListener('resize', close)
-    document.addEventListener('keydown', onKeydown)
-  } else {
-    window.removeEventListener('scroll', onScroll, true)
-    window.removeEventListener('resize', close)
-    document.removeEventListener('keydown', onKeydown)
-  }
-})
+// 開啟期間監聽全域事件（捲動/縮放/Escape 皆關閉面板）
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal) {
+      window.addEventListener('scroll', onScroll, true)
+      window.addEventListener('resize', close)
+      document.addEventListener('keydown', onKeydown)
+    } else {
+      window.removeEventListener('scroll', onScroll, true)
+      window.removeEventListener('resize', close)
+      document.removeEventListener('keydown', onKeydown)
+    }
+  },
+  { immediate: true },
+)
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll, true)

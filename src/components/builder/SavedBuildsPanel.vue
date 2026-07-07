@@ -5,6 +5,7 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import { Save, Trash2, Download } from '@lucide/vue'
 import { useI18n } from '@/composables/useI18n'
 import { skillsById } from '@/data'
+import { formatDate } from '@/utils/format'
 
 const favoritesStore = useFavoritesStore()
 const { t } = useI18n()
@@ -31,10 +32,6 @@ const finishEditingBuild = () => {
     }
     editingBuildId.value = null
   }
-}
-
-const formatDate = (ts) => {
-  return new Date(ts).toLocaleString(undefined, { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
 // Compute the enriched builds array with pre-calculated summary lines

@@ -3,11 +3,17 @@ import { computed, ref } from 'vue'
 import { Globe, Check } from '@lucide/vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
+import { usePanelPosition } from '@/composables/usePanelPosition'
 
 const { locale, setLocale } = useI18n()
 
 const isOpen = ref(false)
 const triggerRef = ref(null)
+// icon 按鈕觸發：面板寬度不對齊、靠右緣展開
+const { panelStyle, positionPanel } = usePanelPosition(triggerRef, {
+  matchWidth: false,
+  align: 'end',
+})
 
 const options = [
   { value: 'zh-TW', label: '繁體中文' },
@@ -29,6 +35,7 @@ const toggle = () => {
     close()
     return
   }
+  positionPanel()
   isOpen.value = true
 }
 
@@ -52,20 +59,12 @@ const select = (value) => {
       <span class="locale-text">{{ currentLabel }}</span>
     </button>
 
-    <DropdownPanel
-      :isOpen="isOpen"
-      @close="close"
-      :style="{ 
-        position: 'absolute',
-        top: triggerRef?.getBoundingClientRect().bottom + 8 + 'px',
-        left: triggerRef?.getBoundingClientRect().left - 40 + 'px'
-      }"
-    >
-      <ul class="options-list">
+    <DropdownPanel :isOpen="isOpen" @close="close" :style="panelStyle">
+      <ul class="dropdown-options">
         <li v-for="opt in options" :key="opt.value">
           <button
             type="button"
-            class="option"
+            class="dropdown-option"
             :class="{ selected: opt.value === locale }"
             @click="select(opt.value)"
           >
@@ -88,56 +87,9 @@ const select = (value) => {
   box-shadow: 0 0 0 2px var(--accent-cyan-glow);
 }
 
-
 .locale-text {
   font-size: 0.8rem;
   font-weight: 700;
   line-height: 1;
 }
-
-
-
-.options-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 12px;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-family: var(--font-body);
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s ease;
-}
-
-.option:hover {
-  background: var(--surface-hover);
-}
-
-.option.selected {
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-}
-
-.option-label {
-  flex: 1;
-  font-weight: 500;
-}
-
-.check {
-  flex-shrink: 0;
-}
-
-
 </style>

@@ -32,6 +32,7 @@
   --z-bottom-nav: 1000;
   --z-dropdown-backdrop: 1500;
   --z-dropdown: 1600;
+  --z-modal: 1800;
   --z-toast: 2000;
 
   /* Glassmorphism Variables */
@@ -277,6 +278,80 @@ textarea {
 .btn-icon-rounded:hover:not(:disabled) {
   color: var(--text-primary);
   background: var(--glass-border);
+}
+
+/* -----------------------------
+   Form Elements
+----------------------------- */
+
+/* 文字輸入框（分享連結、存檔命名等） */
+.text-input {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-dark);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.text-input:focus {
+  outline: 1px solid var(--accent-cyan);
+}
+
+/* -----------------------------
+   Dropdown Options（IconSelect / LocaleToggle 共用）
+----------------------------- */
+
+.dropdown-options {
+  max-height: 250px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  min-height: 44px;
+}
+
+.dropdown-option:hover {
+  background: var(--surface-hover);
+}
+
+.dropdown-option.selected {
+  background: var(--accent-cyan-bg);
+  color: var(--accent-cyan);
+}
+
+.dropdown-option .option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-option .check {
+  flex-shrink: 0;
 }
 
 /* -----------------------------

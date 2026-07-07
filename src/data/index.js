@@ -1,7 +1,5 @@
 import skillsData from './skills.json'
-import zhTW from './zh-TW.json'
-import zhCN from './zh-CN.json'
-import en from './en.json'
+import { locales, translate } from './locales'
 
 export { skillsData }
 
@@ -12,12 +10,8 @@ const subjectsMap = new Set()
 const basesMap = new Set()
 const enchantsByBase = new Map() // baseName -> Set(enchantName)
 
-const t_tw = (key) => zhTW[key] || key
-const t_cn = (key) => zhCN[key] || key
-const t_en = (key) => en[key] || key
-
-// Provide a default t for sorting options (fallback to tw)
-const t = t_tw
+// 選項排序用固定以繁中為準，確保各語系下順序一致
+const t = (key) => translate(locales['zh-TW'], key)
 
 const collectPart = (part) => {
   if (!part?.name) return
@@ -33,15 +27,14 @@ const collectPart = (part) => {
 }
 
 // 預組搜尋字串：包含所有語系翻譯與英文 Key (全語系混合搜尋)
+// 注意：searchText 是啟動時直接掛到 skills.json 物件上的衍生欄位，json 檔本身沒有
 skillsData.forEach((s) => {
   const parts = new Set()
-  
+
   const addParts = (key) => {
     if (!key) return
     parts.add(key)
-    parts.add(t_tw(key))
-    parts.add(t_cn(key))
-    parts.add(t_en(key))
+    Object.values(locales).forEach((dict) => parts.add(translate(dict, key)))
   }
 
   addParts(s.name)

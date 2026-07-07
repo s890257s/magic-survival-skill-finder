@@ -4,6 +4,7 @@ import { ChevronDown, Check, Search } from '@lucide/vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
+import { usePanelPosition } from '@/composables/usePanelPosition'
 
 const props = defineProps({
   modelValue: {
@@ -34,7 +35,7 @@ const { t } = useI18n()
 
 const isOpen = ref(false)
 const triggerRef = ref(null)
-const panelStyle = ref({})
+const { panelStyle, positionPanel } = usePanelPosition(triggerRef)
 
 const searchQuery = ref('')
 const searchInputRef = ref(null)
@@ -43,22 +44,6 @@ const selectedLabel = computed(() => {
   const opt = props.options.find((o) => o.value === props.modelValue)
   return opt?.label ? t(opt.label) : ''
 })
-
-const positionPanel = () => {
-  const rect = triggerRef.value?.getBoundingClientRect()
-  if (!rect) return
-  const panelMaxHeight = 300
-  const spaceBelow = window.innerHeight - rect.bottom
-  const openUp = spaceBelow < panelMaxHeight && rect.top > spaceBelow
-  panelStyle.value = {
-    position: 'fixed',
-    left: `${rect.left}px`,
-    width: `${rect.width}px`,
-    ...(openUp
-      ? { bottom: `${window.innerHeight - rect.top + 4}px` }
-      : { top: `${rect.bottom + 4}px` }),
-  }
-}
 
 const filteredOptions = computed(() => {
   if (!searchQuery.value) return props.options
@@ -85,7 +70,8 @@ const toggle = async () => {
 
   await nextTick()
   if (searchInputRef.value) {
-    searchInputRef.value.focus()
+    // preventScroll：聚焦引發的捲動會被 DropdownPanel 誤判為外部捲動而關閉面板
+    searchInputRef.value.focus({ preventScroll: true })
   }
 }
 
@@ -135,11 +121,11 @@ const select = (value) => {
           @keydown.enter.prevent
         />
       </div>
-      <ul class="options-list">
+      <ul class="dropdown-options">
         <li>
           <button
             type="button"
-            class="option"
+            class="dropdown-option"
             :class="{ selected: !modelValue }"
             role="option"
             :aria-selected="!modelValue"
@@ -152,7 +138,7 @@ const select = (value) => {
         <li v-for="opt in filteredOptions" :key="opt.value">
           <button
             type="button"
-            class="option"
+            class="dropdown-option"
             :class="{ selected: opt.value === modelValue }"
             role="option"
             :aria-selected="opt.value === modelValue"
@@ -265,69 +251,12 @@ const select = (value) => {
   color: var(--text-muted);
 }
 
-.options-list {
-  max-height: 250px;
-  overflow-y: auto;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 9px 10px;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  font-family: var(--font-body);
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s ease;
-  min-height: 44px;
-}
-
-.option:hover {
-  background: var(--surface-hover);
-}
-
-.option.selected {
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-}
-
-.option-label {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.en-label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
+/* 選單樣式沿用全域 .dropdown-options / .dropdown-option，此處只放本元件差異 */
 .option-label.muted {
   color: var(--text-muted);
 }
 
-.option.selected .option-label.muted {
+.dropdown-option.selected .option-label.muted {
   color: inherit;
 }
-
-.check {
-  flex-shrink: 0;
-}
-
-
 </style>

@@ -1,7 +1,5 @@
 import { ref } from 'vue'
-import zhTW from '@/data/zh-TW.json'
-import zhCN from '@/data/zh-CN.json'
-import en from '@/data/en.json'
+import { locales, translate } from '@/data/locales'
 
 const LOCALE_KEY = 'app_locale'
 // 全域狀態，確保切換時所有元件一起響應
@@ -13,11 +11,11 @@ export function useI18n() {
     localStorage.setItem(LOCALE_KEY, lang)
   }
 
-  const t = (key) => {
+  // t(key, ...args)：查字典後以 {0}、{1}… 依序插值
+  const t = (key, ...args) => {
     if (!key) return ''
-    if (currentLocale.value === 'en') return en[key] || key
-    if (currentLocale.value === 'zh-CN') return zhCN[key] || key
-    return zhTW[key] || key
+    const dict = locales[currentLocale.value] || locales['zh-TW']
+    return args.reduce((str, arg, i) => str.replaceAll(`{${i}}`, arg), translate(dict, key))
   }
 
   return { locale: currentLocale, setLocale, t }

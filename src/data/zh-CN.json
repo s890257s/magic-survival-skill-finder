@@ -273,6 +273,7 @@
   "ui.builder.createNewSave": "➕ 新建存档",
   "ui.builder.saveTarget": "储存位置",
   "ui.builder.saveSuccess": "储存成功！",
+  "ui.builder.saveLimitMsg": "存档已达上限（{0} 组），请选择覆盖现有存档",
   "ui.builder.clearSavedConfirm": "确定要清空所有的储存配技吗？这将无法复原。",
   "ui.builder.goDictionary": "前往图鉴添加",
   "ui.builder.exportHeader": "【Magic Survival 我的配技】",

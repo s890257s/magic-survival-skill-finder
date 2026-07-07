@@ -4,6 +4,7 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import Modal from '@/components/ui/Modal.vue'
 import { useI18n } from '@/composables/useI18n'
+import { formatDate } from '@/utils/format'
 
 const props = defineProps({
   show: Boolean
@@ -44,20 +45,17 @@ watch(saveMode, (newMode) => {
 const confirmSave = () => {
   const name = saveNameInput.value.trim() || t('ui.builder.defaultSaveName')
   if (saveMode.value === 'new') {
-    if (favoritesStore.saveBuild(name)) {
-      toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
-      emit('update:show', false)
+    if (!favoritesStore.saveBuild(name)) {
+      // 達存檔上限（開啟 modal 後上限才被觸及的邊界情況）
+      toastStore.showToast(t('ui.builder.saveLimitMsg', favoritesStore.maxSavedBuilds), 'warning')
+      return
     }
   } else {
     favoritesStore.overwriteBuild(saveMode.value)
     favoritesStore.renameBuild(saveMode.value, name)
-    toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
-    emit('update:show', false)
   }
-}
-
-const formatDate = (ts) => {
-  return new Date(ts).toLocaleString(undefined, { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
+  toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
+  emit('update:show', false)
 }
 </script>
 
@@ -66,11 +64,11 @@ const formatDate = (ts) => {
     <div class="save-content">
       <div class="save-field">
         <label>{{ t('ui.builder.savePlaceholder') }}</label>
-        <input 
-          type="text" 
-          v-model="saveNameInput" 
+        <input
+          type="text"
+          v-model="saveNameInput"
           :placeholder="t('ui.builder.savePlaceholder')"
-          class="share-input" 
+          class="text-input"
           @keyup.enter="confirmSave"
           v-focus
         />
@@ -118,21 +116,6 @@ const formatDate = (ts) => {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
-}
-
-.share-input {
-  width: 100%;
-  padding: 12px;
-  background: var(--bg-dark);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-family: monospace;
-  font-size: 0.9rem;
-}
-
-.share-input:focus {
-  outline: 1px solid var(--accent-cyan);
 }
 
 .save-options {

@@ -9,8 +9,8 @@ import Modal from '@/components/ui/Modal.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import SavedBuildsPanel from '@/components/builder/SavedBuildsPanel.vue'
 import SaveBuildModal from '@/components/builder/SaveBuildModal.vue'
-import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Sparkles, Save, X } from '@lucide/vue'
-import { RouterLink, useRouter, useRoute } from 'vue-router'
+import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Sparkles, Save } from '@lucide/vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/composables/useI18n'
 import { exportDataToToken, parseTokenToData } from '@/utils/share'
 
@@ -27,10 +27,16 @@ const savedBuilds = computed(() => favoritesStore.savedBuilds)
 const showShareModal = ref(false)
 const shareUrl = ref('')
 const showImportConfirm = ref(false)
-const showImportSavesConfirm = ref(false)
 const importData = ref(null)
 const showExportChoiceModal = ref(false)
 const showSaveModal = ref(false)
+
+// 匯入確認訊息依匯入類型（目前配技 / 儲存庫）切換
+const importConfirmMessage = computed(() =>
+  importData.value?.type === 'saves'
+    ? t('ui.builder.importSavesConfirmMsg')
+    : t('ui.builder.importConfirmMsg'),
+)
 
 const handleSaveClick = () => {
   if (favoriteSkills.value.length === 0) return
@@ -49,6 +55,16 @@ const openExportModal = () => {
   }
 }
 
+// 複製到剪貼簿並以 toast 回報結果
+const copyWithFeedback = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
+  } catch {
+    toastStore.showToast(t('ui.builder.exportFail'), 'warning')
+  }
+}
+
 const doExport = async (type) => {
   showExportChoiceModal.value = false
   let dataObj
@@ -61,48 +77,28 @@ const doExport = async (type) => {
   } else if (type === 'saves') {
     dataObj = { type: 'saves', data: savedBuilds.value }
   }
-  
+
   const token = exportDataToToken(dataObj)
   const base = window.location.origin + window.location.pathname
-  const url = `${base}#/builder?share=${token}`
-  
-  shareUrl.value = url
+  shareUrl.value = `${base}#/builder?share=${token}`
 
-  try {
-    await navigator.clipboard.writeText(url)
-    toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
-  } catch {
-    toastStore.showToast(t('ui.builder.exportFail'), 'warning')
-  }
-  
+  await copyWithFeedback(shareUrl.value)
   showShareModal.value = true
-}
-
-const copyShareUrl = async () => {
-  try {
-    await navigator.clipboard.writeText(shareUrl.value)
-    toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
-  } catch {
-    toastStore.showToast(t('ui.builder.exportFail'), 'warning')
-  }
 }
 
 const processImportData = (obj) => {
   if (!obj || !obj.type || !obj.data) return
   importData.value = obj
-  
-  if (obj.type === 'current') {
-    if (favoritesStore.favoriteIds.length === 0) {
-      executeImport()
-    } else {
-      showImportConfirm.value = true
-    }
-  } else if (obj.type === 'saves') {
-    if (favoritesStore.savedBuilds.length === 0) {
-      executeImport()
-    } else {
-      showImportSavesConfirm.value = true
-    }
+
+  // 本地無同類型資料時直接匯入，否則先確認是否覆蓋
+  const isEmpty =
+    obj.type === 'saves'
+      ? favoritesStore.savedBuilds.length === 0
+      : favoritesStore.favoriteIds.length === 0
+  if (isEmpty) {
+    executeImport()
+  } else {
+    showImportConfirm.value = true
   }
 }
 
@@ -137,11 +133,9 @@ watch(() => route.query.share, (newShare) => {
 const clearAll = () => {
   const backup = [...favoritesStore.favoriteIds]
   favoritesStore.clearFavorites()
-  toastStore.showToast(t('ui.builder.clearedMsg'), 'info', {
-    duration: 6000,
-    actionLabel: t('ui.restore'),
-    onAction: () => favoritesStore.setFavorites(backup),
-  })
+  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () =>
+    favoritesStore.setFavorites(backup),
+  )
 }
 </script>
 
@@ -169,12 +163,12 @@ const clearAll = () => {
           <button @click="openExportModal" class="btn btn-primary action-btn">
             <Share2 :size="18" /> <span class="btn-text-content">{{ t('ui.builder.export') }}</span>
           </button>
-          <HeaderActions compact />
+          <HeaderActions />
         </div>
       </div>
       <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
         <Layers :size="20" />
-        <span>{{ t('ui.builder.limitWarning').replace('{0}', favoritesStore.maxSlots) }}</span>
+        <span>{{ t('ui.builder.limitWarning', favoritesStore.maxSlots) }}</span>
       </div>
       <div v-if="conflicts.size > 0" class="banner conflict-banner">
         <AlertTriangle :size="20" />
@@ -233,8 +227,8 @@ const clearAll = () => {
 
     <Modal :show="showShareModal" :title="t('ui.builder.shareModalTitle')" @close="showShareModal = false">
       <div class="share-content">
-        <input type="text" readonly :value="shareUrl" class="share-input" @click="$event.target.select()" />
-        <button class="btn btn-primary share-copy-btn" @click="copyShareUrl">
+        <input type="text" readonly :value="shareUrl" class="text-input" @click="$event.target.select()" />
+        <button class="btn btn-primary share-copy-btn" @click="copyWithFeedback(shareUrl)">
           {{ t('ui.builder.copyUrl') }}
         </button>
       </div>
@@ -243,17 +237,7 @@ const clearAll = () => {
     <ConfirmDialog
       v-model:show="showImportConfirm"
       :title="t('ui.builder.importConfirmTitle')"
-      :message="t('ui.builder.importConfirmMsg')"
-      :confirmText="t('ui.builder.importConfirmTitle')"
-      :cancelText="t('ui.cancel')"
-      @confirm="executeImport"
-      @cancel="cancelImportAny"
-    />
-
-    <ConfirmDialog
-      v-model:show="showImportSavesConfirm"
-      :title="t('ui.builder.importConfirmTitle')"
-      :message="t('ui.builder.importSavesConfirmMsg')"
+      :message="importConfirmMessage"
       :confirmText="t('ui.builder.importConfirmTitle')"
       :cancelText="t('ui.cancel')"
       @confirm="executeImport"
@@ -448,21 +432,6 @@ const clearAll = () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.share-input {
-  width: 100%;
-  padding: 12px;
-  background: var(--bg-dark);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-family: monospace;
-  font-size: 0.9rem;
-}
-
-.share-input:focus {
-  outline: 1px solid var(--accent-cyan);
 }
 
 .share-copy-btn {

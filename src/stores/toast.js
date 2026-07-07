@@ -29,11 +29,16 @@ export const useToastStore = defineStore('toast', () => {
     }
   }
 
+  // 帶「復原」按鈕的資訊 toast（清空類操作專用）
+  const showUndoToast = (message, actionLabel, onUndo) => {
+    showToast(message, 'info', { duration: 6000, actionLabel, onAction: onUndo })
+  }
+
   const dismiss = (id) => {
     toasts.value = toasts.value.filter((t) => t.id !== id)
   }
 
-  return { toasts, showToast, dismiss }
+  return { toasts, showToast, showUndoToast, dismiss }
 })
 
 // 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）

@@ -1,6 +1,6 @@
 <script setup>
 import { X } from '@lucide/vue'
-import { onMounted, onUnmounted } from 'vue'
+import { watch, onUnmounted } from 'vue'
 
 const props = defineProps({
   show: Boolean,
@@ -10,14 +10,23 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const handleEscape = (e) => {
-  if (e.key === 'Escape' && props.show) {
+  if (e.key === 'Escape') {
     emit('close')
   }
 }
 
-onMounted(() => {
-  window.addEventListener('keydown', handleEscape)
-})
+// 只在開啟期間監聽 Escape，避免多個 modal 常駐監聽、一鍵全關
+watch(
+  () => props.show,
+  (show) => {
+    if (show) {
+      window.addEventListener('keydown', handleEscape)
+    } else {
+      window.removeEventListener('keydown', handleEscape)
+    }
+  },
+  { immediate: true },
+)
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleEscape)
@@ -56,7 +65,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: var(--z-modal);
 }
 
 .modal-container {
