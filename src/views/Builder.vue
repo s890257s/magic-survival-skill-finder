@@ -7,7 +7,7 @@ import HeaderActions from '@/components/layout/HeaderActions.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import Modal from '@/components/ui/Modal.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
-import { Share2, Trash2, AlertTriangle, BookOpen, Layers } from '@lucide/vue'
+import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Sparkles } from '@lucide/vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/composables/useI18n'
 
@@ -131,6 +131,25 @@ const clearAll = () => {
     </header>
 
     <div class="build-content">
+      <div class="build-summary glass-panel" v-if="favoriteSkills.length > 0">
+        <h3 class="summary-title"><Sparkles :size="18" /> {{ t('ui.builder.summaryTitle') }}</h3>
+        <div class="summary-list">
+          <div v-for="(skill, index) in favoriteSkills" :key="'summary-' + skill.id" class="summary-item" :class="{ 'last-item': index === favoriteSkills.length - 1 }">
+            <span class="skill-name">{{ t(skill.name) }}</span>
+            <span class="operator">=</span>
+            <span class="skill-part main-skill">
+              {{ t(skill.mainSkill.name) }}
+              <span v-if="skill.mainSkill.enchant" class="enchant">({{ t(skill.mainSkill.enchant) }})</span>
+            </span>
+            <span class="operator">+</span>
+            <span class="skill-part sub-skill">
+              {{ t(skill.subSkill.name) }}
+              <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
       <EmptyState
         v-if="favoriteSkills.length === 0"
         :text="t('ui.builder.empty')"
@@ -276,7 +295,70 @@ const clearAll = () => {
   flex: 1;
 }
 
+.build-summary {
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
 
+.summary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-cyan);
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.summary-list {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto 1fr;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.summary-item {
+  display: contents;
+}
+
+.summary-item > span {
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--glass-border);
+}
+
+.summary-item.last-item > span {
+  border-bottom: none;
+}
+
+.skill-name {
+  color: var(--accent-cyan);
+  font-weight: 700;
+  text-shadow: 0 0 8px var(--accent-cyan-glow);
+  text-align: right;
+}
+
+.operator {
+  color: var(--text-muted);
+  font-weight: bold;
+  text-align: center;
+  padding: 10px 4px !important;
+}
+
+.main-skill {
+  color: var(--accent-cyan);
+  text-align: center;
+}
+
+.sub-skill {
+  color: var(--accent-purple);
+  text-align: left;
+}
+
+.enchant {
+  font-size: 0.85em;
+  opacity: 0.9;
+}
 
 .skill-grid {
   display: flex;

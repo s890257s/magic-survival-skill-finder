@@ -260,6 +260,7 @@
   "ui.builder.limitWarning": "超過遊戲常規上限（{0} 個），實戰時記得取捨喔。",
   "ui.builder.conflictWarning": "檢測到基礎技能被重複使用，衝突技能已標記紅框。",
   "ui.builder.empty": "尚未添加任何技能到配技中",
+  "ui.builder.summaryTitle": "遊戲中應選技能",
   "ui.builder.goDictionary": "前往圖鑑添加",
   "ui.builder.exportHeader": "【Magic Survival 我的配技】",
   "ui.builder.exportMain": "主",
