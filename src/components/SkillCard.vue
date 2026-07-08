@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue'
-import { Check, Plus, Pin, AlertTriangle, ChevronUp, ChevronDown, Crown, GripVertical } from '@lucide/vue'
+import { computed, ref } from 'vue'
+import { Check, Plus, Pin, AlertTriangle, ChevronDown, Crown, GripVertical } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -59,6 +59,7 @@ const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const settingsStore = useSettingsStore()
 const { t } = useI18n()
+const isExpanded = ref(false)
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
 
@@ -127,9 +128,22 @@ const onSubjectClick = (subjectName) => {
 
 <template>
   <GlassCard class="skill-card" :class="{ 'is-conflict': hasConflict }">
-    <div class="skill-header">
+    <div 
+      class="skill-header"
+      @click="isExpanded = !isExpanded"
+      role="button"
+      tabindex="0"
+      :aria-expanded="isExpanded"
+      @keydown.enter="isExpanded = !isExpanded"
+      @keydown.space.prevent="isExpanded = !isExpanded"
+    >
       <div class="name-area">
-        <GameIcon :name="skill.name" category="fusion" :size="40" />
+        <div class="icon-wrapper">
+          <GameIcon :name="skill.name" category="fusion" :size="40" />
+          <div v-if="pinOrder > 0" class="pin-order-badge">
+            #{{ pinOrder }}
+          </div>
+        </div>
         <div class="name-text">
           <div class="skill-title-group">
             <h3 class="skill-name">{{ t(skill.name) }}</h3>
@@ -137,43 +151,22 @@ const onSubjectClick = (subjectName) => {
               skill.name
             }}</span>
           </div>
-          <MagicTag
-            v-if="skill.requirements?.subject"
-            :text="t(skill.requirements.subject)"
-            type="secondary"
-            :class="{ 'clickable-tag': clickableBases }"
-            @click="onSubjectClick(skill.requirements.subject)"
-          >
-            <template #icon>
-              <GameIcon :name="skill.requirements.subject" category="subject" :size="16" />
-            </template>
-          </MagicTag>
         </div>
       </div>
       <div class="header-actions">
-        <div v-if="pinOrder > 0" class="pin-order-badge">
-          #{{ pinOrder }}
-        </div>
-        <div v-if="reorderable" class="drag-handle" aria-label="拖曳排序" title="拖曳排序">
+        <div 
+          v-if="reorderable" 
+          class="drag-handle" 
+          aria-label="拖曳排序" 
+          title="拖曳排序"
+          @click.stop
+        >
           <GripVertical :size="20" />
-        </div>
-        <div v-if="reorderable" class="reorder-group">
-          <button
-            class="btn btn-icon"
-            :disabled="isFirst"
-            @click="emit('move', -1)"
-            aria-label="上移"
-          >
-            <ChevronUp :size="18" />
-          </button>
-          <button class="btn btn-icon" :disabled="isLast" @click="emit('move', 1)" aria-label="下移">
-            <ChevronDown :size="18" />
-          </button>
         </div>
         <button
           v-if="pinnable"
           class="pin-btn"
-          @click="togglePin"
+          @click.stop="togglePin"
           :class="{ active: isPinned }"
           :aria-pressed="isPinned"
           :aria-label="isPinned ? '取消頂置' : '頂置顯示'"
@@ -186,7 +179,7 @@ const onSubjectClick = (subjectName) => {
         </button>
         <button
           class="favorite-btn"
-          @click="toggle"
+          @click.stop="toggle"
           :class="{ active: isFavorite }"
           :aria-pressed="isFavorite"
           :aria-label="isFavorite ? '移出配技' : '加入配技'"
@@ -202,11 +195,16 @@ const onSubjectClick = (subjectName) => {
             :size="24"
           />
         </button>
+        <div class="expand-icon" :class="{ 'is-expanded': isExpanded }">
+          <ChevronDown :size="20" color="var(--text-muted)" />
+        </div>
       </div>
     </div>
 
-    <div class="skill-body">
-      <div class="skill-formula">
+    <Transition name="expand">
+      <div v-show="isExpanded" class="skill-content-wrapper">
+        <div class="skill-body">
+          <div class="skill-formula">
         <template v-for="(item, index) in formulaParts" :key="item.label">
           <div v-if="index > 0" class="formula-divider">+</div>
           <div class="formula-item">
@@ -253,10 +251,30 @@ const onSubjectClick = (subjectName) => {
 
     <div class="skill-footer" v-if="skill.requirements?.ultimate">
       <div class="ultimate-area">
-        <Crown :size="14" class="ultimate-icon" />
-        <MagicTag :text="t('ui.card.ultimateSkill', t(skill.requirements.ultimate))" type="gold" />
+        <Crown :size="16" class="ultimate-icon" />
+        <span class="ultimate-text">{{ t('ui.card.ultimateSkill', t(skill.requirements.ultimate)) }}</span>
+        <span class="ultimate-operator">=</span>
+        <MagicTag
+          v-if="skill.requirements.subject"
+          :text="`${t(skill.requirements.subject)} ${t('ui.builder.exportSubject')}`"
+          type="secondary"
+          :class="{ 'clickable-tag': clickableBases }"
+          @click="onSubjectClick(skill.requirements.subject)"
+        >
+          <template #icon>
+            <GameIcon :name="skill.requirements.subject" category="subject" :size="14" />
+          </template>
+        </MagicTag>
+        <span class="ultimate-operator" v-if="skill.requirements.subject && skill.requirements.school">+</span>
+        <MagicTag
+          v-if="skill.requirements.school"
+          :text="`${t(skill.requirements.school)} ${t('ui.builder.exportSchool')}`"
+          type="primary"
+        />
       </div>
     </div>
+      </div>
+    </Transition>
   </GlassCard>
 </template>
 
@@ -278,6 +296,13 @@ const onSubjectClick = (subjectName) => {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+
+.skill-header:hover {
+  opacity: 0.85;
 }
 
 .name-area {
@@ -285,6 +310,12 @@ const onSubjectClick = (subjectName) => {
   align-items: center;
   gap: 12px;
   min-width: 0;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
 }
 
 .name-text {
@@ -343,23 +374,55 @@ const onSubjectClick = (subjectName) => {
   flex-shrink: 0;
 }
 
-.reorder-group {
-  display: flex;
-  gap: 2px;
-}
-
 .pin-order-badge {
-  font-size: 0.85rem;
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--accent-cyan);
-  background: var(--accent-cyan-bg);
-  padding: 2px 8px;
-  border-radius: 6px;
+  background: var(--bg-primary, #1e1e2e);
+  padding: 2px 6px;
+  border-radius: 12px;
   border: 1px solid var(--accent-cyan-border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 4px;
+  line-height: 1;
+}
+
+.expand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  margin-left: 4px;
+}
+
+.expand-icon.is-expanded {
+  transform: rotate(180deg);
+}
+
+.skill-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.expand-enter-active,
+.expand-leave-active {
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  max-height: 0;
+  opacity: 0;
 }
 
 .drag-handle {
@@ -523,11 +586,41 @@ const onSubjectClick = (subjectName) => {
 .ultimate-area {
   display: flex;
   align-items: center;
-  gap: 6px;
+  flex-wrap: nowrap;
+  gap: 4px;
+  background: var(--inset-bg);
+  padding: 6px 8px;
+  border-radius: 8px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ultimate-area::-webkit-scrollbar {
+  display: none;
 }
 
 .ultimate-icon {
   color: var(--warning);
+  flex-shrink: 0;
+}
+
+.ultimate-text {
+  font-weight: 700;
+  color: var(--warning);
+  font-size: 0.8rem;
+  text-shadow: 0 0 10px rgba(255, 171, 0, 0.3);
+  white-space: nowrap;
+}
+
+.ultimate-operator {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.ultimate-area :deep(.magic-tag) {
+  padding: 2px 6px;
+  font-size: 0.7rem;
 }
 
 :deep(.clickable-tag) {
@@ -540,5 +633,23 @@ const onSubjectClick = (subjectName) => {
 :deep(.clickable-tag:hover) {
   transform: translateY(-2px);
   filter: brightness(1.15);
+}
+
+@media (max-width: 480px) {
+  .skill-formula {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .formula-item {
+    width: 100%;
+  }
+
+  .formula-divider {
+    text-align: center;
+    padding: 4px 0;
+    line-height: 1;
+  }
 }
 </style>

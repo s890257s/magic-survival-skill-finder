@@ -73,7 +73,7 @@
   "ui.card.addedOverLimit": "Added to build ({0}/{1}, over limit)",
   "ui.card.added": "Added '{0}' to build ({1}/{2})",
   "ui.card.baseConflict": "Base skill conflict: {0}",
-  "ui.card.ultimateSkill": "[Ultimate] {0}",
+  "ui.card.ultimateSkill": "[LV99] {0}",
   "ui.select.search": "Search options...",
   "ui.select.placeholder": "Please select",
   "ui.chip.school": "Class: {0}",
