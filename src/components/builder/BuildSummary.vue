@@ -10,6 +10,10 @@ const props = defineProps({
   collapsible: {
     type: Boolean,
     default: false
+  },
+  hideHeader: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -97,7 +101,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="build-summary glass-panel" v-if="favoriteSkills.length > 0">
-    <div class="summary-header" @click="collapsible && (isCollapsed = !isCollapsed)" :class="{ clickable: collapsible }">
+    <div class="summary-header" v-if="!hideHeader" @click="collapsible && (isCollapsed = !isCollapsed)" :class="{ clickable: collapsible }">
       <h3 class="summary-title"><Sparkles :size="18" /> {{ t('ui.builder.summaryTitle') }} <span class="count" v-if="collapsible">({{ favoriteSkills.length }}/{{ favoritesStore.maxSlots }})</span></h3>
       <div v-if="collapsible" class="collapse-icon">
         <ChevronDown v-if="isCollapsed" :size="20" />
@@ -138,8 +142,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .build-summary {
-  padding: 16px;
-  border-radius: 12px;
+  padding: 0;
   margin-bottom: 20px;
   overflow-x: auto;
 }
@@ -177,7 +180,8 @@ onBeforeUnmount(() => {
   grid-template-columns: auto 1fr auto auto auto 1fr auto;
   align-items: center;
   column-gap: 8px;
-  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
 }
 
 .summary-item {

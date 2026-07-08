@@ -124,6 +124,12 @@ const onSubjectClick = (subjectName) => {
     emit('select-subject', subjectName)
   }
 }
+
+defineExpose({
+  setExpanded: (val) => {
+    isExpanded.value = val
+  }
+})
 </script>
 
 <template>
