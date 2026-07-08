@@ -10,7 +10,8 @@ import Modal from '@/components/ui/Modal.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import SavedBuildsPanel from '@/components/builder/SavedBuildsPanel.vue'
 import SaveBuildModal from '@/components/builder/SaveBuildModal.vue'
-import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Sparkles, Save, ChevronUp, ChevronDown } from '@lucide/vue'
+import BuildSummary from '@/components/builder/BuildSummary.vue'
+import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Save } from '@lucide/vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/composables/useI18n'
 import { exportDataToToken, parseTokenToData } from '@/utils/share'
@@ -139,30 +140,10 @@ const clearAll = () => {
   )
 }
 
-const removeWithUndo = (skill) => {
-  const backup = [...favoritesStore.favoriteIds]
-  favoritesStore.toggleFavorite(skill.id)
-  toastStore.showUndoToast(t('ui.card.removed', t(skill.name)), t('ui.restore'), () =>
-    favoritesStore.setFavorites(backup),
-  )
-}
-
-const summaryListRef = ref(null)
 const skillGridRef = ref(null)
-let summarySortable = null
 let gridSortable = null
 
 const initSortable = () => {
-  if (summaryListRef.value && !summarySortable) {
-    summarySortable = Sortable.create(summaryListRef.value, {
-      delay: 250,
-      delayOnTouchOnly: true,
-      filter: '.summary-actions',
-      animation: 150,
-      onEnd: handleSortEnd
-    })
-  }
-
   if (skillGridRef.value && !gridSortable) {
     gridSortable = Sortable.create(skillGridRef.value, {
       handle: '.drag-handle',
@@ -204,7 +185,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if (summarySortable) summarySortable.destroy()
   if (gridSortable) gridSortable.destroy()
 })
 </script>
@@ -249,37 +229,7 @@ onBeforeUnmount(() => {
     <div class="build-content">
       <SavedBuildsPanel />
 
-      <div class="build-summary glass-panel" v-if="favoriteSkills.length > 0">
-        <h3 class="summary-title"><Sparkles :size="18" /> {{ t('ui.builder.summaryTitle') }}</h3>
-        <div class="summary-list" ref="summaryListRef">
-          <div v-for="(skill, index) in favoriteSkills" :key="'summary-' + skill.id" :data-id="skill.id" class="summary-item" :class="{ 'last-item': index === favoriteSkills.length - 1 }">
-            <span class="summary-actions">
-              <button class="action-icon" :disabled="index === 0" @click="favoritesStore.moveFavorite(skill.id, -1)" aria-label="上移">
-                <ChevronUp :size="16" />
-              </button>
-              <button class="action-icon" :disabled="index === favoriteSkills.length - 1" @click="favoritesStore.moveFavorite(skill.id, 1)" aria-label="下移">
-                <ChevronDown :size="16" />
-              </button>
-            </span>
-            <span class="skill-name">{{ t(skill.name) }}</span>
-            <span class="operator">=</span>
-            <span class="skill-part main-skill">
-              {{ t(skill.mainSkill.name) }}
-              <span v-if="skill.mainSkill.enchant" class="enchant">({{ t(skill.mainSkill.enchant) }})</span>
-            </span>
-            <span class="operator">+</span>
-            <span class="skill-part sub-skill">
-              {{ t(skill.subSkill.name) }}
-              <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
-            </span>
-            <span class="summary-actions">
-              <button class="action-icon delete-icon" @click="removeWithUndo(skill)" aria-label="移除">
-                <Trash2 :size="16" />
-              </button>
-            </span>
-          </div>
-        </div>
-      </div>
+      <BuildSummary />
 
       <EmptyState
         v-if="favoriteSkills.length === 0"

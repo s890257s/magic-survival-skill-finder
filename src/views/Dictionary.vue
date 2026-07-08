@@ -19,6 +19,7 @@ import IconSelect from '@/components/ui/IconSelect.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
+import BuildSummary from '@/components/builder/BuildSummary.vue'
 import { useI18n } from '@/composables/useI18n'
 import { usePersistedRef } from '@/composables/usePersistedRef'
 
@@ -370,6 +371,10 @@ onBeforeUnmount(() => {
     </header>
 
     <div class="list-area" ref="listTop">
+      <div class="dictionary-build-summary-wrapper" v-if="favoritesStore.favoriteSkills.length > 0">
+        <BuildSummary collapsible />
+        <hr class="summary-divider" />
+      </div>
       <EmptyState
         v-if="filteredSkills.length === 0"
         :text="t('ui.dict.noResults')"
@@ -615,6 +620,21 @@ onBeforeUnmount(() => {
 
 .list-area {
   scroll-margin-top: 96px;
+}
+
+.dictionary-build-summary-wrapper {
+  padding: 16px 16px 0;
+}
+
+.dictionary-build-summary-wrapper :deep(.build-summary) {
+  margin-bottom: 16px;
+}
+
+.summary-divider {
+  border: none;
+  height: 1px;
+  background: var(--glass-border);
+  margin: 0;
 }
 
 .pinned-bar {

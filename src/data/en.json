@@ -28,7 +28,7 @@
   "ui.builder.limitWarning": "Exceeds standard limit ({0}). Be mindful in game.",
   "ui.builder.conflictWarning": "Base skill conflict detected. Highlighted in red.",
   "ui.builder.empty": "No skills added to build yet",
-  "ui.builder.summaryTitle": "Target Skills",
+  "ui.builder.summaryTitle": "Selected Skills",
   "ui.builder.savedBuilds": "Saved Builds",
   "ui.builder.save": "Save",
   "ui.builder.saveTitle": "Save Build",
