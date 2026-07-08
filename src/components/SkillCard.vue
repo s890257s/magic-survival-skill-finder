@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Heart, Pin, AlertTriangle, ChevronUp, ChevronDown, Crown, GripVertical } from '@lucide/vue'
+import { Check, Plus, Pin, AlertTriangle, ChevronUp, ChevronDown, Crown, GripVertical } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -38,6 +38,10 @@ const props = defineProps({
   reorderable: {
     type: Boolean,
     default: false,
+  },
+  pinOrder: {
+    type: Number,
+    default: 0,
   },
   isFirst: {
     type: Boolean,
@@ -147,6 +151,9 @@ const onSubjectClick = (subjectName) => {
         </div>
       </div>
       <div class="header-actions">
+        <div v-if="pinOrder > 0" class="pin-order-badge">
+          #{{ pinOrder }}
+        </div>
         <div v-if="reorderable" class="drag-handle" aria-label="拖曳排序" title="拖曳排序">
           <GripVertical :size="20" />
         </div>
@@ -184,9 +191,14 @@ const onSubjectClick = (subjectName) => {
           :aria-pressed="isFavorite"
           :aria-label="isFavorite ? '移出配技' : '加入配技'"
         >
-          <Heart
-            :fill="isFavorite ? 'var(--accent-purple)' : 'none'"
-            :color="isFavorite ? 'var(--accent-purple)' : 'var(--text-muted)'"
+          <Check
+            v-if="isFavorite"
+            color="var(--accent-purple)"
+            :size="24"
+          />
+          <Plus
+            v-else
+            color="var(--text-muted)"
             :size="24"
           />
         </button>
@@ -334,6 +346,20 @@ const onSubjectClick = (subjectName) => {
 .reorder-group {
   display: flex;
   gap: 2px;
+}
+
+.pin-order-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-cyan-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
 }
 
 .drag-handle {

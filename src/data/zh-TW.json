@@ -255,6 +255,7 @@
   "ui.dict.pinnedCount": "已頂置 {0} 個技能",
   "ui.dict.unpinAll": "全部解除",
   "ui.dict.unpinnedAllMsg": "已解除全部頂置",
+  "ui.dict.otherSkills": "其他技能",
   "ui.builder.title": "我的配技",
   "ui.builder.clear": "清空",
   "ui.builder.export": "匯出",
