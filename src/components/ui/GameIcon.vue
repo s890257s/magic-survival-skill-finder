@@ -28,8 +28,17 @@ watch(
 )
 
 const src = computed(() => {
-  const file = iconMap[props.category]?.[props.name]
-  if (!file) return null
+  let file = iconMap[props.category]?.[props.name]
+  
+  if (!file) {
+    // 嘗試將名稱轉為 snake_case (例如 'Electric Shock' -> 'electric_shock.webp')
+    const snakeCaseName = props.name
+      .toLowerCase()
+      .replace(/[\s\-]+/g, '_')
+      .replace(/[^\w_]/g, '')
+    file = `${snakeCaseName}.webp`
+  }
+  
   return `${import.meta.env.BASE_URL}icons/${iconDirs[props.category]}/${file}`
 })
 
