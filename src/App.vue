@@ -52,8 +52,8 @@ const handleAction = (toast) => {
 .page-fade-enter-active,
 .page-fade-leave-active {
   transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+    opacity 0s ease,
+    transform 0s ease;
 }
 
 .page-fade-enter-from {

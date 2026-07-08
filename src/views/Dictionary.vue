@@ -13,6 +13,8 @@ import { gameVersion } from '@/data/meta'
 import SkillCard from '@/components/SkillCard.vue'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
+import { useFavoritesStore } from '@/stores/favorites'
+import { useDictionaryStore } from '@/stores/dictionary'
 import IconSelect from '@/components/ui/IconSelect.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
@@ -22,21 +24,17 @@ import { usePersistedRef } from '@/composables/usePersistedRef'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
+const favoritesStore = useFavoritesStore()
+const dictionaryStore = useDictionaryStore()
 const { t } = useI18n()
 
-const filters = reactive({
-  search: '',
-  school: '',
-  subject: '',
-  baseSkill: '',
-  enchant: '',
-  ultimate: false
-})
+const filters = dictionaryStore.filters
+const { clearFilters, resetAll } = dictionaryStore
 
 const isFilterOpen = usePersistedRef('filter_panel_open', false)
 
 const hasActiveFilters = computed(() => {
-  return Boolean(filters.school || filters.subject || filters.baseSkill || filters.ultimate)
+  return Boolean(filters.school || filters.subject || filters.baseSkill || filters.ultimate || filters.excludeConsumed)
 })
 
 const enchants = computed(() => {
@@ -47,19 +45,6 @@ const enchants = computed(() => {
 const onBaseSkillChange = (val) => {
   filters.baseSkill = val
   filters.enchant = ''
-}
-
-const clearFilters = () => {
-  filters.school = ''
-  filters.subject = ''
-  filters.baseSkill = ''
-  filters.enchant = ''
-  filters.ultimate = false
-}
-
-const resetAll = () => {
-  clearFilters()
-  filters.search = ''
 }
 
 const listTop = ref(null)
@@ -105,6 +90,9 @@ const activeChips = computed(() => {
   if (filters.ultimate) {
     chips.push({ key: 'ultimate', label: t('ui.dict.onlyUltimate'), icon: null })
   }
+  if (filters.excludeConsumed) {
+    chips.push({ key: 'excludeConsumed', label: t('ui.dict.excludeConsumed'), icon: null })
+  }
   return chips
 })
 
@@ -116,6 +104,15 @@ const removeFilter = (key) => {
     filters[key] = typeof filters[key] === 'boolean' ? false : ''
   }
 }
+
+const usedBases = computed(() => {
+  const bases = new Set()
+  favoritesStore.favoriteSkills.forEach(skill => {
+    if (skill.mainSkill?.name) bases.add(skill.mainSkill.name)
+    if (skill.subSkill?.name) bases.add(skill.subSkill.name)
+  })
+  return bases
+})
 
 const filteredSkills = computed(() => {
   return skillsData.filter((skill) => {
@@ -148,6 +145,13 @@ const filteredSkills = computed(() => {
     }
     if (filters.ultimate && !skill.requirements?.ultimate) {
       return false
+    }
+    if (filters.excludeConsumed) {
+      const main = skill.mainSkill?.name
+      const sub = skill.subSkill?.name
+      if ((main && usedBases.value.has(main)) || (sub && usedBases.value.has(sub))) {
+        return false
+      }
     }
     return true
   })
@@ -334,6 +338,10 @@ onBeforeUnmount(() => {
           <label class="checkbox-label">
             <input type="checkbox" v-model="filters.ultimate" />
             <span class="checkbox-text">{{ t('ui.dict.onlyUltimate') }}</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="filters.excludeConsumed" />
+            <span class="checkbox-text">{{ t('ui.dict.excludeConsumed') }}</span>
           </label>
         </div>
       </div>
@@ -642,6 +650,7 @@ onBeforeUnmount(() => {
   margin-top: 12px;
   display: flex;
   align-items: center;
+  gap:20px
 }
 
 .checkbox-label {

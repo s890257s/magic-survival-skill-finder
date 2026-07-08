@@ -15,6 +15,7 @@
   "ui.dict.baseSkill": "Base Skill",
   "ui.dict.enchant": "Enchant",
   "ui.dict.onlyUltimate": "Ultimate Skills Only",
+  "ui.dict.excludeConsumed": "Show Available Skills Based on Build",
   "ui.dict.resultCount": "{0} Results",
   "ui.dict.removeFilter": "Remove filter {0}",
   "ui.dict.noResults": "No skills found",

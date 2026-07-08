@@ -248,6 +248,7 @@
   "ui.dict.baseSkill": "基础技能",
   "ui.dict.enchant": "指定附魔",
   "ui.dict.onlyUltimate": "仅显示终极技能",
+  "ui.dict.excludeConsumed": "根据已配技能，仅显示可选组合",
   "ui.dict.resultCount": "符合 {0} 笔",
   "ui.dict.removeFilter": "移除筛选 {0}",
   "ui.dict.noResults": "找不到符合条件的技能",
