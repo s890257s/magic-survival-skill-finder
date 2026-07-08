@@ -71,7 +71,9 @@ const toggle = async () => {
   await nextTick()
   if (searchInputRef.value) {
     // preventScroll：聚焦引發的捲動會被 DropdownPanel 誤判為外部捲動而關閉面板
-    searchInputRef.value.focus({ preventScroll: true })
+    if (window.innerWidth >= 768) {
+      searchInputRef.value.focus({ preventScroll: true })
+    }
   }
 }
 

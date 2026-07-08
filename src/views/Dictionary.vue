@@ -564,8 +564,14 @@ onBeforeUnmount(() => {
 
 .filter-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
+}
+
+@media (min-width: 576px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .result-bar {
@@ -650,7 +656,8 @@ onBeforeUnmount(() => {
   margin-top: 12px;
   display: flex;
   align-items: center;
-  gap:20px
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .checkbox-label {

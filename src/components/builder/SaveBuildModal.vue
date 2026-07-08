@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import Modal from '@/components/ui/Modal.vue'
@@ -17,11 +17,12 @@ const toastStore = useToastStore()
 const { t } = useI18n()
 
 const saveNameInput = ref('')
+const saveNameInputRef = ref(null)
 const saveMode = ref('new')
 
 const savedBuilds = computed(() => favoritesStore.savedBuilds)
 
-watch(() => props.show, (newShow) => {
+watch(() => props.show, async (newShow) => {
   if (newShow) {
     if (savedBuilds.value.length >= favoritesStore.maxSavedBuilds) {
       saveMode.value = savedBuilds.value[0].id
@@ -29,6 +30,10 @@ watch(() => props.show, (newShow) => {
     } else {
       saveMode.value = 'new'
       saveNameInput.value = `${t('ui.builder.defaultSaveName')} ${savedBuilds.value.length + 1}`
+    }
+    await nextTick()
+    if (saveNameInputRef.value && window.innerWidth >= 768) {
+      saveNameInputRef.value.focus()
     }
   }
 })
@@ -65,12 +70,12 @@ const confirmSave = () => {
       <div class="save-field">
         <label>{{ t('ui.builder.savePlaceholder') }}</label>
         <input
+          ref="saveNameInputRef"
           type="text"
           v-model="saveNameInput"
           :placeholder="t('ui.builder.savePlaceholder')"
           class="text-input"
           @keyup.enter="confirmSave"
-          v-focus
         />
       </div>
       <div class="save-field">
