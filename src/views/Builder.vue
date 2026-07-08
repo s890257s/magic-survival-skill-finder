@@ -106,12 +106,24 @@ const processImportData = (obj) => {
 
 const executeImport = () => {
   if (!importData.value) return
+  const backupCurrent = [...favoritesStore.favoriteIds]
+  const backupSaves = [...favoritesStore.savedBuilds]
+  
   if (importData.value.type === 'current') {
     favoritesStore.setFavorites(importData.value.data)
+    toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
+      duration: 6000,
+      actionLabel: t('ui.restore'),
+      onAction: () => favoritesStore.setFavorites(backupCurrent)
+    })
   } else if (importData.value.type === 'saves') {
     favoritesStore.setSavedBuilds(importData.value.data)
+    toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
+      duration: 6000,
+      actionLabel: t('ui.restore'),
+      onAction: () => favoritesStore.setSavedBuilds(backupSaves)
+    })
   }
-  toastStore.showToast(t('ui.builder.importSuccess'), 'success')
   router.replace({ query: {} })
   importData.value = null
 }

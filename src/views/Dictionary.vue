@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import Sortable from 'sortablejs'
 import { Search, Pin, Sparkles } from '@lucide/vue'
 import { skillsData } from '@/data'
+import { gameVersion } from '@/data/meta'
+import HeaderActions from '@/components/layout/HeaderActions.vue'
 import SkillCard from '@/components/SkillCard.vue'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -12,9 +14,7 @@ import EmptyState from '@/components/ui/EmptyState.vue'
 import BuildSummary from '@/components/builder/BuildSummary.vue'
 import { useI18n } from '@/composables/useI18n'
 
-import DictionaryHeader from '@/components/dictionary/DictionaryHeader.vue'
-import DictionaryFilterPanel from '@/components/dictionary/DictionaryFilterPanel.vue'
-import DictionaryResultBar from '@/components/dictionary/DictionaryResultBar.vue'
+import DictionaryTopBar from '@/components/dictionary/DictionaryTopBar.vue'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
@@ -211,12 +211,20 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="dictionary-view">
-    <header class="header">
-      <DictionaryHeader v-model="filters.search" />
-      <DictionaryFilterPanel />
-      <DictionaryResultBar :resultCount="filteredSkills.length" />
-    </header>
-
+    <div class="app-header-container">
+      <div class="app-header-content">
+        <div class="app-header">
+          <h1 class="app-title">
+            {{ t('ui.magicSurvival') }}
+            <span class="version-tag">v{{ gameVersion }}</span>
+          </h1>
+        </div>
+        <div class="header-actions-row">
+          <HeaderActions />
+        </div>
+      </div>
+      <hr class="header-divider" />
+    </div>
     <div class="list-area" ref="listTop">
       <!-- Section 1: Build Summary -->
       <div class="section-container">
@@ -241,6 +249,53 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
+      <!-- Section 2: Pinned Skills -->
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-title">
+            <Pin :size="18" class="section-icon" />
+            <span>{{ t('ui.dict.pinnedSkills') }}</span>
+            <span class="count-badge">{{ pinnedStore.pinnedIds.length }}</span>
+          </div>
+          <div class="section-actions">
+            <button class="btn-text danger" @click="unpinAll" :disabled="pinnedInView.length === 0">
+              {{ t('ui.dict.unpinAll') }}
+            </button>
+            <div class="action-divider"></div>
+            <button class="btn-text" @click="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandAll') }}</button>
+            <button class="btn-text" @click="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+          </div>
+        </div>
+        
+        <div v-if="pinnedInView.length === 0" class="section-empty-state">
+          {{ t('ui.dict.emptyPinned') }}
+        </div>
+        <div v-else ref="pinnedListRef" class="skill-list pinned-list">
+          <SkillCard
+            v-for="(skill, index) in pinnedInView"
+            :key="skill.id"
+            ref="pinnedCards"
+            :data-id="skill.id"
+            :skill="skill"
+            clickableBases
+            pinnable
+            :reorderable="pinnedInView.length > 1"
+            :isFirst="index === 0"
+            :isLast="index === pinnedInView.length - 1"
+            :pinOrder="index + 1"
+            @move="(delta) => onMovePinned(skill, delta)"
+            @select-base="onSelectBase"
+            @select-enchant="onSelectEnchant"
+            @select-subject="onSelectSubject"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- DictionaryTopBar -->
+    <DictionaryTopBar v-model="filters.search" :resultCount="filteredSkills.length" />
+
+    <div class="list-area">
       <!-- Main Content Empty State (Filters) -->
       <EmptyState
         v-if="filteredSkills.length === 0"
@@ -254,50 +309,8 @@ onBeforeUnmount(() => {
         </template>
       </EmptyState>
 
-      <!-- Results -->
+      <!-- Results (Other Skills) -->
       <div class="results-area" v-else>
-        <!-- Section 2: Pinned Skills -->
-        <div class="section-container">
-          <div class="section-header">
-            <div class="section-title">
-              <Pin :size="18" class="section-icon" />
-              <span>{{ t('ui.dict.pinnedSkills') }}</span>
-              <span class="count-badge">{{ pinnedStore.pinnedIds.length }}</span>
-            </div>
-            <div class="section-actions">
-              <button class="btn-text danger" @click="unpinAll" :disabled="pinnedInView.length === 0">
-                {{ t('ui.dict.unpinAll') }}
-              </button>
-              <div class="action-divider"></div>
-              <button class="btn-text" @click="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandAll') }}</button>
-              <button class="btn-text" @click="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseAll') }}</button>
-            </div>
-          </div>
-          
-          <div v-if="pinnedInView.length === 0" class="section-empty-state">
-            {{ t('ui.dict.emptyPinned') }}
-          </div>
-          <div v-else ref="pinnedListRef" class="skill-list pinned-list">
-            <SkillCard
-              v-for="(skill, index) in pinnedInView"
-              :key="skill.id"
-              ref="pinnedCards"
-              :data-id="skill.id"
-              :skill="skill"
-              clickableBases
-              pinnable
-              :reorderable="pinnedInView.length > 1"
-              :isFirst="index === 0"
-              :isLast="index === pinnedInView.length - 1"
-              :pinOrder="index + 1"
-              @move="(delta) => onMovePinned(skill, delta)"
-              @select-base="onSelectBase"
-              @select-enchant="onSelectEnchant"
-              @select-subject="onSelectSubject"
-            />
-          </div>
-        </div>
-
         <!-- Section 3: Other Skills -->
         <div class="section-container">
           <div class="section-header">
@@ -339,15 +352,66 @@ onBeforeUnmount(() => {
   min-height: 100%;
 }
 
-.header {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
-  background: var(--bg-dark);
-  padding: 16px;
-  border-bottom: 1px solid var(--glass-border);
-  transition: background-color 0.3s ease;
+.app-header-container {
+  padding: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
 }
+
+.app-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .app-header-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+}
+
+.header-actions-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-divider {
+  border: 0;
+  height: 1px;
+  background: var(--glass-border);
+  margin: 16px 0;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: var(--name-glow);
+}
+
+.version-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-cyan-border);
+  box-shadow: 0 0 10px var(--accent-cyan-glow);
+  letter-spacing: 0.5px;
+}
+
 
 .list-area {
   scroll-margin-top: 96px;

@@ -64,19 +64,25 @@ const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
 
 const togglePin = () => {
+  const pinAction = () => pinnedStore.togglePin(props.skill.id)
   pinnedStore.togglePin(props.skill.id)
   toastStore.showToast(
     isPinned.value
       ? t('ui.card.pinned', t(props.skill.name))
       : t('ui.card.unpinned', t(props.skill.name)),
     'info',
+    { duration: 4000, actionLabel: t('ui.restore'), onAction: pinAction }
   )
 }
 
 const toggle = () => {
   if (isFavorite.value) {
     favoritesStore.toggleFavorite(props.skill.id)
-    toastStore.showToast(t('ui.card.removed', t(props.skill.name)), 'info')
+    toastStore.showToast(t('ui.card.removed', t(props.skill.name)), 'info', {
+      duration: 4000,
+      actionLabel: t('ui.restore'),
+      onAction: () => favoritesStore.toggleFavorite(props.skill.id)
+    })
     return
   }
 
@@ -87,16 +93,24 @@ const toggle = () => {
     const detail = hits
       .map((h) => t('ui.card.conflictDetailItem', t(h.base), t(h.skillName)))
       .join('、')
-    toastStore.showToast(t('ui.card.conflictDetail', detail), 'danger', { duration: 4500 })
+    toastStore.showToast(t('ui.card.conflictDetail', detail), 'danger', { 
+      duration: 6000, 
+      actionLabel: t('ui.restore'),
+      onAction: () => {
+        favoritesStore.toggleFavorite(props.skill.id)
+      }
+    })
   } else if (favoritesStore.isOverLimit) {
     toastStore.showToast(
       t('ui.card.addedOverLimit', favoritesStore.count, favoritesStore.maxSlots),
       'warning',
+      { duration: 4000, actionLabel: t('ui.restore'), onAction: () => favoritesStore.toggleFavorite(props.skill.id) }
     )
   } else {
     toastStore.showToast(
       t('ui.card.added', t(props.skill.name), favoritesStore.count, favoritesStore.maxSlots),
       'success',
+      { duration: 4000, actionLabel: t('ui.restore'), onAction: () => favoritesStore.toggleFavorite(props.skill.id) }
     )
   }
 }
