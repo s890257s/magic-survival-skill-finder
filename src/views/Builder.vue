@@ -146,7 +146,10 @@ let gridSortable = null
 const initSortable = () => {
   if (skillGridRef.value && !gridSortable) {
     gridSortable = Sortable.create(skillGridRef.value, {
-      handle: '.drag-handle',
+      delay: 200,
+      delayOnTouchOnly: true,
+      filter: 'button, .pin-btn, .favorite-btn, .formula-value, .magic-tag, .expand-icon',
+      preventOnFilter: false,
       animation: 150,
       onEnd: handleSortEnd
     })

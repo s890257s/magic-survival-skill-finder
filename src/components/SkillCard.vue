@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { Check, Plus, Pin, AlertTriangle, ChevronDown, Crown, GripVertical } from '@lucide/vue'
+import { X, Plus, Pin, AlertTriangle, ChevronDown, Crown, GripVertical } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -160,15 +160,7 @@ defineExpose({
         </div>
       </div>
       <div class="header-actions">
-        <div 
-          v-if="reorderable" 
-          class="drag-handle" 
-          aria-label="拖曳排序" 
-          title="拖曳排序"
-          @click.stop
-        >
-          <GripVertical :size="20" />
-        </div>
+
         <button
           v-if="pinnable"
           class="pin-btn"
@@ -190,9 +182,9 @@ defineExpose({
           :aria-pressed="isFavorite"
           :aria-label="isFavorite ? '移出配技' : '加入配技'"
         >
-          <Check
+          <X
             v-if="isFavorite"
-            color="var(--accent-purple)"
+            color="var(--danger)"
             :size="24"
           />
           <Plus
@@ -431,23 +423,6 @@ defineExpose({
   opacity: 0;
 }
 
-.drag-handle {
-  cursor: grab;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  transition: color 0.2s;
-}
-
-.drag-handle:hover {
-  color: var(--text-primary);
-}
-
-.drag-handle:active {
-  cursor: grabbing;
-}
 
 .favorite-btn,
 .pin-btn {

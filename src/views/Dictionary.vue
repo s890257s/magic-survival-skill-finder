@@ -149,7 +149,10 @@ let sortable = null
 const initSortable = () => {
   if (pinnedListRef.value && !sortable) {
     sortable = Sortable.create(pinnedListRef.value, {
-      handle: '.drag-handle',
+      delay: 200,
+      delayOnTouchOnly: true,
+      filter: 'button, .pin-btn, .favorite-btn, .formula-value, .magic-tag, .expand-icon',
+      preventOnFilter: false,
       animation: 150,
       onEnd: handleSortEnd
     })
