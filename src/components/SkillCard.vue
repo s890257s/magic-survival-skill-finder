@@ -225,32 +225,34 @@ defineExpose({
               <em :class="item.consume ? 'consume' : 'keep'">{{ item.consume ? '消耗' : '保留' }}</em>
             </span>
             <div class="formula-name-row">
-              <GameIcon :name="item.part.name" category="skill" :size="28" />
+              <GameIcon :name="item.part.name" category="skill" :size="32" />
               <div class="formula-title-group">
-                <component
-                  :is="clickableBases ? 'button' : 'span'"
-                  class="formula-value"
-                  :class="{
-                    clickable: clickableBases,
-                    'in-conflict': conflictBases.includes(item.part.name),
-                  }"
-                  @click="onBaseClick(item.part.name)"
-                >
-                  {{ t(item.part.name) }}
-                </component>
-                <span v-if="settingsStore.showEnglish" class="formula-en">{{
-                  item.part.name
-                }}</span>
+                <div class="base-name-group">
+                  <component
+                    :is="clickableBases ? 'button' : 'span'"
+                    class="formula-value"
+                    :class="{
+                      clickable: clickableBases,
+                      'in-conflict': conflictBases.includes(item.part.name),
+                    }"
+                    @click="onBaseClick(item.part.name)"
+                  >
+                    {{ t(item.part.name) }}
+                  </component>
+                  <span v-if="settingsStore.showEnglish" class="formula-en">{{
+                    item.part.name
+                  }}</span>
+                </div>
+                <MagicTag
+                  v-if="item.part.enchant"
+                  :text="t(item.part.enchant)"
+                  :enText="settingsStore.showEnglish ? item.part.enchant : ''"
+                  type="primary"
+                  :class="{ 'clickable-tag': clickableBases }"
+                  @click="onEnchantClick(item.part.name, item.part.enchant)"
+                />
               </div>
             </div>
-            <MagicTag
-              v-if="item.part.enchant"
-              :text="t(item.part.enchant)"
-              :enText="settingsStore.showEnglish ? item.part.enchant : ''"
-              type="primary"
-              :class="{ 'clickable-tag': clickableBases }"
-              @click="onEnchantClick(item.part.name, item.part.enchant)"
-            />
           </div>
         </template>
       </div>
@@ -282,7 +284,11 @@ defineExpose({
           v-if="skill.requirements.school"
           :text="`${t(skill.requirements.school)} ${t('ui.builder.exportSchool')}`"
           type="primary"
-        />
+        >
+          <template #icon>
+            <GameIcon :name="skill.requirements.school" category="school" :size="14" />
+          </template>
+        </MagicTag>
       </div>
     </div>
       </div>
@@ -348,7 +354,14 @@ defineExpose({
 .formula-title-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 4px;
+}
+
+.base-name-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 2px;
 }
 
@@ -495,7 +508,7 @@ defineExpose({
 .formula-item {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 6px;
   flex: 1;
   min-width: 0;
@@ -535,7 +548,7 @@ defineExpose({
   border: none;
   padding: 0;
   font-family: inherit;
-  text-align: left;
+  text-align: center;
 }
 
 .formula-value.clickable {

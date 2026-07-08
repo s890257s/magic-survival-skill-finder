@@ -5,6 +5,7 @@ import { Sparkles, Trash2, ChevronUp, ChevronDown } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
+import GameIcon from '@/components/ui/GameIcon.vue'
 
 const props = defineProps({
   collapsible: {
@@ -109,34 +110,75 @@ onBeforeUnmount(() => {
       </div>
     </div>
     
-    <div v-if="!isCollapsed" class="summary-list" ref="summaryListRef">
-      <div v-for="(skill, index) in favoriteSkills" :key="'summary-' + skill.id" :data-id="skill.id" class="summary-item" :class="{ 'last-item': index === favoriteSkills.length - 1 }">
-        <span class="summary-actions">
-          <button class="action-icon" :disabled="index === 0" @click.stop="favoritesStore.moveFavorite(skill.id, -1)" aria-label="上移">
-            <ChevronUp :size="16" />
-          </button>
-          <button class="action-icon" :disabled="index === favoriteSkills.length - 1" @click.stop="favoritesStore.moveFavorite(skill.id, 1)" aria-label="下移">
-            <ChevronDown :size="16" />
-          </button>
-        </span>
-        <span class="skill-name">{{ t(skill.name) }}</span>
-        <span class="operator">=</span>
-        <span class="skill-part main-skill">
-          {{ t(skill.mainSkill.name) }}
-          <span v-if="skill.mainSkill.enchant" class="enchant">({{ t(skill.mainSkill.enchant) }})</span>
-        </span>
-        <span class="operator">+</span>
-        <span class="skill-part sub-skill">
-          {{ t(skill.subSkill.name) }}
-          <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
-        </span>
-        <span class="summary-actions">
-          <button class="action-icon delete-icon" @click.stop="removeWithUndo(skill)" aria-label="移除">
-            <Trash2 :size="16" />
-          </button>
-        </span>
-      </div>
-    </div>
+    <table v-if="!isCollapsed" class="summary-table">
+      <colgroup>
+        <col class="col-actions" />
+        <col class="col-icon" />
+        <col class="col-fusion-text" />
+        <col class="col-operator" />
+        <col class="col-icon" />
+        <col class="col-main-text" />
+        <col class="col-operator" />
+        <col class="col-icon" />
+        <col class="col-sub-text" />
+        <col class="col-actions" />
+      </colgroup>
+      <tbody ref="summaryListRef">
+        <tr v-for="(skill, index) in favoriteSkills" :key="skill.id" class="summary-row" :data-id="skill.id">
+          <td class="td-actions">
+            <button class="action-icon" @click.stop="favoritesStore.moveFavorite(skill.id, -1)" :disabled="index === 0" aria-label="上移">
+              <ChevronUp :size="16" />
+            </button>
+            <button class="action-icon" @click.stop="favoritesStore.moveFavorite(skill.id, 1)" :disabled="index === favoriteSkills.length - 1" aria-label="下移">
+              <ChevronDown :size="16" />
+            </button>
+          </td>
+          
+          <td class="td-icon">
+            <GameIcon :name="skill.name" category="fusion" :size="28" class="summary-icon" />
+          </td>
+          <td class="td-text fusion-text">
+            <div class="part-title-group">
+              <div class="part-name">{{ t(skill.name) }}</div>
+            </div>
+          </td>
+
+          <td class="td-operator">
+            <span class="operator">=</span>
+          </td>
+
+          <td class="td-icon">
+            <GameIcon :name="skill.mainSkill.name" category="skill" :size="28" class="part-icon" />
+          </td>
+          <td class="td-text main-text">
+            <div class="part-title-group">
+              <div class="part-name">{{ t(skill.mainSkill.name) }}</div>
+              <span v-if="skill.mainSkill.enchant" class="enchant">({{ t(skill.mainSkill.enchant) }})</span>
+            </div>
+          </td>
+
+          <td class="td-operator">
+            <span class="operator">+</span>
+          </td>
+
+          <td class="td-icon">
+            <GameIcon :name="skill.subSkill.name" category="skill" :size="28" class="part-icon" />
+          </td>
+          <td class="td-text sub-text">
+            <div class="part-title-group">
+              <div class="part-name">{{ t(skill.subSkill.name) }}</div>
+              <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
+            </div>
+          </td>
+
+          <td class="td-actions">
+            <button class="action-icon delete-icon" @click.stop="removeWithUndo(skill)" aria-label="移除">
+              <Trash2 :size="16" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -175,42 +217,46 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
 }
 
-.summary-list {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto auto 1fr auto;
-  align-items: center;
-  column-gap: 8px;
-  padding: 16px;
-  border-radius: 12px;
+.summary-table {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  table-layout: fixed; /* Ensures column widths are respected */
 }
 
-.summary-item {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  user-select: none;
-}
+.summary-table col.col-actions { width: 3%; } /* 操作按鈕 */
+.summary-table col.col-icon { width: 4%; } /* icon */
+.summary-table col.col-fusion-text { width: 7%; }  /* 組合技能 */
+.summary-table col.col-operator { width: 4%; }  /* 運算符  */
+.summary-table col.col-main-text { width: 7%; }  /* 主技能 */
+.summary-table col.col-sub-text { width: 7%; }  /* 副技能 */
 
-.summary-item > span {
-  padding: 10px 0;
+.summary-row {
   border-bottom: 1px dashed var(--glass-border);
 }
 
-.summary-item.last-item > span {
+.summary-row:last-child {
   border-bottom: none;
 }
 
-.summary-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: center;
-  justify-content: center;
+.summary-row td {
+  padding: 10px 4px;
+  vertical-align: middle;
   height: 100%;
 }
 
-.summary-actions:last-child {
-  flex-direction: row;
+.td-actions {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.td-actions .action-icon {
+  margin: 0 auto 4px auto;
+}
+
+.td-actions .action-icon:last-child {
+  margin-bottom: 0;
 }
 
 .action-icon {
@@ -245,46 +291,54 @@ onBeforeUnmount(() => {
   color: var(--danger);
 }
 
-.skill-name {
+.td-icon {
+  text-align: center;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.td-text {
+  text-align: center;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.part-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+}
+
+.fusion-text {
   color: var(--accent-cyan);
   font-weight: 700;
   text-shadow: 0 0 8px var(--accent-cyan-glow);
-  text-align: right;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+}
+
+.main-text {
+  color: var(--accent-cyan);
+}
+
+.sub-text {
+  color: var(--accent-purple);
+}
+
+.td-operator {
+  text-align: center;
 }
 
 .operator {
   color: var(--text-muted);
   font-weight: bold;
-  text-align: center;
-  padding: 10px 4px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.skill-part {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  line-height: 1.2;
-}
 
-.main-skill {
-  color: var(--accent-cyan);
-  align-items: center;
-}
-
-.sub-skill {
-  color: var(--accent-purple);
-  align-items: flex-start;
-}
 
 .enchant {
   font-size: 0.75em;
   opacity: 0.85;
-  margin-top: 2px;
 }
 </style>

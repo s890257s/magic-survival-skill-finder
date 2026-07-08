@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
+import GameIcon from '@/components/ui/GameIcon.vue'
 import { Save, Trash2, Download } from '@lucide/vue'
 import { useI18n } from '@/composables/useI18n'
 import { skillsById } from '@/data'
@@ -34,17 +35,21 @@ const finishEditingBuild = () => {
   }
 }
 
-// Compute the enriched builds array with pre-calculated summary lines
+// Compute the enriched builds array with pre-calculated summary objects
 const enrichedSavedBuilds = computed(() => {
   return favoritesStore.savedBuilds.map(build => {
     let summaryLines = []
     if (build.skills && build.skills.length > 0) {
       summaryLines = build.skills.map(id => {
         const s = skillsById.get(id)
-        if (!s) return ''
-        const mainEnchant = s.mainSkill?.enchant ? `(${t(s.mainSkill.enchant)})` : ''
-        const subEnchant = s.subSkill?.enchant ? `(${t(s.subSkill.enchant)})` : ''
-        return `${t(s.name)}=${t(s.mainSkill?.name)}${mainEnchant}+${t(s.subSkill?.name)}${subEnchant}`
+        if (!s) return null
+        return {
+          fusionName: s.name,
+          mainName: s.mainSkill?.name,
+          mainEnchant: s.mainSkill?.enchant,
+          subName: s.subSkill?.name,
+          subEnchant: s.subSkill?.enchant
+        }
       }).filter(Boolean)
     }
     return {
@@ -83,7 +88,9 @@ const enrichedSavedBuilds = computed(() => {
         </div>
         <div class="saved-build-summary">
           <div v-for="(line, idx) in build.summaryLines" :key="idx" class="summary-line">
-            {{ line }}
+            <span class="icon-text"><GameIcon :name="line.fusionName" category="fusion" :size="12" /> {{ t(line.fusionName) }}</span> = 
+            <span class="icon-text"><GameIcon :name="line.mainName" category="skill" :size="12" /> {{ t(line.mainName) }}</span><span v-if="line.mainEnchant">({{ t(line.mainEnchant) }})</span> + 
+            <span class="icon-text"><GameIcon :name="line.subName" category="skill" :size="12" /> {{ t(line.subName) }}</span><span v-if="line.subEnchant">({{ t(line.subEnchant) }})</span>
           </div>
         </div>
         <div class="saved-build-actions">
@@ -200,6 +207,15 @@ const enrichedSavedBuilds = computed(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .saved-build-actions {
