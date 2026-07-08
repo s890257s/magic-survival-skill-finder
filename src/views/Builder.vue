@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import Sortable from 'sortablejs'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import SkillCard from '@/components/SkillCard.vue'
@@ -9,7 +10,7 @@ import Modal from '@/components/ui/Modal.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import SavedBuildsPanel from '@/components/builder/SavedBuildsPanel.vue'
 import SaveBuildModal from '@/components/builder/SaveBuildModal.vue'
-import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Sparkles, Save } from '@lucide/vue'
+import { Share2, Trash2, AlertTriangle, BookOpen, Layers, Sparkles, Save, ChevronUp, ChevronDown } from '@lucide/vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/composables/useI18n'
 import { exportDataToToken, parseTokenToData } from '@/utils/share'
@@ -137,6 +138,75 @@ const clearAll = () => {
     favoritesStore.setFavorites(backup),
   )
 }
+
+const removeWithUndo = (skill) => {
+  const backup = [...favoritesStore.favoriteIds]
+  favoritesStore.toggleFavorite(skill.id)
+  toastStore.showUndoToast(t('ui.card.removed', t(skill.name)), t('ui.restore'), () =>
+    favoritesStore.setFavorites(backup),
+  )
+}
+
+const summaryListRef = ref(null)
+const skillGridRef = ref(null)
+let summarySortable = null
+let gridSortable = null
+
+const initSortable = () => {
+  if (summaryListRef.value && !summarySortable) {
+    summarySortable = Sortable.create(summaryListRef.value, {
+      delay: 250,
+      delayOnTouchOnly: true,
+      filter: '.summary-actions',
+      animation: 150,
+      onEnd: handleSortEnd
+    })
+  }
+
+  if (skillGridRef.value && !gridSortable) {
+    gridSortable = Sortable.create(skillGridRef.value, {
+      handle: '.drag-handle',
+      animation: 150,
+      onEnd: handleSortEnd
+    })
+  }
+}
+
+const handleSortEnd = (evt) => {
+  const { oldIndex, newIndex } = evt
+  if (oldIndex === newIndex) return
+
+  const newIds = [...favoritesStore.favoriteIds]
+  const movedId = newIds.splice(oldIndex, 1)[0]
+  newIds.splice(newIndex, 0, movedId)
+
+  // 避免 Sortable 修改的 DOM 導致 Vue 的 virtual DOM 失步
+  const itemEl = evt.item
+  if (evt.from) {
+    const siblings = Array.from(evt.from.childNodes).filter(node => node.nodeType === 1)
+    if (oldIndex < siblings.length) {
+      evt.from.insertBefore(itemEl, siblings[oldIndex])
+    } else {
+      evt.from.appendChild(itemEl)
+    }
+  }
+
+  favoritesStore.setFavorites(newIds)
+}
+
+watch(() => favoriteSkills.value.length, async () => {
+  await nextTick()
+  initSortable()
+})
+
+onMounted(() => {
+  initSortable()
+})
+
+onBeforeUnmount(() => {
+  if (summarySortable) summarySortable.destroy()
+  if (gridSortable) gridSortable.destroy()
+})
 </script>
 
 <template>
@@ -181,8 +251,16 @@ const clearAll = () => {
 
       <div class="build-summary glass-panel" v-if="favoriteSkills.length > 0">
         <h3 class="summary-title"><Sparkles :size="18" /> {{ t('ui.builder.summaryTitle') }}</h3>
-        <div class="summary-list">
-          <div v-for="(skill, index) in favoriteSkills" :key="'summary-' + skill.id" class="summary-item" :class="{ 'last-item': index === favoriteSkills.length - 1 }">
+        <div class="summary-list" ref="summaryListRef">
+          <div v-for="(skill, index) in favoriteSkills" :key="'summary-' + skill.id" :data-id="skill.id" class="summary-item" :class="{ 'last-item': index === favoriteSkills.length - 1 }">
+            <span class="summary-actions">
+              <button class="action-icon" :disabled="index === 0" @click="favoritesStore.moveFavorite(skill.id, -1)" aria-label="上移">
+                <ChevronUp :size="16" />
+              </button>
+              <button class="action-icon" :disabled="index === favoriteSkills.length - 1" @click="favoritesStore.moveFavorite(skill.id, 1)" aria-label="下移">
+                <ChevronDown :size="16" />
+              </button>
+            </span>
             <span class="skill-name">{{ t(skill.name) }}</span>
             <span class="operator">=</span>
             <span class="skill-part main-skill">
@@ -193,6 +271,11 @@ const clearAll = () => {
             <span class="skill-part sub-skill">
               {{ t(skill.subSkill.name) }}
               <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
+            </span>
+            <span class="summary-actions">
+              <button class="action-icon delete-icon" @click="removeWithUndo(skill)" aria-label="移除">
+                <Trash2 :size="16" />
+              </button>
             </span>
           </div>
         </div>
@@ -210,10 +293,11 @@ const clearAll = () => {
         </template>
       </EmptyState>
 
-      <TransitionGroup v-else tag="div" name="card-move" class="skill-grid">
+      <div v-else ref="skillGridRef" class="skill-grid">
         <SkillCard
           v-for="(skill, index) in favoriteSkills"
           :key="skill.id"
+          :data-id="skill.id"
           :skill="skill"
           :hasConflict="conflicts.has(skill.id)"
           :conflictBases="conflicts.get(skill.id) || []"
@@ -222,7 +306,7 @@ const clearAll = () => {
           :isLast="index === favoriteSkills.length - 1"
           @move="(delta) => favoritesStore.moveFavorite(skill.id, delta)"
         />
-      </TransitionGroup>
+      </div>
     </div>
 
     <Modal :show="showShareModal" :title="t('ui.builder.shareModalTitle')" @close="showShareModal = false">
@@ -374,13 +458,16 @@ const clearAll = () => {
 
 .summary-list {
   display: grid;
-  grid-template-columns: 1fr auto auto auto 1fr;
+  grid-template-columns: auto 1fr auto auto auto 1fr auto;
   align-items: center;
   column-gap: 8px;
 }
 
 .summary-item {
-  display: contents;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  user-select: none; /* 防止長按文字時反白 */
 }
 
 .summary-item > span {
@@ -390,6 +477,51 @@ const clearAll = () => {
 
 .summary-item.last-item > span {
   border-bottom: none;
+}
+
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.summary-actions:last-child {
+  flex-direction: row;
+}
+
+.action-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-icon:hover:not(:disabled) {
+  background: var(--glass-border);
+  color: var(--text-primary);
+}
+
+.action-icon:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.action-icon.delete-icon {
+  padding: 6px;
+}
+
+.action-icon.delete-icon:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .skill-name {

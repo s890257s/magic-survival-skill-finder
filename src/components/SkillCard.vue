@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Heart, Pin, AlertTriangle, ChevronUp, ChevronDown, Crown } from '@lucide/vue'
+import { Heart, Pin, AlertTriangle, ChevronUp, ChevronDown, Crown, GripVertical } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -147,6 +147,9 @@ const onSubjectClick = (subjectName) => {
         </div>
       </div>
       <div class="header-actions">
+        <div v-if="reorderable" class="drag-handle" aria-label="拖曳排序" title="拖曳排序">
+          <GripVertical :size="20" />
+        </div>
         <div v-if="reorderable" class="reorder-group">
           <button
             class="btn btn-icon"
@@ -331,6 +334,24 @@ const onSubjectClick = (subjectName) => {
 .reorder-group {
   display: flex;
   gap: 2px;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.drag-handle:hover {
+  color: var(--text-primary);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }
 
 .favorite-btn,

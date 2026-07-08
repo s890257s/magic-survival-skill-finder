@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import Sortable from 'sortablejs'
 import { Search, Filter, X, Pin } from '@lucide/vue'
 import {
   skillsData,
@@ -180,6 +181,78 @@ const unpinAll = () => {
     pinnedStore.setPins(backup),
   )
 }
+
+const skillListRef = ref(null)
+let sortable = null
+
+const initSortable = () => {
+  if (skillListRef.value && !sortable) {
+    sortable = Sortable.create(skillListRef.value, {
+      handle: '.drag-handle',
+      animation: 150,
+      onMove: (evt) => {
+        // 只允許在帶有 drag-handle 的卡片(頂置區)內互換位置
+        const relatedItem = evt.related
+        return relatedItem && relatedItem.querySelector('.drag-handle') !== null
+      },
+      onEnd: handleSortEnd
+    })
+  }
+}
+
+const handleSortEnd = (evt) => {
+  const { oldIndex, newIndex } = evt
+  if (oldIndex === newIndex) return
+
+  const itemEl = evt.item
+  if (evt.from) {
+    const siblings = Array.from(evt.from.childNodes).filter(node => node.nodeType === 1)
+    if (oldIndex < siblings.length) {
+      evt.from.insertBefore(itemEl, siblings[oldIndex])
+    } else {
+      evt.from.appendChild(itemEl)
+    }
+  }
+
+  let targetIndex = newIndex
+  if (targetIndex >= pinnedInView.value.length) {
+    targetIndex = pinnedInView.value.length - 1
+  }
+
+  const visible = pinnedInView.value
+  const skillId = visible[oldIndex]?.id
+  if (!skillId) return
+
+  const visibleIds = visible.map(s => s.id)
+  const moved = visibleIds.splice(oldIndex, 1)[0]
+  visibleIds.splice(targetIndex, 0, moved)
+  
+  const newPins = []
+  let visiblePtr = 0
+  for (const id of pinnedStore.pinnedIds) {
+    if (visible.some(s => s.id === id)) {
+      newPins.push(visibleIds[visiblePtr])
+      visiblePtr++
+    } else {
+      newPins.push(id)
+    }
+  }
+  
+  pinnedStore.setPins(newPins)
+}
+
+watch(() => displaySkills.value.length, async () => {
+  await nextTick()
+  initSortable()
+})
+
+onMounted(() => {
+  initSortable()
+})
+
+onBeforeUnmount(() => {
+  if (sortable) sortable.destroy()
+})
 </script>
 
 <template>
@@ -308,10 +381,11 @@ const unpinAll = () => {
           </span>
           <button class="btn btn-danger-text unpin-all-btn" @click="unpinAll">{{ t('ui.dict.unpinAll') }}</button>
         </div>
-        <TransitionGroup tag="div" name="card-move" class="skill-list">
+        <div ref="skillListRef" class="skill-list">
           <SkillCard
             v-for="(skill, index) in displaySkills"
             :key="skill.id"
+            :data-id="skill.id"
             :skill="skill"
             clickableBases
             pinnable
@@ -323,7 +397,7 @@ const unpinAll = () => {
             @select-enchant="onSelectEnchant"
             @select-subject="onSelectSubject"
           />
-        </TransitionGroup>
+        </div>
       </template>
     </div>
   </div>
