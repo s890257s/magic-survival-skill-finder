@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import Sortable from 'sortablejs'
-import { Search, Pin, Sparkles, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, Book } from '@lucide/vue'
+import { Search, Pin, Sparkles, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, Book, Share2, Save, FolderOpen, AlertTriangle, Layers } from '@lucide/vue'
 import { skillsData } from '@/data'
 import { gameVersion } from '@/data/meta'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
@@ -13,18 +13,146 @@ import { useDictionaryStore } from '@/stores/dictionary'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import BuildSummary from '@/components/builder/BuildSummary.vue'
 import { useI18n } from '@/composables/useI18n'
-
 import DictionaryTopBar from '@/components/dictionary/DictionaryTopBar.vue'
+
+// Import Builder components and utils
+import Modal from '@/components/ui/Modal.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
+import SavedBuildsPanel from '@/components/builder/SavedBuildsPanel.vue'
+import SaveBuildModal from '@/components/builder/SaveBuildModal.vue'
+import { useRouter, useRoute } from 'vue-router'
+import { exportDataToToken, parseTokenToData } from '@/utils/share'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const favoritesStore = useFavoritesStore()
 const dictionaryStore = useDictionaryStore()
 const { t } = useI18n()
+const router = useRouter()
+const route = useRoute()
 
 const filters = dictionaryStore.filters
 const ui = dictionaryStore.ui
 const { resetAll } = dictionaryStore
+
+const conflicts = computed(() => favoritesStore.conflicts)
+const savedBuilds = computed(() => favoritesStore.savedBuilds)
+
+const showShareModal = ref(false)
+const shareUrl = ref('')
+const showImportConfirm = ref(false)
+const importData = ref(null)
+const showExportChoiceModal = ref(false)
+const showSaveModal = ref(false)
+const showSavedBuildsModal = ref(false)
+
+const importConfirmMessage = computed(() =>
+  importData.value?.type === 'saves'
+    ? t('ui.builder.importSavesConfirmMsg')
+    : t('ui.builder.importConfirmMsg'),
+)
+
+const handleSaveClick = () => {
+  if (favoritesStore.favoriteSkills.length === 0) return
+  showSaveModal.value = true
+}
+
+const openExportModal = () => {
+  if (favoritesStore.favoriteSkills.length === 0 && savedBuilds.value.length === 0) {
+    toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+    return
+  }
+  if (savedBuilds.value.length === 0) {
+    doExport('current')
+  } else {
+    showExportChoiceModal.value = true
+  }
+}
+
+const copyWithFeedback = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
+  } catch {
+    toastStore.showToast(t('ui.builder.exportFail'), 'warning')
+  }
+}
+
+const doExport = async (type) => {
+  showExportChoiceModal.value = false
+  let dataObj
+  if (type === 'current') {
+    if (favoritesStore.favoriteSkills.length === 0) {
+      toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+      return
+    }
+    dataObj = { type: 'current', data: favoritesStore.favoriteSkills.map(s => s.id) }
+  } else if (type === 'saves') {
+    dataObj = { type: 'saves', data: savedBuilds.value }
+  }
+
+  const token = exportDataToToken(dataObj)
+  const base = window.location.origin + window.location.pathname
+  shareUrl.value = `${base}#/?share=${token}`
+
+  await copyWithFeedback(shareUrl.value)
+  showShareModal.value = true
+}
+
+const processImportData = (obj) => {
+  if (!obj || !obj.type || !obj.data) return
+  importData.value = obj
+
+  const isEmpty =
+    obj.type === 'saves'
+      ? favoritesStore.savedBuilds.length === 0
+      : favoritesStore.favoriteIds.length === 0
+  if (isEmpty) {
+    executeImport()
+  } else {
+    showImportConfirm.value = true
+  }
+}
+
+const executeImport = () => {
+  if (!importData.value) return
+  const backupCurrent = [...favoritesStore.favoriteIds]
+  const backupSaves = [...favoritesStore.savedBuilds]
+  
+  if (importData.value.type === 'current') {
+    favoritesStore.setFavorites(importData.value.data)
+    toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
+      duration: 6000,
+      actionLabel: t('ui.restore'),
+      onAction: () => favoritesStore.setFavorites(backupCurrent)
+    })
+  } else if (importData.value.type === 'saves') {
+    favoritesStore.setSavedBuilds(importData.value.data)
+    toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
+      duration: 6000,
+      actionLabel: t('ui.restore'),
+      onAction: () => favoritesStore.setSavedBuilds(backupSaves)
+    })
+  }
+  router.replace({ query: {} })
+  importData.value = null
+}
+
+const cancelImportAny = () => {
+  router.replace({ query: {} })
+  importData.value = null
+}
+
+watch(() => route.query.share, (newShare) => {
+  if (newShare) {
+    const obj = parseTokenToData(newShare)
+    if (obj) {
+      processImportData(obj)
+    } else {
+      router.replace({ query: {} })
+    }
+  }
+}, { immediate: true })
 
 const clearFavoritesWithUndo = () => {
   if (favoritesStore.favoriteIds.length === 0) return
@@ -257,6 +385,16 @@ onBeforeUnmount(() => {
           </div>
           <div class="section-actions">
             <template v-if="ui.isBuildSummaryExpanded">
+              <button class="btn-icon-text action-btn" @click.stop="showSavedBuildsModal = true" :title="t('ui.builder.savedBuilds')">
+                <FolderOpen :size="16" />
+              </button>
+              <button class="btn-icon-text action-btn" @click.stop="handleSaveClick" :disabled="favoritesStore.favoriteSkills.length === 0" :title="t('ui.builder.save')">
+                <Save :size="16" />
+              </button>
+              <button class="btn-icon-text action-btn" @click.stop="openExportModal" :title="t('ui.builder.export')">
+                <Share2 :size="16" />
+              </button>
+              <div class="action-divider"></div>
               <button class="btn-text danger" @click.stop="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
                 {{ t('ui.builder.clear') }}
               </button>
@@ -270,6 +408,16 @@ onBeforeUnmount(() => {
         </div>
         
         <div v-show="ui.isBuildSummaryExpanded">
+          <!-- Banners -->
+          <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
+            <Layers :size="16" />
+            <span>{{ t('ui.builder.limitWarning', favoritesStore.maxSlots) }}</span>
+          </div>
+          <div v-if="conflicts.size > 0" class="banner conflict-banner">
+            <AlertTriangle :size="16" />
+            <span>{{ t('ui.builder.conflictWarning') }}</span>
+          </div>
+          
           <div v-if="favoritesStore.favoriteSkills.length === 0" class="section-empty-state">
             {{ t('ui.builder.empty') }}
           </div>
@@ -395,6 +543,48 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+    
+    <!-- Modals -->
+    <Modal :show="showShareModal" :title="t('ui.builder.shareModalTitle')" @close="showShareModal = false">
+      <div class="share-content">
+        <input type="text" readonly :value="shareUrl" class="text-input" @click="$event.target.select()" />
+        <button class="btn btn-primary share-copy-btn" @click="copyWithFeedback(shareUrl)">
+          {{ t('ui.builder.copyUrl') }}
+        </button>
+      </div>
+    </Modal>
+
+    <ConfirmDialog
+      v-model:show="showImportConfirm"
+      :title="t('ui.builder.importConfirmTitle')"
+      :message="importConfirmMessage"
+      :confirmText="t('ui.builder.importConfirmTitle')"
+      :cancelText="t('ui.cancel')"
+      @confirm="executeImport"
+      @cancel="cancelImportAny"
+    />
+
+    <SaveBuildModal v-model:show="showSaveModal" />
+
+    <Modal :show="showExportChoiceModal" :title="t('ui.builder.exportChoiceTitle')" @close="showExportChoiceModal = false">
+      <div class="export-choice-content">
+        <button class="btn btn-primary export-btn" @click="doExport('current')" :disabled="favoritesStore.favoriteSkills.length === 0">
+          <Share2 :size="18" />
+          {{ t('ui.builder.exportCurrent') }}
+        </button>
+        <button class="btn btn-primary export-btn" @click="doExport('saves')">
+          <Save :size="18" />
+          {{ t('ui.builder.exportSaves') }} ({{ savedBuilds.length }})
+        </button>
+      </div>
+    </Modal>
+
+    <Modal :show="showSavedBuildsModal" :title="t('ui.builder.savedBuilds')" @close="showSavedBuildsModal = false">
+      <div v-if="savedBuilds.length === 0" class="section-empty-state">
+        {{ t('ui.builder.empty') }}
+      </div>
+      <SavedBuildsPanel v-else />
+    </Modal>
   </div>
 </template>
 
@@ -620,5 +810,72 @@ onBeforeUnmount(() => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.action-btn:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0 16px 12px 16px;
+  border-radius: 6px;
+}
+
+.conflict-banner {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--danger);
+}
+
+.limit-banner {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--warning);
+}
+
+.share-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.share-copy-btn {
+  align-self: flex-end;
+}
+
+.export-choice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.export-btn {
+  justify-content: center;
+  gap: 12px;
 }
 </style>

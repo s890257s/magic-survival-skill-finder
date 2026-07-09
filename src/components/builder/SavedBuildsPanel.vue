@@ -117,7 +117,9 @@ const enrichedSavedBuilds = computed(() => {
 
 <style scoped>
 .saved-builds-section {
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .section-header {
@@ -138,22 +140,20 @@ const enrichedSavedBuilds = computed(() => {
 
 .saved-builds-container {
   display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scroll-snap-type: x mandatory;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .saved-build-card {
-  min-width: 260px;
-  max-width: 280px;
-  flex-shrink: 0;
+  width: 100%;
   border-radius: 12px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  scroll-snap-align: start;
 }
 
 .saved-build-header {

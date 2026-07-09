@@ -1,6 +1,5 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import BottomNav from '@/components/layout/BottomNav.vue'
 import Toast from '@/components/ui/Toast.vue'
 import { useToastStore } from '@/stores/toast'
 import { useThemeStore } from '@/stores/theme'
@@ -22,8 +21,6 @@ const handleAction = (toast) => {
       </transition>
     </RouterView>
   </main>
-
-  <BottomNav />
 
   <!-- Global Toasts -->
   <div class="toast-stack" role="status" aria-live="polite">
@@ -69,7 +66,7 @@ const handleAction = (toast) => {
 /* Toast Stack */
 .toast-stack {
   position: fixed;
-  bottom: 90px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-toast, 2000);
