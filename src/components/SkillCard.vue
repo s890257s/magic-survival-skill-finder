@@ -205,7 +205,7 @@ defineExpose({
 
     <div class="skill-footer" v-if="skill.requirements?.ultimate">
       <div class="ultimate-area">
-        <Crown :size="16" class="ultimate-icon" />
+        <GameIcon :name="skill.requirements.ultimate" category="ultimate" :size="16" class="ultimate-icon" />
         <span class="ultimate-text">{{ t('ui.card.ultimateSkill', t(skill.requirements.ultimate)) }}</span>
         <span class="ultimate-operator">=</span>
         <MagicTag

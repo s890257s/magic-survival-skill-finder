@@ -5,6 +5,8 @@
 export const iconMap = {
   // public/icons/fusion/ — 融合技能
   fusion: {},
+  // public/icons/ultimate/ — 終極技
+  ultimate: {},
   // public/icons/skills/ — 基礎技能
   skill: {},
   // public/icons/subjects/ — 實驗體
@@ -15,6 +17,7 @@ export const iconMap = {
 
 export const iconDirs = {
   fusion: 'fusion',
+  ultimate: 'ultimate',
   skill: 'skills',
   subject: 'subjects',
   school: 'schools',

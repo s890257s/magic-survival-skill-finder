@@ -10,7 +10,7 @@ const iconsRoot = join(root, 'public', 'icons')
 const outFile = join(root, 'src', 'data', 'iconManifest.json')
 
 const IMAGE_EXT = /\.(webp|png|jpg|jpeg|gif|svg)$/i
-const DIRS = ['fusion', 'skills', 'subjects', 'schools']
+const DIRS = ['fusion', 'ultimate', 'skills', 'subjects', 'schools']
 
 const manifest = {}
 for (const dir of DIRS) {
