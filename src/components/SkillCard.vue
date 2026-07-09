@@ -147,7 +147,8 @@ defineExpose({
 </script>
 
 <template>
-  <GlassCard class="skill-card" :class="{ 'is-conflict': hasConflict }">
+  <GlassCard class="skill-card">
+    <div v-if="hasConflict" class="conflict-badge">{{ t('ui.card.conflictBadge') }}</div>
     <div 
       class="skill-header"
       @click="isExpanded = !isExpanded"
@@ -301,15 +302,27 @@ defineExpose({
 
 <style scoped>
 .skill-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
   transition: all 0.3s ease;
 }
 
-.skill-card.is-conflict {
-  border-color: var(--danger);
-  box-shadow: 0 0 20px var(--danger-bg);
+.conflict-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--danger);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 16px;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: -2px 2px 8px rgba(0,0,0,0.3);
 }
 
 .skill-header {

@@ -119,9 +119,7 @@ const pinnedInView = computed(() => {
     .filter(Boolean)
 })
 
-const unpinnedSkills = computed(() => {
-  return filteredSkills.value.filter((s) => !pinnedStore.isPinned(s.id))
-})
+
 
 const onMovePinned = (skill, delta) => {
   const visible = pinnedInView.value
@@ -140,7 +138,7 @@ const unpinAll = () => {
 }
 
 const pinnedCards = ref([])
-const unpinnedCards = ref([])
+const allSkillCards = ref([])
 
 const setAllSectionsExpanded = (val) => {
   ui.isBuildSummaryExpanded = val
@@ -317,6 +315,8 @@ onBeforeUnmount(() => {
               ref="pinnedCards"
               :data-id="skill.id"
               :skill="skill"
+              :hasConflict="favoritesStore.getConflictingWith(skill).length > 0"
+              :conflictBases="favoritesStore.getConflictingWith(skill).map(c => c.base)"
               clickableBases
               pinnable
               :reorderable="pinnedInView.length > 1"
@@ -357,13 +357,13 @@ onBeforeUnmount(() => {
           <div class="section-header clickable" @click="ui.isOtherExpanded = !ui.isOtherExpanded">
             <div class="section-title">
               <Book :size="18" class="section-icon" />
-              <span>{{ t('ui.dict.otherSkills') }}</span>
-              <span class="count-badge">{{ unpinnedSkills.length }}</span>
+              <span>{{ t('ui.dict.allSkills') }}</span>
+              <span class="count-badge">{{ filteredSkills.length }}</span>
             </div>
             <div class="section-actions">
               <template v-if="ui.isOtherExpanded">
-                <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-                <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+                <button class="btn-text" @click.stop="toggleExpandAll(allSkillCards, true)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+                <button class="btn-text" @click.stop="toggleExpandAll(allSkillCards, false)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
                 <div class="action-divider"></div>
               </template>
               <div class="collapse-icon">
@@ -374,13 +374,15 @@ onBeforeUnmount(() => {
           </div>
           
           <div v-show="ui.isOtherExpanded">
-            <div v-if="unpinnedSkills.length > 0" class="skill-list unpinned-list">
+            <div v-if="filteredSkills.length > 0" class="skill-list unpinned-list">
               <SkillCard
-                v-for="skill in unpinnedSkills"
+                v-for="skill in filteredSkills"
                 :key="skill.id"
-                ref="unpinnedCards"
+                ref="allSkillCards"
                 :data-id="skill.id"
                 :skill="skill"
+                :hasConflict="favoritesStore.getConflictingWith(skill).length > 0"
+                :conflictBases="favoritesStore.getConflictingWith(skill).map(c => c.base)"
                 clickableBases
                 pinnable
                 :reorderable="false"
