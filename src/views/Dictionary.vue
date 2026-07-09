@@ -9,12 +9,14 @@ import EmptyState from '@/components/ui/EmptyState.vue'
 import SectionHeader from '@/components/ui/SectionHeader.vue'
 import BuildSection from '@/components/builder/BuildSection.vue'
 import DictionaryTopBar from '@/components/dictionary/DictionaryTopBar.vue'
+import DictionaryFab from '@/components/dictionary/DictionaryFab.vue'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useDictionaryStore } from '@/stores/dictionary'
 import { useI18n } from '@/composables/useI18n'
 import { useSortableList } from '@/composables/useSortableList'
+import { onMounted, onUnmounted } from 'vue'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
@@ -25,6 +27,19 @@ const { t } = useI18n()
 const filters = dictionaryStore.filters
 const ui = dictionaryStore.ui
 const { resetAll } = dictionaryStore
+
+const showFab = ref(false)
+const handleScroll = () => {
+  showFab.value = window.scrollY > 120
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 
 // --- 篩選 ---
 
@@ -304,6 +319,9 @@ const toggleExpandAll = (cards, val) => {
         </div>
       </div>
     </div>
+
+    <!-- 浮動按鈕選單 -->
+    <DictionaryFab :show="showFab" />
   </div>
 </template>
 

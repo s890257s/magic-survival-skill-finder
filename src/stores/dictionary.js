@@ -27,6 +27,7 @@ export const useDictionaryStore = defineStore('dictionary', () => {
       isBuildSummaryExpanded: true,
       isPinnedExpanded: true,
       isOtherExpanded: true,
+      fabPosition: 'right',
     }),
     { debounceMs: 300 },
   )
