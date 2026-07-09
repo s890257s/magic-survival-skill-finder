@@ -43,6 +43,10 @@ skillsData.forEach((s) => {
   addParts(s.subSkill?.name)
   addParts(s.subSkill?.enchant)
 
+  if (s.requirements?.ultimate) {
+    addParts(s.requirements.ultimate)
+  }
+
   s.searchText = Array.from(parts)
     .filter(Boolean)
     .join('\n')

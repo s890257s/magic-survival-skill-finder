@@ -166,7 +166,10 @@ defineExpose({
         </div>
         <div class="name-text">
           <div class="skill-title-group">
-            <h3 class="skill-name">{{ t(skill.name) }}</h3>
+            <div class="skill-name-row">
+              <h3 class="skill-name">{{ t(skill.name) }}</h3>
+              <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name">[LV99]{{ t(skill.requirements.ultimate) }}</span>
+            </div>
             <span v-if="settingsStore.showEnglish" class="skill-name-en">{{
               skill.name
             }}</span>
@@ -383,6 +386,20 @@ defineExpose({
   margin: 0;
   text-shadow: var(--name-glow);
   line-height: 1.2;
+}
+
+.skill-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.skill-ultimate-name {
+  font-size: 0.75rem;
+  color: var(--warning);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 171, 0, 0.3);
 }
 
 .skill-name-en {

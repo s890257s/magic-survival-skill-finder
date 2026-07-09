@@ -34,30 +34,22 @@ const clearFavoritesWithUndo = () => {
   )
 }
 
-const listTop = ref(null)
-const scrollToListTop = () => {
-  listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
 const onSelectBase = (name) => {
   if (filters.baseSkill !== name) {
     filters.baseSkill = name
     filters.enchant = ''
   }
-  scrollToListTop()
 }
 
 const onSelectEnchant = ({ baseName, enchantName }) => {
   filters.baseSkill = baseName
   filters.enchant = enchantName
-  scrollToListTop()
 }
 
 const onSelectSubject = (name) => {
   if (filters.subject !== name) {
     filters.subject = name
   }
-  scrollToListTop()
 }
 
 const usedBases = computed(() => {
@@ -234,7 +226,7 @@ onBeforeUnmount(() => {
       </div>
       <hr class="header-divider" />
     </div>
-    <div class="list-area" ref="listTop">
+    <div class="list-area">
       <!-- Section 1: Build Summary -->
       <div class="section-container">
         <div class="section-header">
