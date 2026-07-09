@@ -258,10 +258,12 @@ onBeforeUnmount(() => {
             <span class="count-badge">{{ favoritesStore.favoriteSkills.length }}/{{ favoritesStore.maxSlots }}</span>
           </div>
           <div class="section-actions">
-            <button class="btn-text danger" @click.stop="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
-              {{ t('ui.builder.clear') }}
-            </button>
-            <div class="action-divider"></div>
+            <template v-if="ui.isBuildSummaryExpanded">
+              <button class="btn-text danger" @click.stop="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
+                {{ t('ui.builder.clear') }}
+              </button>
+              <div class="action-divider"></div>
+            </template>
             <div class="collapse-icon">
               <ChevronUp v-if="ui.isBuildSummaryExpanded" :size="20" />
               <ChevronDown v-else :size="20" />
@@ -288,13 +290,15 @@ onBeforeUnmount(() => {
             <span class="count-badge">{{ pinnedStore.pinnedIds.length }}</span>
           </div>
           <div class="section-actions">
-            <button class="btn-text danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
-              {{ t('ui.dict.unpinAll') }}
-            </button>
-            <div class="action-divider"></div>
-            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
-            <div class="action-divider"></div>
+            <template v-if="ui.isPinnedExpanded">
+              <button class="btn-text danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
+                {{ t('ui.dict.unpinAll') }}
+              </button>
+              <div class="action-divider"></div>
+              <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+              <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+              <div class="action-divider"></div>
+            </template>
             <div class="collapse-icon">
               <ChevronUp v-if="ui.isPinnedExpanded" :size="20" />
               <ChevronDown v-else :size="20" />
@@ -357,9 +361,11 @@ onBeforeUnmount(() => {
               <span class="count-badge">{{ unpinnedSkills.length }}</span>
             </div>
             <div class="section-actions">
-              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
-              <div class="action-divider"></div>
+              <template v-if="ui.isOtherExpanded">
+                <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+                <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+                <div class="action-divider"></div>
+              </template>
               <div class="collapse-icon">
                 <ChevronUp v-if="ui.isOtherExpanded" :size="20" />
                 <ChevronDown v-else :size="20" />
