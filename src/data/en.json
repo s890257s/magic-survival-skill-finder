@@ -321,5 +321,20 @@
   "ui.dict.expandSkills": "Expand Skills",
   "ui.dict.collapseSkills": "Collapse Skills",
   "ui.dict.emptyPinned": "No pinned skills currently",
-  "ui.dict.pinnedSkills": "Pinned Skills"
+  "ui.dict.pinnedSkills": "Pinned Skills",
+  "ui.expandAll": "Expand all sections",
+  "ui.collapseAll": "Collapse all sections",
+  "ui.moveUp": "Move up",
+  "ui.moveDown": "Move down",
+  "ui.remove": "Remove",
+  "ui.dict.searchTitle": "Skill Search",
+  "ui.card.mainSkill": "Main Skill",
+  "ui.card.subSkill": "Sub Skill",
+  "ui.card.consume": "Consumed",
+  "ui.card.keep": "Kept",
+  "ui.card.pinLabel": "Pin to top",
+  "ui.card.unpinLabel": "Unpin",
+  "ui.card.addLabel": "Add to build",
+  "ui.card.removeLabel": "Remove from build",
+  "ui.builder.exportTooLongMsg": "The share link is very long and may not open on some platforms"
 }

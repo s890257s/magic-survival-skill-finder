@@ -34,11 +34,10 @@ const activeChips = computed(() => {
     if (filters.search.trim()) {
       chips.push({ key: 'search_input', label: filters.search.trim(), isSearch: true, icon: null })
     }
-    if (filters.searchTags && filters.searchTags.length > 0) {
-      filters.searchTags.forEach((tag, idx) => {
-        chips.push({ key: `search_tag_${idx}`, label: tag, isSearchTag: true, tagIndex: idx, icon: null })
-      })
-    }
+    // tag 內容不可重複（DictionaryHeader.addTag 已擋），可直接當 key
+    filters.searchTags.forEach((tag, idx) => {
+      chips.push({ key: `search_tag_${tag}`, label: tag, isSearchTag: true, tagIndex: idx, icon: null })
+    })
   }
 
   CHIP_DEFS.filter((def) => filters[def.key]).forEach((def) => {

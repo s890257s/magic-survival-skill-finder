@@ -1,14 +1,14 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { X, Plus, Pin, AlertTriangle, ChevronDown, Crown, GripVertical } from '@lucide/vue'
+import { X, Plus, Pin, AlertTriangle, ChevronDown, Crown } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
-import { useToastStore } from '@/stores/toast'
 import { useSettingsStore } from '@/stores/settings'
 import GlassCard from '@/components/ui/GlassCard.vue'
 import MagicTag from '@/components/ui/MagicTag.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import { useI18n } from '@/composables/useI18n'
+import { useSkillActions } from '@/composables/useSkillActions'
 
 const props = defineProps({
   skill: {
@@ -34,91 +34,27 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // 顯示排序按鈕（配技頁）
-  reorderable: {
-    type: Boolean,
-    default: false,
-  },
   pinOrder: {
     type: Number,
     default: 0,
   },
-  isFirst: {
-    type: Boolean,
-    default: false,
-  },
-  isLast: {
-    type: Boolean,
-    default: false,
-  },
 })
 
-const emit = defineEmits(['select-base', 'select-enchant', 'select-subject', 'move'])
+const emit = defineEmits(['select-base', 'select-enchant', 'select-subject'])
 const favoritesStore = useFavoritesStore()
 const pinnedStore = usePinnedStore()
-const toastStore = useToastStore()
 const settingsStore = useSettingsStore()
 const { t } = useI18n()
+const { togglePin, toggleFavorite } = useSkillActions(() => props.skill)
+
 const isExpanded = ref(false)
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
 
-const togglePin = () => {
-  const pinAction = () => pinnedStore.togglePin(props.skill.id)
-  pinnedStore.togglePin(props.skill.id)
-  toastStore.showToast(
-    isPinned.value
-      ? t('ui.card.pinned', t(props.skill.name))
-      : t('ui.card.unpinned', t(props.skill.name)),
-    'info',
-    { duration: 4000, actionLabel: t('ui.restore'), onAction: pinAction }
-  )
-}
-
-const toggle = () => {
-  if (isFavorite.value) {
-    favoritesStore.toggleFavorite(props.skill.id)
-    toastStore.showToast(t('ui.card.removed', t(props.skill.name)), 'info', {
-      duration: 4000,
-      actionLabel: t('ui.restore'),
-      onAction: () => favoritesStore.toggleFavorite(props.skill.id)
-    })
-    return
-  }
-
-  const hits = favoritesStore.getConflictingWith(props.skill)
-  favoritesStore.toggleFavorite(props.skill.id)
-
-  if (hits.length > 0) {
-    const detail = hits
-      .map((h) => t('ui.card.conflictDetailItem', t(h.base), t(h.skillName)))
-      .join('、')
-    toastStore.showToast(t('ui.card.conflictDetail', detail), 'danger', { 
-      duration: 6000, 
-      actionLabel: t('ui.restore'),
-      onAction: () => {
-        favoritesStore.toggleFavorite(props.skill.id)
-      }
-    })
-  } else if (favoritesStore.isOverLimit) {
-    toastStore.showToast(
-      t('ui.card.addedOverLimit', favoritesStore.count, favoritesStore.maxSlots),
-      'warning',
-      { duration: 4000, actionLabel: t('ui.restore'), onAction: () => favoritesStore.toggleFavorite(props.skill.id) }
-    )
-  } else {
-    toastStore.showToast(
-      t('ui.card.added', t(props.skill.name), favoritesStore.count, favoritesStore.maxSlots),
-      'success',
-      { duration: 4000, actionLabel: t('ui.restore'), onAction: () => favoritesStore.toggleFavorite(props.skill.id) }
-    )
-  }
-}
-
 // 主/副技能欄位設定；副技能帶附魔時會被消耗（遊戲規則）
 const formulaParts = computed(() => [
-  { label: '主技能', part: props.skill.mainSkill, consume: false },
-  { label: '副技能', part: props.skill.subSkill, consume: !!props.skill.subSkill.enchant },
+  { labelKey: 'ui.card.mainSkill', part: props.skill.mainSkill, consume: false },
+  { labelKey: 'ui.card.subSkill', part: props.skill.subSkill, consume: !!props.skill.subSkill.enchant },
 ])
 
 const onBaseClick = (name) => {
@@ -185,7 +121,7 @@ defineExpose({
           @click.stop="togglePin"
           :class="{ active: isPinned }"
           :aria-pressed="isPinned"
-          :aria-label="isPinned ? '取消頂置' : '頂置顯示'"
+          :aria-label="isPinned ? t('ui.card.unpinLabel') : t('ui.card.pinLabel')"
         >
           <Pin
             :fill="isPinned ? 'var(--accent-cyan)' : 'none'"
@@ -195,10 +131,10 @@ defineExpose({
         </button>
         <button
           class="favorite-btn"
-          @click.stop="toggle"
+          @click.stop="toggleFavorite"
           :class="{ active: isFavorite }"
           :aria-pressed="isFavorite"
-          :aria-label="isFavorite ? '移出配技' : '加入配技'"
+          :aria-label="isFavorite ? t('ui.card.removeLabel') : t('ui.card.addLabel')"
         >
           <X
             v-if="isFavorite"
@@ -221,12 +157,12 @@ defineExpose({
       <div v-show="isExpanded" class="skill-content-wrapper">
         <div class="skill-body">
           <div class="skill-formula">
-        <template v-for="(item, index) in formulaParts" :key="item.label">
+        <template v-for="(item, index) in formulaParts" :key="item.labelKey">
           <div v-if="index > 0" class="formula-divider">+</div>
           <div class="formula-item">
             <span class="formula-label">
-              {{ item.label }}
-              <em :class="item.consume ? 'consume' : 'keep'">{{ item.consume ? '消耗' : '保留' }}</em>
+              {{ t(item.labelKey) }}
+              <em :class="item.consume ? 'consume' : 'keep'">{{ t(item.consume ? 'ui.card.consume' : 'ui.card.keep') }}</em>
             </span>
             <div class="formula-name-row">
               <GameIcon :name="item.part.name" category="skill" :size="32" />

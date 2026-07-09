@@ -15,11 +15,7 @@ const handleAction = (toast) => {
 
 <template>
   <main class="content-area">
-    <RouterView v-slot="{ Component }">
-      <transition name="page-fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </RouterView>
+    <RouterView />
   </main>
 
   <!-- Global Toasts -->
@@ -43,24 +39,6 @@ const handleAction = (toast) => {
 .content-area {
   flex: 1;
   overflow-x: hidden;
-}
-
-/* Page Transition */
-.page-fade-enter-active,
-.page-fade-leave-active {
-  transition:
-    opacity 0s ease,
-    transform 0s ease;
-}
-
-.page-fade-enter-from {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.page-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
 }
 
 /* Toast Stack */

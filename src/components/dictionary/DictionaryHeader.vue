@@ -23,7 +23,7 @@ const removeTag = (index) => {
   filters.searchTags.splice(index, 1)
 }
 
-const handleBackspace = (e) => {
+const handleBackspace = () => {
   if (filters.search === '' && filters.searchTags.length > 0) {
     filters.searchTags.pop()
   }

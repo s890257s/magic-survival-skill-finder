@@ -5,12 +5,14 @@ import GameIcon from '@/components/ui/GameIcon.vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
 import { usePanelPosition } from '@/composables/usePanelPosition'
+import { isDesktopWidth } from '@/utils/device'
 
 const props = defineProps({
   modelValue: {
-    type: [String, Number],
+    type: String,
     default: '',
   },
+  // 選項名稱字串陣列（同時是 i18n key，顯示時以 t() 翻譯）
   options: {
     type: Array,
     default: () => [],
@@ -40,17 +42,13 @@ const { panelStyle, positionPanel } = usePanelPosition(triggerRef)
 const searchQuery = ref('')
 const searchInputRef = ref(null)
 
-const selectedLabel = computed(() => {
-  const opt = props.options.find((o) => o.value === props.modelValue)
-  return opt?.label ? t(opt.label) : ''
-})
+const selectedLabel = computed(() => (props.modelValue ? t(props.modelValue) : ''))
 
 const filteredOptions = computed(() => {
   if (!searchQuery.value) return props.options
   const q = searchQuery.value.toLowerCase()
   return props.options.filter(
-    (opt) =>
-      t(opt.label).toLowerCase().includes(q) || opt.label.toLowerCase().includes(q),
+    (opt) => t(opt).toLowerCase().includes(q) || opt.toLowerCase().includes(q),
   )
 })
 
@@ -69,11 +67,9 @@ const toggle = async () => {
   isOpen.value = true
 
   await nextTick()
-  if (searchInputRef.value) {
+  if (searchInputRef.value && isDesktopWidth()) {
     // preventScroll：聚焦引發的捲動會被 DropdownPanel 誤判為外部捲動而關閉面板
-    if (window.innerWidth >= 768) {
-      searchInputRef.value.focus({ preventScroll: true })
-    }
+    searchInputRef.value.focus({ preventScroll: true })
   }
 }
 
@@ -97,7 +93,7 @@ const select = (value) => {
     >
       <GameIcon
         v-if="category && modelValue"
-        :name="String(modelValue)"
+        :name="modelValue"
         :category="category"
         :size="22"
       />
@@ -137,25 +133,25 @@ const select = (value) => {
             <Check v-if="!modelValue" :size="16" class="check" />
           </button>
         </li>
-        <li v-for="opt in filteredOptions" :key="opt.value">
+        <li v-for="opt in filteredOptions" :key="opt">
           <button
             type="button"
             class="dropdown-option"
-            :class="{ selected: opt.value === modelValue }"
+            :class="{ selected: opt === modelValue }"
             role="option"
-            :aria-selected="opt.value === modelValue"
-            @click="select(opt.value)"
+            :aria-selected="opt === modelValue"
+            @click="select(opt)"
           >
             <GameIcon
               v-if="category"
-              :name="String(opt.value)"
+              :name="opt"
               :category="category"
               :size="24"
             />
             <span class="option-label">
-              {{ t(opt.label) }}
+              {{ t(opt) }}
             </span>
-            <Check v-if="opt.value === modelValue" :size="16" class="check" />
+            <Check v-if="opt === modelValue" :size="16" class="check" />
           </button>
         </li>
       </ul>

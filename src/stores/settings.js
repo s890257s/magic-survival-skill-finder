@@ -1,8 +1,9 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref, computed } from 'vue'
 import { useI18n } from '@/composables/useI18n'
+import { STORAGE_KEYS } from '@/constants/storageKeys'
 
-const STORAGE_KEY = 'show_english'
+const STORAGE_KEY = STORAGE_KEYS.showEnglish
 
 export const useSettingsStore = defineStore('settings', () => {
   const { locale } = useI18n()

@@ -1,6 +1,17 @@
+<script>
+// 背景捲動鎖：模組層計數（跨 Modal 實例共用），支援多個 modal 疊加
+let scrollLockCount = 0
+const lockScroll = () => {
+  if (++scrollLockCount === 1) document.body.style.overflow = 'hidden'
+}
+const unlockScroll = () => {
+  if (scrollLockCount > 0 && --scrollLockCount === 0) document.body.style.overflow = ''
+}
+</script>
+
 <script setup>
 import { X } from '@lucide/vue'
-import { watch, onUnmounted } from 'vue'
+import { ref, watch, nextTick, onUnmounted } from 'vue'
 
 const props = defineProps({
   show: Boolean,
@@ -9,27 +20,64 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const handleEscape = (e) => {
+const containerRef = ref(null)
+
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+const handleKeydown = (e) => {
   if (e.key === 'Escape') {
     emit('close')
+    return
+  }
+  // Tab 循環鎖定在 modal 內，避免焦點跑到被遮住的背景內容
+  if (e.key !== 'Tab' || !containerRef.value) return
+  const focusables = Array.from(containerRef.value.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
+    (el) => !el.disabled,
+  )
+  if (focusables.length === 0) return
+  const first = focusables[0]
+  const last = focusables[focusables.length - 1]
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
   }
 }
 
-// 只在開啟期間監聽 Escape，避免多個 modal 常駐監聽、一鍵全關
+// 開啟時記住觸發元素，關閉後把焦點還回去
+let previouslyFocused = null
+
+const onOpen = async () => {
+  lockScroll()
+  window.addEventListener('keydown', handleKeydown)
+  previouslyFocused = document.activeElement
+  await nextTick()
+  containerRef.value?.focus()
+}
+
+const onClose = () => {
+  unlockScroll()
+  window.removeEventListener('keydown', handleKeydown)
+  previouslyFocused?.focus?.()
+  previouslyFocused = null
+}
+
 watch(
   () => props.show,
   (show) => {
     if (show) {
-      window.addEventListener('keydown', handleEscape)
+      onOpen()
     } else {
-      window.removeEventListener('keydown', handleEscape)
+      onClose()
     }
   },
-  { immediate: true },
 )
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleEscape)
+  if (props.show) onClose()
 })
 </script>
 
@@ -37,7 +85,13 @@ onUnmounted(() => {
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="show" class="modal-overlay" @click.self="emit('close')">
-        <div class="modal-container">
+        <div
+          ref="containerRef"
+          class="modal-container"
+          role="dialog"
+          aria-modal="true"
+          tabindex="-1"
+        >
           <header class="modal-header">
             <h3>{{ title }}</h3>
             <button class="close-btn" @click="emit('close')">
@@ -78,6 +132,7 @@ onUnmounted(() => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  outline: none;
 }
 
 .modal-header {

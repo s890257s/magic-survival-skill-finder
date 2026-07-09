@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
+import { useSavedBuildsStore } from '@/stores/savedBuilds'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import { Save, Trash2, Download } from '@lucide/vue'
@@ -9,6 +10,7 @@ import { skillsById } from '@/data'
 import { formatDate } from '@/utils/format'
 
 const favoritesStore = useFavoritesStore()
+const savedBuildsStore = useSavedBuildsStore()
 const { t } = useI18n()
 
 const showClearSavedConfirm = ref(false)
@@ -16,8 +18,13 @@ const handleClearSaved = () => {
   showClearSavedConfirm.value = true
 }
 const clearSavedBuilds = () => {
-  favoritesStore.clearSavedBuilds()
+  savedBuildsStore.clearSavedBuilds()
   showClearSavedConfirm.value = false
+}
+
+// 讀取存檔＝把存檔的技能組套用為當前配技
+const loadBuild = (build) => {
+  favoritesStore.setFavorites(build.skills)
 }
 
 const editingBuildId = ref(null)
@@ -29,7 +36,7 @@ const startEditingBuild = (build) => {
 const finishEditingBuild = () => {
   if (editingBuildId.value) {
     if (editingBuildName.value.trim()) {
-      favoritesStore.renameBuild(editingBuildId.value, editingBuildName.value.trim())
+      savedBuildsStore.renameBuild(editingBuildId.value, editingBuildName.value.trim())
     }
     editingBuildId.value = null
   }
@@ -37,7 +44,7 @@ const finishEditingBuild = () => {
 
 // Compute the enriched builds array with pre-calculated summary objects
 const enrichedSavedBuilds = computed(() => {
-  return favoritesStore.savedBuilds.map(build => {
+  return savedBuildsStore.savedBuilds.map(build => {
     let summaryLines = []
     if (build.skills && build.skills.length > 0) {
       summaryLines = build.skills.map(id => {
@@ -63,7 +70,7 @@ const enrichedSavedBuilds = computed(() => {
 <template>
   <div class="saved-builds-section" v-if="enrichedSavedBuilds.length > 0">
     <div class="section-header">
-      <h3 class="section-title"><Save :size="18" /> {{ t('ui.builder.savedBuilds') }} ({{ enrichedSavedBuilds.length }}/{{ favoritesStore.maxSavedBuilds }})</h3>
+      <h3 class="section-title"><Save :size="18" /> {{ t('ui.builder.savedBuilds') }} ({{ enrichedSavedBuilds.length }}/{{ savedBuildsStore.maxSavedBuilds }})</h3>
       <button class="btn btn-text btn-sm" @click="handleClearSaved">
         <Trash2 :size="14" /> {{ t('ui.builder.clear') }}
       </button>
@@ -94,10 +101,10 @@ const enrichedSavedBuilds = computed(() => {
           </div>
         </div>
         <div class="saved-build-actions">
-          <button class="btn btn-text btn-sm" @click="favoritesStore.loadSavedBuild(build.id)">
+          <button class="btn btn-text btn-sm" @click="loadBuild(build)">
             <Download :size="14" /> {{ t('ui.builder.load') }}
           </button>
-          <button class="btn btn-danger-text btn-sm" @click="favoritesStore.deleteSavedBuild(build.id)">
+          <button class="btn btn-danger-text btn-sm" @click="savedBuildsStore.deleteSavedBuild(build.id)">
             <Trash2 :size="14" />
           </button>
         </div>

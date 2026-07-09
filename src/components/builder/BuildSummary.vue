@@ -1,24 +1,11 @@
 <script setup>
-import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import Sortable from 'sortablejs'
-import { Sparkles, Trash2, ChevronUp, ChevronDown } from '@lucide/vue'
+import { computed, ref } from 'vue'
+import { Trash2, ChevronUp, ChevronDown } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
+import { useSortableList } from '@/composables/useSortableList'
 import GameIcon from '@/components/ui/GameIcon.vue'
-
-const props = defineProps({
-  collapsible: {
-    type: Boolean,
-    default: false
-  },
-  hideHeader: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const isCollapsed = ref(false)
 
 const favoritesStore = useFavoritesStore()
 const toastStore = useToastStore()
@@ -34,97 +21,22 @@ const removeWithUndo = (skill) => {
   )
 }
 
-const clearWithUndo = () => {
-  if (favoritesStore.favoriteIds.length === 0) return
-  const backup = [...favoritesStore.favoriteIds]
-  favoritesStore.clearFavorites()
-  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () =>
-    favoritesStore.setFavorites(backup),
-  )
-}
-
 const summaryListRef = ref(null)
-let summarySortable = null
-
-const initSortable = () => {
-  if (summaryListRef.value && !summarySortable) {
-    summarySortable = Sortable.create(summaryListRef.value, {
-      delay: 250,
-      delayOnTouchOnly: true,
-      filter: '.summary-actions',
-      animation: 150,
-      onEnd: handleSortEnd
-    })
-  }
-}
-
-const handleSortEnd = (evt) => {
-  const { oldIndex, newIndex } = evt
-  if (oldIndex === newIndex) return
-
-  const newIds = [...favoritesStore.favoriteIds]
-  const movedId = newIds.splice(oldIndex, 1)[0]
-  newIds.splice(newIndex, 0, movedId)
-
-  const itemEl = evt.item
-  if (evt.from) {
-    const siblings = Array.from(evt.from.childNodes).filter(node => node.nodeType === 1)
-    if (oldIndex < siblings.length) {
-      evt.from.insertBefore(itemEl, siblings[oldIndex])
-    } else {
-      evt.from.appendChild(itemEl)
-    }
-  }
-
-  favoritesStore.setFavorites(newIds)
-}
-
-watch(() => favoriteSkills.value.length, async () => {
-  if (!isCollapsed.value) {
-    await nextTick()
-    initSortable()
-  }
-})
-
-watch(isCollapsed, async (newVal) => {
-  if (!newVal) {
-    await nextTick()
-    initSortable()
-  } else {
-    if (summarySortable) {
-      summarySortable.destroy()
-      summarySortable = null
-    }
-  }
-})
-
-onMounted(() => {
-  if (!isCollapsed.value) {
-    initSortable()
-  }
-})
-
-onBeforeUnmount(() => {
-  if (summarySortable) summarySortable.destroy()
-})
+useSortableList(
+  summaryListRef,
+  (oldIndex, newIndex) => {
+    const newIds = [...favoritesStore.favoriteIds]
+    const movedId = newIds.splice(oldIndex, 1)[0]
+    newIds.splice(newIndex, 0, movedId)
+    favoritesStore.setFavorites(newIds)
+  },
+  { delay: 250, delayOnTouchOnly: true, filter: 'button', preventOnFilter: false },
+)
 </script>
 
 <template>
   <div class="build-summary glass-panel" v-if="favoriteSkills.length > 0">
-    <div class="summary-header" v-if="!hideHeader" @click="collapsible && (isCollapsed = !isCollapsed)" :class="{ clickable: collapsible }">
-      <h3 class="summary-title"><Sparkles :size="18" /> {{ t('ui.builder.summaryTitle') }} <span class="count" v-if="collapsible">({{ favoriteSkills.length }}/{{ favoritesStore.maxSlots }})</span></h3>
-      <div class="header-actions">
-        <button class="clear-btn" @click.stop="clearWithUndo" aria-label="清空">
-          <Trash2 :size="16" /> <span>{{ t('ui.builder.clear') }}</span>
-        </button>
-        <div v-if="collapsible" class="collapse-icon">
-          <ChevronDown v-if="isCollapsed" :size="20" />
-          <ChevronUp v-else :size="20" />
-        </div>
-      </div>
-    </div>
-    
-    <table v-if="!isCollapsed" class="summary-table">
+    <table class="summary-table">
       <colgroup>
         <col class="col-actions" />
         <col class="col-icon" />
@@ -140,14 +52,14 @@ onBeforeUnmount(() => {
       <tbody ref="summaryListRef">
         <tr v-for="(skill, index) in favoriteSkills" :key="skill.id" class="summary-row" :data-id="skill.id">
           <td class="td-actions">
-            <button class="action-icon" @click.stop="favoritesStore.moveFavorite(skill.id, -1)" :disabled="index === 0" aria-label="上移">
+            <button class="action-icon" @click.stop="favoritesStore.moveFavorite(skill.id, -1)" :disabled="index === 0" :aria-label="t('ui.moveUp')">
               <ChevronUp :size="16" />
             </button>
-            <button class="action-icon" @click.stop="favoritesStore.moveFavorite(skill.id, 1)" :disabled="index === favoriteSkills.length - 1" aria-label="下移">
+            <button class="action-icon" @click.stop="favoritesStore.moveFavorite(skill.id, 1)" :disabled="index === favoriteSkills.length - 1" :aria-label="t('ui.moveDown')">
               <ChevronDown :size="16" />
             </button>
           </td>
-          
+
           <td class="td-icon">
             <GameIcon :name="skill.name" category="fusion" :size="28" class="summary-icon" />
           </td>
@@ -186,7 +98,7 @@ onBeforeUnmount(() => {
           </td>
 
           <td class="td-actions">
-            <button class="action-icon delete-icon" @click.stop="removeWithUndo(skill)" aria-label="移除">
+            <button class="action-icon delete-icon" @click.stop="removeWithUndo(skill)" :aria-label="t('ui.remove')">
               <Trash2 :size="16" />
             </button>
           </td>
@@ -201,58 +113,6 @@ onBeforeUnmount(() => {
   padding: 0;
   margin-bottom: 20px;
   overflow-x: auto;
-}
-
-.summary-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.summary-header.clickable {
-  cursor: pointer;
-}
-
-.summary-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--accent-cyan);
-  margin-bottom: 0;
-  font-size: 1.1rem;
-}
-
-.summary-title .count {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.clear-btn {
-  background: none;
-  border: none;
-  color: var(--danger);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-}
-
-.clear-btn:hover {
-  background: var(--danger-bg);
-}
-
-.collapse-icon {
-  color: var(--text-muted);
 }
 
 .summary-table {
@@ -372,8 +232,6 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
   font-weight: bold;
 }
-
-
 
 .enchant {
   font-size: 0.75em;

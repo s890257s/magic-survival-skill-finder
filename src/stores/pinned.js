@@ -1,10 +1,11 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { usePersistedRef } from '@/composables/usePersistedRef'
+import { STORAGE_KEYS } from '@/constants/storageKeys'
 import { toggleInArray, swapInArray } from '@/utils/array'
 
 // 頂置顯示：純排序偏好，與配技（favorites）無關，不做衝突檢測、無數量限制
 export const usePinnedStore = defineStore('pinned', () => {
-  const pinnedIds = usePersistedRef('pinned_skills', [])
+  const pinnedIds = usePersistedRef(STORAGE_KEYS.pinned, [])
 
   const togglePin = (id) => toggleInArray(pinnedIds.value, id)
 

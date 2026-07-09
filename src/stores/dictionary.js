@@ -1,50 +1,47 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { reactive, watch } from 'vue'
+import { reactive, computed } from 'vue'
+import { usePersistedReactive } from '@/composables/usePersistedRef'
+import { STORAGE_KEYS } from '@/constants/storageKeys'
 
 export const useDictionaryStore = defineStore('dictionary', () => {
-  const filters = reactive({
-    search: '',
-    searchTags: [],
-    school: '',
-    subject: '',
-    baseSkill: '',
-    enchant: '',
-    ultimate: false,
-    excludeConsumed: false
-  })
+  // debounce 寫入：search 隨打字高頻變更，不需要每個字元都同步寫 localStorage
+  const filters = usePersistedReactive(
+    STORAGE_KEYS.dictionaryFilters,
+    reactive({
+      search: '',
+      searchTags: [],
+      school: '',
+      subject: '',
+      baseSkill: '',
+      enchant: '',
+      ultimate: false,
+      excludeConsumed: false,
+    }),
+    { debounceMs: 300 },
+  )
 
-  const ui = reactive({
-    isSearchExpanded: true,
-    isBuildSummaryExpanded: true,
-    isPinnedExpanded: true,
-    isOtherExpanded: true
-  })
+  const ui = usePersistedReactive(
+    STORAGE_KEYS.dictionaryUi,
+    reactive({
+      isSearchExpanded: true,
+      isBuildSummaryExpanded: true,
+      isPinnedExpanded: true,
+      isOtherExpanded: true,
+    }),
+    { debounceMs: 300 },
+  )
 
-  const storedFilters = localStorage.getItem('dictionary_filters')
-  if (storedFilters !== null) {
-    try {
-      Object.assign(filters, JSON.parse(storedFilters))
-    } catch {
-      console.error('Failed to parse dictionary_filters from localStorage')
-    }
-  }
-
-  const storedUi = localStorage.getItem('dictionary_ui')
-  if (storedUi !== null) {
-    try {
-      Object.assign(ui, JSON.parse(storedUi))
-    } catch {
-      console.error('Failed to parse dictionary_ui from localStorage')
-    }
-  }
-
-  watch(filters, (val) => {
-    localStorage.setItem('dictionary_filters', JSON.stringify(val))
-  }, { deep: true })
-
-  watch(ui, (val) => {
-    localStorage.setItem('dictionary_ui', JSON.stringify(val))
-  }, { deep: true })
+  const hasAnyFilters = computed(() =>
+    Boolean(
+      filters.search ||
+        filters.searchTags.length > 0 ||
+        filters.school ||
+        filters.subject ||
+        filters.baseSkill ||
+        filters.ultimate ||
+        filters.excludeConsumed,
+    ),
+  )
 
   const clearFilters = () => {
     filters.school = ''
@@ -64,8 +61,9 @@ export const useDictionaryStore = defineStore('dictionary', () => {
   return {
     filters,
     ui,
+    hasAnyFilters,
     clearFilters,
-    resetAll
+    resetAll,
   }
 })
 

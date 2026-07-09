@@ -2,17 +2,17 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { computed } from 'vue'
 import { skillsById } from '@/data'
 import { usePersistedRef } from '@/composables/usePersistedRef'
+import { STORAGE_KEYS } from '@/constants/storageKeys'
 import { toggleInArray, swapInArray } from '@/utils/array'
 
 const BASE_SLOTS = 3
-const MAX_SAVED_BUILDS = 10
 
 const baseSkillsOf = (skill) => {
   return [skill.mainSkill?.name, skill.subSkill?.name].filter(Boolean)
 }
 
 export const useFavoritesStore = defineStore('favorites', () => {
-  const favoriteIds = usePersistedRef('favorite_skills', [])
+  const favoriteIds = usePersistedRef(STORAGE_KEYS.favorites, [])
 
   const favoriteSkills = computed(() => {
     return favoriteIds.value.map((id) => skillsById.get(id)).filter(Boolean)
@@ -26,41 +26,42 @@ export const useFavoritesStore = defineStore('favorites', () => {
   const count = computed(() => favoriteSkills.value.length)
   const isOverLimit = computed(() => count.value > maxSlots.value)
 
+  // 基礎技能使用情況：Map<baseSkillName, [{ id, name }]>
+  // conflicts 與 getConflictingWith 共用，避免各自重複掃描 favorites
+  const favoriteBaseUsage = computed(() => {
+    const usage = new Map()
+    favoriteSkills.value.forEach((skill) => {
+      baseSkillsOf(skill).forEach((base) => {
+        if (!usage.has(base)) usage.set(base, [])
+        usage.get(base).push({ id: skill.id, name: skill.name })
+      })
+    })
+    return usage
+  })
+
   // 衝突檢測：Map<skillId, string[]> — 該技能中被重複使用的基礎技能名稱
   const conflicts = computed(() => {
     const result = new Map()
-    const baseSkillUsage = {} // baseSkillName -> skillIds
-
-    favoriteSkills.value.forEach((skill) => {
-      baseSkillsOf(skill).forEach((base) => {
-        if (!baseSkillUsage[base]) baseSkillUsage[base] = []
-        baseSkillUsage[base].push(skill.id)
-      })
-    })
-
-    Object.entries(baseSkillUsage).forEach(([base, ids]) => {
-      if (ids.length > 1) {
-        ids.forEach((id) => {
+    favoriteBaseUsage.value.forEach((users, base) => {
+      if (users.length > 1) {
+        users.forEach(({ id }) => {
           if (!result.has(id)) result.set(id, [])
           result.get(id).push(base)
         })
       }
     })
-
     return result
   })
 
   // 檢查某技能與目前配技的衝突（加入前預先偵測用）
   // 回傳 [{ base, skillName }]
   const getConflictingWith = (skill) => {
-    const bases = baseSkillsOf(skill)
     const hits = []
-    favoriteSkills.value.forEach((fav) => {
-      if (fav.id === skill.id) return
-      baseSkillsOf(fav).forEach((base) => {
-        if (bases.includes(base)) {
-          hits.push({ base, skillName: fav.name })
-        }
+    baseSkillsOf(skill).forEach((base) => {
+      const users = favoriteBaseUsage.value.get(base)
+      if (!users) return
+      users.forEach((user) => {
+        if (user.id !== skill.id) hits.push({ base, skillName: user.name })
       })
     })
     return hits
@@ -87,62 +88,13 @@ export const useFavoritesStore = defineStore('favorites', () => {
     favoriteIds.value = []
   }
 
-  // --- Saved Builds ---
-  const savedBuilds = usePersistedRef('saved_builds', [])
-
-  const findBuild = (id) => savedBuilds.value.find((b) => b.id === id)
-
-  const saveBuild = (name) => {
-    if (savedBuilds.value.length >= MAX_SAVED_BUILDS) return false
-    savedBuilds.value.push({
-      id: Date.now().toString(),
-      name,
-      date: Date.now(),
-      skills: [...favoriteIds.value]
-    })
-    return true
-  }
-
-  const overwriteBuild = (id) => {
-    const build = findBuild(id)
-    if (build) {
-      build.skills = [...favoriteIds.value]
-      build.date = Date.now()
-    }
-  }
-
-  const deleteSavedBuild = (id) => {
-    savedBuilds.value = savedBuilds.value.filter(b => b.id !== id)
-  }
-
-  const loadSavedBuild = (id) => {
-    const build = findBuild(id)
-    if (build) {
-      setFavorites(build.skills)
-    }
-  }
-
-  const clearSavedBuilds = () => {
-    savedBuilds.value = []
-  }
-
-  const renameBuild = (id, newName) => {
-    const build = findBuild(id)
-    if (build) {
-      build.name = newName
-    }
-  }
-
-  const setSavedBuilds = (builds) => {
-    savedBuilds.value = [...builds]
-  }
-
   return {
     favoriteIds,
     favoriteSkills,
     count,
     maxSlots,
     isOverLimit,
+    favoriteBaseUsage,
     conflicts,
     getConflictingWith,
     toggleFavorite,
@@ -150,15 +102,6 @@ export const useFavoritesStore = defineStore('favorites', () => {
     moveFavorite,
     setFavorites,
     clearFavorites,
-    savedBuilds,
-    saveBuild,
-    overwriteBuild,
-    deleteSavedBuild,
-    loadSavedBuild,
-    clearSavedBuilds,
-    renameBuild,
-    setSavedBuilds,
-    maxSavedBuilds: MAX_SAVED_BUILDS,
   }
 })
 

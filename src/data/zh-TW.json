@@ -321,5 +321,20 @@
   "ui.chip.enchant": "附魔：{0}",
   "ui.lang.hideEnglish": "隱藏英文",
   "ui.lang.showEnglish": "顯示英文",
-  "ui.lang.disabled": "目前語系為英文，無法啟用雙語顯示"
+  "ui.lang.disabled": "目前語系為英文，無法啟用雙語顯示",
+  "ui.expandAll": "全部展開",
+  "ui.collapseAll": "全部收合",
+  "ui.moveUp": "上移",
+  "ui.moveDown": "下移",
+  "ui.remove": "移除",
+  "ui.dict.searchTitle": "技能搜尋",
+  "ui.card.mainSkill": "主技能",
+  "ui.card.subSkill": "副技能",
+  "ui.card.consume": "消耗",
+  "ui.card.keep": "保留",
+  "ui.card.pinLabel": "頂置顯示",
+  "ui.card.unpinLabel": "取消頂置",
+  "ui.card.addLabel": "加入配技",
+  "ui.card.removeLabel": "移出配技",
+  "ui.builder.exportTooLongMsg": "分享連結過長，部分平台可能無法完整開啟"
 }

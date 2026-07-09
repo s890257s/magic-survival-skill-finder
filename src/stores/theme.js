@@ -1,7 +1,8 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref, watch } from 'vue'
+import { STORAGE_KEYS } from '@/constants/storageKeys'
 
-const STORAGE_KEY = 'theme'
+const STORAGE_KEY = STORAGE_KEYS.theme
 
 export const useThemeStore = defineStore('theme', () => {
   const media = window.matchMedia('(prefers-color-scheme: light)')

@@ -2,7 +2,7 @@
 
 補圖流程（兩步）：
 
-1. 把圖檔丟進對應資料夾（建議 64x64 以上的正方形 webp/png）：
+1. 把圖檔丟進對應資料夾（建議 64x64 以上的正方形 webp）：
 
    | 資料夾 | 內容 |
    |---|---|
@@ -11,12 +11,11 @@
    | `subjects/` | 實驗體 |
    | `schools/` | 學派 |
 
-2. 打開 `src/data/icons.js`，把對應名稱的 `null` 改成「檔名（含副檔名）」：
+   檔名慣例：遊戲英文名稱轉 snake_case（`Electric Shock` → `electric_shock.webp`）。
+   符合慣例就不用改任何程式碼；檔名不符合慣例時，才到 `src/data/icons.js`
+   的對應分類加一行 `'遊戲內名稱': '檔名（含副檔名）'`。
 
-   ```js
-   skill: {
-     '落雷': 'lightning.webp',  // → 讀取 public/icons/skills/lightning.webp
-   }
-   ```
+2. 執行 `npm run icons` 重新產生 `src/data/iconManifest.json`
+   （`npm run dev` / `npm run build` 前也會自動執行）。
 
-沒填（`null`）或圖檔載入失敗時，UI 會自動顯示字首色塊佔位圖，不會破版。
+沒有圖檔的名稱會自動顯示字首色塊佔位圖，不會破版、也不會發出無效請求。

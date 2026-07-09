@@ -1,22 +1,42 @@
-import skillsData from './skills.json'
+import rawSkills from './skills.json'
 import { locales, translate } from './locales'
 
-export { skillsData }
+// 預組搜尋字串：包含所有語系翻譯與英文 Key（全語系混合搜尋）。
+// 以複本掛上衍生欄位，維持 skills.json 原始物件不被改寫。
+const buildSearchText = (skill) => {
+  const parts = new Set()
+
+  const addParts = (key) => {
+    if (!key) return
+    parts.add(key)
+    Object.values(locales).forEach((dict) => parts.add(translate(dict, key)))
+  }
+
+  addParts(skill.name)
+  addParts(skill.mainSkill?.name)
+  addParts(skill.mainSkill?.enchant)
+  addParts(skill.subSkill?.name)
+  addParts(skill.subSkill?.enchant)
+  addParts(skill.requirements?.ultimate)
+
+  return Array.from(parts).filter(Boolean).join('\n').toLowerCase()
+}
+
+export const skillsData = rawSkills.map((s) => ({ ...s, searchText: buildSearchText(s) }))
 
 export const skillsById = new Map(skillsData.map((s) => [s.id, s]))
 
-const schoolsMap = new Set()
-const subjectsMap = new Set()
-const basesMap = new Set()
-const enchantsByBase = new Map() // baseName -> Set(enchantName)
+// --- 篩選選項（名稱字串陣列；顯示文字由 UI 端 t() 翻譯） ---
 
-// 選項排序用固定以繁中為準，確保各語系下順序一致
-const t = (key) => translate(locales['zh-TW'], key)
+const schools = new Set()
+const subjects = new Set()
+const bases = new Set()
+const enchantsByBase = new Map() // baseName -> Set(enchantName)
 
 const collectPart = (part) => {
   if (!part?.name) return
 
-  basesMap.add(part.name)
+  bases.add(part.name)
 
   if (part.enchant) {
     if (!enchantsByBase.has(part.name)) {
@@ -26,59 +46,27 @@ const collectPart = (part) => {
   }
 }
 
-// 預組搜尋字串：包含所有語系翻譯與英文 Key (全語系混合搜尋)
-// 注意：searchText 是啟動時直接掛到 skills.json 物件上的衍生欄位，json 檔本身沒有
-skillsData.forEach((s) => {
-  const parts = new Set()
-
-  const addParts = (key) => {
-    if (!key) return
-    parts.add(key)
-    Object.values(locales).forEach((dict) => parts.add(translate(dict, key)))
-  }
-
-  addParts(s.name)
-  addParts(s.mainSkill?.name)
-  addParts(s.mainSkill?.enchant)
-  addParts(s.subSkill?.name)
-  addParts(s.subSkill?.enchant)
-
-  if (s.requirements?.ultimate) {
-    addParts(s.requirements.ultimate)
-  }
-
-  s.searchText = Array.from(parts)
-    .filter(Boolean)
-    .join('\n')
-    .toLowerCase()
-})
-
 skillsData.forEach((s) => {
   if (s.requirements?.school) {
-    schoolsMap.add(s.requirements.school)
+    schools.add(s.requirements.school)
   }
   if (s.requirements?.subject) {
-    subjectsMap.add(s.requirements.subject)
+    subjects.add(s.requirements.subject)
   }
   collectPart(s.mainSkill)
   collectPart(s.subSkill)
 })
 
-const toOptions = (setObj) => {
-  return Array.from(setObj)
-    .sort((a, b) => t(a).localeCompare(t(b), 'zh-TW'))
-    .map((val) => ({
-      value: val,
-      label: val, // We will translate this in the UI
-    }))
-}
+// 選項排序固定以繁中為準，確保各語系下順序一致
+const t = (key) => translate(locales['zh-TW'], key)
+const toSortedNames = (setObj) => Array.from(setObj).sort((a, b) => t(a).localeCompare(t(b), 'zh-TW'))
 
-export const schoolOptions = toOptions(schoolsMap)
-export const subjectOptions = toOptions(subjectsMap)
-export const baseSkillOptions = toOptions(basesMap)
+export const schoolOptions = toSortedNames(schools)
+export const subjectOptions = toSortedNames(subjects)
+export const baseSkillOptions = toSortedNames(bases)
 
 export const enchantOptionsFor = (baseSkillName) => {
   const enchantSet = enchantsByBase.get(baseSkillName)
   if (!enchantSet) return []
-  return toOptions(enchantSet)
+  return toSortedNames(enchantSet)
 }

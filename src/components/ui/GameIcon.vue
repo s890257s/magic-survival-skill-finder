@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { iconMap, iconDirs } from '@/data/icons'
+import iconManifest from '@/data/iconManifest.json'
 
 const props = defineProps({
   name: {
@@ -28,18 +29,22 @@ watch(
 )
 
 const src = computed(() => {
+  const dir = iconDirs[props.category]
   let file = iconMap[props.category]?.[props.name]
-  
+
   if (!file) {
-    // 嘗試將名稱轉為 snake_case (例如 'Electric Shock' -> 'electric_shock.webp')
+    // 慣例檔名：名稱轉 snake_case (例如 'Electric Shock' -> 'electric_shock.webp')
     const snakeCaseName = props.name
       .toLowerCase()
-      .replace(/[\s\-]+/g, '_')
+      .replace(/[\s-]+/g, '_')
       .replace(/[^\w_]/g, '')
     file = `${snakeCaseName}.webp`
   }
-  
-  return `${import.meta.env.BASE_URL}icons/${iconDirs[props.category]}/${file}`
+
+  // 只對 manifest 中確實存在的圖檔發請求，避免大量 404（manifest 由 npm run icons 產生）
+  if (!iconManifest[dir]?.includes(file)) return ''
+
+  return `${import.meta.env.BASE_URL}icons/${dir}/${file}`
 })
 
 const showImage = computed(() => src.value && !loadFailed.value)

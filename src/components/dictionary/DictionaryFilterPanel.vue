@@ -14,10 +14,6 @@ const { t } = useI18n()
 const dictionaryStore = useDictionaryStore()
 const filters = dictionaryStore.filters
 
-const hasActiveFilters = computed(() => {
-  return Boolean(filters.school || filters.subject || filters.baseSkill || filters.ultimate || filters.excludeConsumed)
-})
-
 const enchants = computed(() => {
   if (!filters.baseSkill) return []
   return enchantOptionsFor(filters.baseSkill)

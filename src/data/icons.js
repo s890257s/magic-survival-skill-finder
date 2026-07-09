@@ -1,13 +1,12 @@
-// 圖示例外表：只列「已經有圖檔」的項目，其餘名稱自動顯示字首色塊佔位圖。
-// 拿到新圖時：把檔案丟進 public/icons/<分類資料夾>/，再到對應分類加一行
-//   '遊戲內名稱': '檔名（含副檔名）'
-// 例：fusion 的 '放電': 'discharge.webp' → 讀取 public/icons/fusion/discharge.webp
+// 圖示例外表：只需列「檔名不符合 snake_case 慣例」的項目。
+// 慣例：名稱轉 snake_case 後找同名 .webp（'Electric Shock' → electric_shock.webp），
+// 是否真的有圖檔由 src/data/iconManifest.json 決定（npm run icons 重新掃描），
+// 沒有圖檔的名稱自動顯示字首色塊佔位圖，不會發出無效請求。
 export const iconMap = {
   // public/icons/fusion/ — 融合技能
   fusion: {},
   // public/icons/skills/ — 基礎技能
-  skill: {
-  },
+  skill: {},
   // public/icons/subjects/ — 實驗體
   subject: {},
   // public/icons/schools/ — 學派

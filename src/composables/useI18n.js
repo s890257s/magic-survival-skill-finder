@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { locales, translate } from '@/data/locales'
+import { STORAGE_KEYS } from '@/constants/storageKeys'
 
-const LOCALE_KEY = 'app_locale'
+const LOCALE_KEY = STORAGE_KEYS.locale
 // 全域狀態，確保切換時所有元件一起響應
 const currentLocale = ref(localStorage.getItem(LOCALE_KEY) || 'zh-TW')
 

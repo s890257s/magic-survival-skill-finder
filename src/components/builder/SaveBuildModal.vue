@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
+import { useSavedBuildsStore } from '@/stores/savedBuilds'
 import { useToastStore } from '@/stores/toast'
 import Modal from '@/components/ui/Modal.vue'
 import { useI18n } from '@/composables/useI18n'
 import { formatDate } from '@/utils/format'
+import { isDesktopWidth } from '@/utils/device'
 
 const props = defineProps({
   show: Boolean
@@ -13,6 +15,7 @@ const props = defineProps({
 const emit = defineEmits(['update:show'])
 
 const favoritesStore = useFavoritesStore()
+const savedBuildsStore = useSavedBuildsStore()
 const toastStore = useToastStore()
 const { t } = useI18n()
 
@@ -20,11 +23,11 @@ const saveNameInput = ref('')
 const saveNameInputRef = ref(null)
 const saveMode = ref('new')
 
-const savedBuilds = computed(() => favoritesStore.savedBuilds)
+const savedBuilds = computed(() => savedBuildsStore.savedBuilds)
 
 watch(() => props.show, async (newShow) => {
   if (newShow) {
-    if (savedBuilds.value.length >= favoritesStore.maxSavedBuilds) {
+    if (savedBuilds.value.length >= savedBuildsStore.maxSavedBuilds) {
       saveMode.value = savedBuilds.value[0].id
       saveNameInput.value = savedBuilds.value[0].name
     } else {
@@ -32,7 +35,7 @@ watch(() => props.show, async (newShow) => {
       saveNameInput.value = `${t('ui.builder.defaultSaveName')} ${savedBuilds.value.length + 1}`
     }
     await nextTick()
-    if (saveNameInputRef.value && window.innerWidth >= 768) {
+    if (saveNameInputRef.value && isDesktopWidth()) {
       saveNameInputRef.value.focus()
     }
   }
@@ -50,14 +53,14 @@ watch(saveMode, (newMode) => {
 const confirmSave = () => {
   const name = saveNameInput.value.trim() || t('ui.builder.defaultSaveName')
   if (saveMode.value === 'new') {
-    if (!favoritesStore.saveBuild(name)) {
+    if (!savedBuildsStore.saveBuild(name, favoritesStore.favoriteIds)) {
       // 達存檔上限（開啟 modal 後上限才被觸及的邊界情況）
-      toastStore.showToast(t('ui.builder.saveLimitMsg', favoritesStore.maxSavedBuilds), 'warning')
+      toastStore.showToast(t('ui.builder.saveLimitMsg', savedBuildsStore.maxSavedBuilds), 'warning')
       return
     }
   } else {
-    favoritesStore.overwriteBuild(saveMode.value)
-    favoritesStore.renameBuild(saveMode.value, name)
+    savedBuildsStore.overwriteBuild(saveMode.value, favoritesStore.favoriteIds)
+    savedBuildsStore.renameBuild(saveMode.value, name)
   }
   toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
   emit('update:show', false)
@@ -81,7 +84,7 @@ const confirmSave = () => {
       <div class="save-field">
         <label>{{ t('ui.builder.saveTarget') }}</label>
         <div class="save-options">
-          <label v-if="savedBuilds.length < favoritesStore.maxSavedBuilds" class="save-option-label glass-panel" :class="{ active: saveMode === 'new' }">
+          <label v-if="savedBuilds.length < savedBuildsStore.maxSavedBuilds" class="save-option-label glass-panel" :class="{ active: saveMode === 'new' }">
             <input type="radio" v-model="saveMode" value="new" class="hidden-radio" />
             <div class="save-option-content">
               <span class="save-option-name">{{ t('ui.builder.createNewSave') }}</span>
