@@ -317,8 +317,8 @@
   "Overload": "Overload",
   "Terminator": "Terminator",
   "ui.dict.otherSkills": "Other Skills",
-  "ui.dict.expandAll": "Expand All",
-  "ui.dict.collapseAll": "Collapse All",
+  "ui.dict.expandSkills": "Expand Skills",
+  "ui.dict.collapseSkills": "Collapse Skills",
   "ui.dict.emptyPinned": "No pinned skills currently",
   "ui.dict.pinnedSkills": "Pinned Skills"
 }

@@ -115,7 +115,7 @@ const hasActiveFilters = computed(() => {
 
 const pinnedInView = computed(() => {
   return pinnedStore.pinnedIds
-    .map(id => filteredSkills.value.find(s => s.id === id))
+    .map(id => skillsData.find(s => s.id === id))
     .filter(Boolean)
 })
 
@@ -149,12 +149,7 @@ const setAllSectionsExpanded = (val) => {
   ui.isSearchExpanded = val
 }
 
-watch(() => [filters.search, filters.searchTags], () => {
-  if (filters.search || (filters.searchTags && filters.searchTags.length > 0)) {
-    ui.isPinnedExpanded = true
-    ui.isOtherExpanded = true
-  }
-}, { deep: true })
+
 
 const toggleExpandAll = (cards, val) => {
   if (cards && cards.length) {
@@ -297,8 +292,8 @@ onBeforeUnmount(() => {
               {{ t('ui.dict.unpinAll') }}
             </button>
             <div class="action-divider"></div>
-            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandAll') }}</button>
-            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
             <div class="action-divider"></div>
             <div class="collapse-icon">
               <ChevronUp v-if="ui.isPinnedExpanded" :size="20" />
@@ -362,8 +357,8 @@ onBeforeUnmount(() => {
               <span class="count-badge">{{ unpinnedSkills.length }}</span>
             </div>
             <div class="section-actions">
-              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandAll') }}</button>
-              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
               <div class="action-divider"></div>
               <div class="collapse-icon">
                 <ChevronUp v-if="ui.isOtherExpanded" :size="20" />
