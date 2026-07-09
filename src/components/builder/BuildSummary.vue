@@ -34,6 +34,15 @@ const removeWithUndo = (skill) => {
   )
 }
 
+const clearWithUndo = () => {
+  if (favoritesStore.favoriteIds.length === 0) return
+  const backup = [...favoritesStore.favoriteIds]
+  favoritesStore.clearFavorites()
+  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () =>
+    favoritesStore.setFavorites(backup),
+  )
+}
+
 const summaryListRef = ref(null)
 let summarySortable = null
 
@@ -104,9 +113,14 @@ onBeforeUnmount(() => {
   <div class="build-summary glass-panel" v-if="favoriteSkills.length > 0">
     <div class="summary-header" v-if="!hideHeader" @click="collapsible && (isCollapsed = !isCollapsed)" :class="{ clickable: collapsible }">
       <h3 class="summary-title"><Sparkles :size="18" /> {{ t('ui.builder.summaryTitle') }} <span class="count" v-if="collapsible">({{ favoriteSkills.length }}/{{ favoritesStore.maxSlots }})</span></h3>
-      <div v-if="collapsible" class="collapse-icon">
-        <ChevronDown v-if="isCollapsed" :size="20" />
-        <ChevronUp v-else :size="20" />
+      <div class="header-actions">
+        <button class="clear-btn" @click.stop="clearWithUndo" aria-label="清空">
+          <Trash2 :size="16" /> <span>{{ t('ui.builder.clear') }}</span>
+        </button>
+        <div v-if="collapsible" class="collapse-icon">
+          <ChevronDown v-if="isCollapsed" :size="20" />
+          <ChevronUp v-else :size="20" />
+        </div>
       </div>
     </div>
     
@@ -211,6 +225,30 @@ onBeforeUnmount(() => {
 .summary-title .count {
   font-size: 0.9rem;
   color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: var(--danger-bg);
 }
 
 .collapse-icon {

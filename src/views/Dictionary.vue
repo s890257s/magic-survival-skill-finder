@@ -25,6 +25,15 @@ const { t } = useI18n()
 const filters = dictionaryStore.filters
 const { resetAll } = dictionaryStore
 
+const clearFavoritesWithUndo = () => {
+  if (favoritesStore.favoriteIds.length === 0) return
+  const backup = [...favoritesStore.favoriteIds]
+  favoritesStore.clearFavorites()
+  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () =>
+    favoritesStore.setFavorites(backup),
+  )
+}
+
 const listTop = ref(null)
 const scrollToListTop = () => {
   listTop.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -235,6 +244,10 @@ onBeforeUnmount(() => {
             <span class="count-badge">{{ favoritesStore.favoriteSkills.length }}/{{ favoritesStore.maxSlots }}</span>
           </div>
           <div class="section-actions">
+            <button class="btn-text danger" @click="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
+              {{ t('ui.builder.clear') }}
+            </button>
+            <div class="action-divider"></div>
             <button class="btn-text" @click="isBuildSummaryExpanded = !isBuildSummaryExpanded" :disabled="favoritesStore.favoriteSkills.length === 0">
               {{ isBuildSummaryExpanded ? t('ui.dict.collapseAll') : t('ui.dict.expandAll') }}
             </button>
