@@ -264,7 +264,7 @@
   "ui.builder.clear": "清空",
   "ui.builder.export": "匯出",
   "ui.builder.limitWarning": "超過遊戲常規上限（{0} 個），實戰時記得取捨喔。",
-  "ui.builder.conflictWarning": "檢測到基礎技能被重複使用，衝突技能已標記紅框。",
+  "ui.builder.conflictWarning": "檢測到基礎技能衝突，已標記紅字",
   "ui.builder.empty": "尚未添加任何技能到配技中",
   "ui.builder.summaryTitle": "當前選擇技能",
   "ui.builder.savedBuilds": "我的儲存庫",

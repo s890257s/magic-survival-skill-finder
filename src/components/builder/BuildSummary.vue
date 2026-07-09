@@ -76,7 +76,7 @@ useSortableList(
           <td class="td-icon">
             <GameIcon :name="skill.mainSkill.name" category="skill" :size="28" class="part-icon" />
           </td>
-          <td class="td-text main-text">
+          <td class="td-text main-text" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) ? t('ui.card.conflictBadge') : undefined">
             <div class="part-title-group">
               <div class="part-name">{{ t(skill.mainSkill.name) }}</div>
               <span v-if="skill.mainSkill.enchant" class="enchant">({{ t(skill.mainSkill.enchant) }})</span>
@@ -90,7 +90,7 @@ useSortableList(
           <td class="td-icon">
             <GameIcon :name="skill.subSkill.name" category="skill" :size="28" class="part-icon" />
           </td>
-          <td class="td-text sub-text">
+          <td class="td-text sub-text" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) ? t('ui.card.conflictBadge') : undefined">
             <div class="part-title-group">
               <div class="part-name">{{ t(skill.subSkill.name) }}</div>
               <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
@@ -222,6 +222,11 @@ useSortableList(
 
 .sub-text {
   color: var(--accent-purple);
+}
+
+.td-text.is-conflicted {
+  color: var(--danger);
+  text-shadow: 0 0 8px var(--danger-border);
 }
 
 .td-operator {
