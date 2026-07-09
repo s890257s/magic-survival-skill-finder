@@ -38,7 +38,7 @@ const handleAction = (toast) => {
 <style scoped>
 .content-area {
   flex: 1;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Toast Stack */

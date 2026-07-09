@@ -331,15 +331,17 @@ defineExpose({
 .formula-name-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 6px;
   min-width: 0;
 }
 
 .formula-title-group {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
 }
 
 .base-name-group {
@@ -354,6 +356,7 @@ defineExpose({
   color: var(--text-muted);
   font-style: italic;
   line-height: 1;
+  text-align: center;
 }
 
 .skill-title-group {

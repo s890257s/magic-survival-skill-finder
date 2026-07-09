@@ -56,12 +56,8 @@ const ui = dictionaryStore.ui
 
 <style scoped>
 .header {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
   background: var(--bg-dark);
   padding: 16px 0;
-  border-bottom: 1px solid var(--glass-border);
   transition: background-color 0.3s ease;
 }
 

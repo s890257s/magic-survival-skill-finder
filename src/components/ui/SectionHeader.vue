@@ -39,17 +39,21 @@ const emit = defineEmits(['toggle'])
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-dark);
   border-left: 4px solid var(--accent-cyan);
   border-bottom: 1px solid var(--glass-border);
   margin-bottom: 16px;
   transition: background 0.2s ease;
   cursor: pointer;
   user-select: none;
+  
+  position: sticky;
+  top: 0;
+  z-index: 90;
 }
 
 .section-header:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
 }
 
 .section-title {
