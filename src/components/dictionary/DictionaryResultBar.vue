@@ -86,7 +86,7 @@ const removeFilter = (chip) => {
           v-if="chip.icon"
           :name="chip.icon.name"
           :category="chip.icon.category"
-          :size="16"
+          class="result-bar-icon"
         />
         {{ chip.label }}
         <X :size="14" />
@@ -128,11 +128,18 @@ const removeFilter = (chip) => {
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
-  border-bottom: none; /* Reset if previously cascaded */
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .filter-chip:hover {
   background: var(--accent-cyan-bg-strong);
+}
+
+.filter-chip:hover > svg {
+  color: var(--danger);
+}
+
+.result-bar-icon {
+  --icon-size: var(--icon-size-card-small, 16px);
 }
 </style>

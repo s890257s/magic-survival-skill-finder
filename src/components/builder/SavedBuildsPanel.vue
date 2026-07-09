@@ -95,9 +95,9 @@ const enrichedSavedBuilds = computed(() => {
         </div>
         <div class="saved-build-summary">
           <div v-for="(line, idx) in build.summaryLines" :key="idx" class="summary-line">
-            <span class="icon-text"><GameIcon :name="line.fusionName" category="fusion" :size="12" /> {{ t(line.fusionName) }}</span> = 
-            <span class="icon-text"><GameIcon :name="line.mainName" category="skill" :size="12" /> {{ t(line.mainName) }}</span><span v-if="line.mainEnchant">({{ t(line.mainEnchant) }})</span> + 
-            <span class="icon-text"><GameIcon :name="line.subName" category="skill" :size="12" /> {{ t(line.subName) }}</span><span v-if="line.subEnchant">({{ t(line.subEnchant) }})</span>
+            <span class="icon-text"><GameIcon :name="line.fusionName" category="fusion" class="list-mini-icon" /> {{ t(line.fusionName) }}</span> = 
+            <span class="icon-text"><GameIcon :name="line.mainName" category="skill" class="list-mini-icon" /> {{ t(line.mainName) }}</span><span v-if="line.mainEnchant">({{ t(line.mainEnchant) }})</span> + 
+            <span class="icon-text"><GameIcon :name="line.subName" category="skill" class="list-mini-icon" /> {{ t(line.subName) }}</span><span v-if="line.subEnchant">({{ t(line.subEnchant) }})</span>
           </div>
         </div>
         <div class="saved-build-actions">
@@ -223,6 +223,10 @@ const enrichedSavedBuilds = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+}
+
+.list-mini-icon {
+  --icon-size: var(--icon-size-list-mini);
 }
 
 .saved-build-actions {

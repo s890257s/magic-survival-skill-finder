@@ -312,7 +312,7 @@
   "ui.card.addedOverLimit": "已加入配技（{0}/{1}，超过常规上限）",
   "ui.card.added": "已将「{0}」加入配技（{1}/{2}）",
   "ui.card.baseConflict": "基础技能重复：{0}",
-  "ui.card.ultimateSkill": "【LV99】 {0}",
+  "ui.card.ultimateSkill": "{0}",
   "ui.select.search": "搜寻选项...",
   "ui.select.placeholder": "请选择",
   "ui.chip.school": "学派：{0}",

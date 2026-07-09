@@ -95,7 +95,7 @@ const select = (value) => {
         v-if="category && modelValue"
         :name="modelValue"
         :category="category"
-        :size="22"
+        class="select-trigger-icon"
       />
       <span class="trigger-label" :class="{ 'is-placeholder': !modelValue }">
         {{ selectedLabel || t(placeholder) }}
@@ -146,7 +146,7 @@ const select = (value) => {
               v-if="category"
               :name="opt"
               :category="category"
-              :size="24"
+              class="select-option-icon"
             />
             <span class="option-label">
               {{ t(opt) }}
@@ -220,7 +220,13 @@ const select = (value) => {
   transform: rotate(180deg);
 }
 
+.select-trigger-icon {
+  --icon-size: var(--icon-size-select-trigger, 22px);
+}
 
+.select-option-icon {
+  --icon-size: var(--icon-size-select-option, 24px);
+}
 
 .search-box {
   display: flex;

@@ -54,7 +54,28 @@
     system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
   --font-body:
     system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+
+  /* Game Icon Sizes */
+  --icon-size-summary: 40px;
+  --icon-size-card-fusion: 40px;
+  --icon-size-card-part: 30px;
+  --icon-size-card-small: 30px;
+  --icon-size-card-tiny: 30px;
+  --icon-size-list-mini: 20px;
 }
+
+@media (max-width: 768px) {
+  :root {
+    --icon-size-summary: 35px;
+    --icon-size-card-fusion: 35px;
+    --icon-size-card-part: 35px;
+    --icon-size-card-small: 35px;
+    --icon-size-card-tiny: 20px;
+    --icon-size-list-mini: 14px;
+    /* list-mini stays 12px */
+  }
+}
+
 
 :root[data-theme='light'] {
   --bg-dark: #f2f4f8;

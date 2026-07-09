@@ -61,7 +61,7 @@ useSortableList(
           </td>
 
           <td class="td-icon">
-            <GameIcon :name="skill.name" category="fusion" :size="28" class="summary-icon" />
+            <GameIcon :name="skill.name" category="fusion" class="summary-icon" />
           </td>
           <td class="td-text fusion-text">
             <div class="part-title-group">
@@ -74,7 +74,7 @@ useSortableList(
           </td>
 
           <td class="td-icon">
-            <GameIcon :name="skill.mainSkill.name" category="skill" :size="28" class="part-icon" />
+            <GameIcon :name="skill.mainSkill.name" category="skill" class="part-icon" />
           </td>
           <td class="td-text main-text" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) ? t('ui.card.conflictBadge') : undefined">
             <div class="part-title-group">
@@ -88,7 +88,7 @@ useSortableList(
           </td>
 
           <td class="td-icon">
-            <GameIcon :name="skill.subSkill.name" category="skill" :size="28" class="part-icon" />
+            <GameIcon :name="skill.subSkill.name" category="skill" class="part-icon" />
           </td>
           <td class="td-text sub-text" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) ? t('ui.card.conflictBadge') : undefined">
             <div class="part-title-group">
@@ -199,6 +199,10 @@ useSortableList(
   text-align: center;
   vertical-align: middle;
   height: 100%;
+}
+
+.summary-icon, .part-icon {
+  --icon-size: var(--icon-size-summary);
 }
 
 .part-title-group {

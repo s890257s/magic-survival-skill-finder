@@ -96,7 +96,7 @@ defineExpose({
     >
       <div class="name-area">
         <div class="icon-wrapper">
-          <GameIcon :name="skill.name" category="fusion" :size="40" />
+          <GameIcon :name="skill.name" category="fusion" class="card-fusion-icon" />
           <div v-if="pinOrder > 0" class="pin-order-badge">
             #{{ pinOrder }}
           </div>
@@ -105,7 +105,7 @@ defineExpose({
           <div class="skill-title-group">
             <div class="skill-name-row">
               <h3 class="skill-name">{{ t(skill.name) }}</h3>
-              <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name">[LV99]{{ t(skill.requirements.ultimate) }}</span>
+              <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name">→{{ t(skill.requirements.ultimate) }} (Lv100)</span>
             </div>
             <span v-if="settingsStore.showEnglish" class="skill-name-en">{{
               skill.name
@@ -165,7 +165,7 @@ defineExpose({
               <em :class="item.consume ? 'consume' : 'keep'">{{ t(item.consume ? 'ui.card.consume' : 'ui.card.keep') }}</em>
             </span>
             <div class="formula-name-row">
-              <GameIcon :name="item.part.name" category="skill" :size="32" />
+              <GameIcon :name="item.part.name" category="skill" class="card-part-icon" />
               <div class="formula-title-group">
                 <div class="base-name-group">
                   <component
@@ -205,30 +205,57 @@ defineExpose({
 
     <div class="skill-footer" v-if="skill.requirements?.ultimate">
       <div class="ultimate-area">
-        <GameIcon :name="skill.requirements.ultimate" category="ultimate" :size="16" class="ultimate-icon" />
-        <span class="ultimate-text">{{ t('ui.card.ultimateSkill', t(skill.requirements.ultimate)) }}</span>
-        <span class="ultimate-operator">=</span>
-        <MagicTag
-          v-if="skill.requirements.subject"
-          :text="`${t(skill.requirements.subject)} ${t('ui.builder.exportSubject')}`"
-          type="secondary"
-          :class="{ 'clickable-tag': clickableBases }"
-          @click="onSubjectClick(skill.requirements.subject)"
-        >
-          <template #icon>
-            <GameIcon :name="skill.requirements.subject" category="subject" :size="14" />
-          </template>
-        </MagicTag>
-        <span class="ultimate-operator" v-if="skill.requirements.subject && skill.requirements.school">+</span>
-        <MagicTag
-          v-if="skill.requirements.school"
-          :text="`${t(skill.requirements.school)} ${t('ui.builder.exportSchool')}`"
-          type="primary"
-        >
-          <template #icon>
-            <GameIcon :name="skill.requirements.school" category="school" :size="14" />
-          </template>
-        </MagicTag>
+        <div class="ultimate-group">
+          <span class="part-label invisible" aria-hidden="true">_</span>
+          <div class="ultimate-group-content">
+            <GameIcon :name="skill.requirements.ultimate" category="ultimate" class="ultimate-icon" />
+            <span class="ultimate-text">{{ t('ui.card.ultimateSkill', t(skill.requirements.ultimate)) }}</span>
+          </div>
+        </div>
+        
+        <div class="ultimate-group">
+          <span class="part-label invisible" aria-hidden="true">_</span>
+          <div class="ultimate-group-content">
+            <span class="ultimate-operator">=</span>
+          </div>
+        </div>
+        
+        <div class="ultimate-group" v-if="skill.requirements.subject">
+          <span class="part-label">{{ t('ui.builder.exportSubject') }}</span>
+          <div class="ultimate-group-content">
+            <MagicTag
+              :text="t(skill.requirements.subject)"
+              type="secondary"
+              :class="{ 'clickable-tag': clickableBases }"
+              @click="onSubjectClick(skill.requirements.subject)"
+            >
+              <template #icon>
+                <GameIcon :name="skill.requirements.subject" category="subject" class="card-tiny-icon" />
+              </template>
+            </MagicTag>
+          </div>
+        </div>
+
+        <div class="ultimate-group" v-if="skill.requirements.subject && skill.requirements.school">
+          <span class="part-label invisible" aria-hidden="true">_</span>
+          <div class="ultimate-group-content">
+            <span class="ultimate-operator">+</span>
+          </div>
+        </div>
+        
+        <div class="ultimate-group" v-if="skill.requirements.school">
+          <span class="part-label">{{ t('ui.builder.exportSchool') }}</span>
+          <div class="ultimate-group-content">
+            <MagicTag
+              :text="t(skill.requirements.school)"
+              type="primary"
+            >
+              <template #icon>
+                <GameIcon :name="skill.requirements.school" category="school" class="card-tiny-icon" />
+              </template>
+            </MagicTag>
+          </div>
+        </div>
       </div>
     </div>
       </div>
@@ -244,6 +271,11 @@ defineExpose({
   gap: 16px;
   transition: all 0.3s ease;
 }
+
+.card-fusion-icon { --icon-size: var(--icon-size-card-fusion); }
+.card-part-icon { --icon-size: var(--icon-size-card-part); }
+.ultimate-icon { --icon-size: var(--icon-size-card-small); }
+.card-tiny-icon { --icon-size: var(--icon-size-card-tiny); }
 
 .conflict-badge {
   position: absolute;
@@ -466,9 +498,9 @@ defineExpose({
 
 .skill-formula {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
 }
 
 .formula-item {
@@ -476,8 +508,7 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 
 .formula-label {
@@ -538,7 +569,9 @@ defineExpose({
   font-weight: 700;
   color: var(--text-muted);
   font-size: 1.25rem;
-  padding: 0 8px;
+  text-align: center;
+  padding: 4px 0;
+  line-height: 1;
 }
 
 .conflict-detail {
@@ -559,18 +592,71 @@ defineExpose({
 
 .ultimate-area {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex-wrap: nowrap;
-  gap: 4px;
+  gap: 8px;
   background: var(--inset-bg);
-  padding: 6px 8px;
+  padding: 8px 12px;
   border-radius: 8px;
   width: 100%;
   overflow-x: auto;
 }
 
+.ultimate-area::before,
+.ultimate-area::after {
+  content: '';
+  margin: auto;
+}
+
 .ultimate-area::-webkit-scrollbar {
-  display: none;
+  height: 4px;
+}
+
+.ultimate-area::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 12px;
+}
+
+.ultimate-area::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.ultimate-area:hover::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+}
+
+.ultimate-area::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.ultimate-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.ultimate-group-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 4px;
+}
+
+.part-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.invisible {
+  visibility: hidden;
+  user-select: none;
 }
 
 .ultimate-icon {
@@ -594,7 +680,7 @@ defineExpose({
 
 .ultimate-area :deep(.magic-tag) {
   padding: 2px 6px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 
 :deep(.clickable-tag) {
@@ -609,21 +695,4 @@ defineExpose({
   filter: brightness(1.15);
 }
 
-@media (max-width: 480px) {
-  .skill-formula {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .formula-item {
-    width: 100%;
-  }
-
-  .formula-divider {
-    text-align: center;
-    padding: 4px 0;
-    line-height: 1;
-  }
-}
 </style>

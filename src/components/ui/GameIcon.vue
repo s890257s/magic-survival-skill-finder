@@ -8,14 +8,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  // 'fusion' | 'skill' | 'subject' | 'school'
+  // 'fusion' | 'ultimate' | 'skill' | 'subject' | 'school'
   category: {
     type: String,
     required: true,
   },
   size: {
-    type: Number,
-    default: 32,
+    type: [Number, String],
+    default: null,
   },
 })
 
@@ -58,12 +58,13 @@ const hue = computed(() => {
   return h
 })
 
-const styleVars = computed(() => ({
-  width: `${props.size}px`,
-  height: `${props.size}px`,
-  borderRadius: `${Math.round(props.size * 0.25)}px`,
-  fontSize: `${Math.round(props.size * 0.5)}px`,
-}))
+const styleVars = computed(() => {
+  if (props.size != null) {
+    const sizeStr = typeof props.size === 'number' ? `${props.size}px` : props.size
+    return { '--icon-size': sizeStr }
+  }
+  return {}
+})
 </script>
 
 <template>
@@ -91,6 +92,11 @@ const styleVars = computed(() => ({
   flex-shrink: 0;
   object-fit: cover;
   display: inline-flex;
+  vertical-align: middle;
+  width: var(--icon-size, 32px);
+  height: var(--icon-size, 32px);
+  border-radius: calc(var(--icon-size, 32px) * 0.25);
+  font-size: calc(var(--icon-size, 32px) * 0.5);
 }
 
 .placeholder {
