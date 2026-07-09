@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import { Filter, ChevronUp, ChevronDown } from '@lucide/vue'
 import {
   schoolOptions,
   subjectOptions,
@@ -9,15 +8,11 @@ import {
 } from '@/data'
 import IconSelect from '@/components/ui/IconSelect.vue'
 import { useI18n } from '@/composables/useI18n'
-import { usePersistedRef } from '@/composables/usePersistedRef'
 import { useDictionaryStore } from '@/stores/dictionary'
 
 const { t } = useI18n()
 const dictionaryStore = useDictionaryStore()
 const filters = dictionaryStore.filters
-const { clearFilters } = dictionaryStore
-
-const isFilterOpen = usePersistedRef('filter_panel_open', false)
 
 const hasActiveFilters = computed(() => {
   return Boolean(filters.school || filters.subject || filters.baseSkill || filters.ultimate || filters.excludeConsumed)
@@ -36,20 +31,7 @@ const onBaseSkillChange = (val) => {
 
 <template>
   <div class="filter-panel glass-panel">
-    <div class="filter-header" @click="isFilterOpen = !isFilterOpen" :class="{ clickable: true }">
-      <h3 class="filter-title">
-        <Filter :size="18" /> {{ t('ui.dict.advancedFilter') }}
-        <span v-if="hasActiveFilters" class="filter-dot-inline"></span>
-      </h3>
-      <div class="header-actions-right">
-        <button v-if="hasActiveFilters" @click.stop="clearFilters" class="btn btn-text clear-btn">{{ t('ui.clearAll') }}</button>
-        <div class="collapse-icon">
-          <ChevronUp v-if="isFilterOpen" :size="20" />
-          <ChevronDown v-else :size="20" />
-        </div>
-      </div>
-    </div>
-    <div v-show="isFilterOpen" class="filter-content">
+    <div class="filter-content">
       <div class="filter-grid">
         <!-- 學派篩選：等待遊戲學派資料補齊，暫時停用；資料到位後移除 disabled 即可 -->
         <IconSelect

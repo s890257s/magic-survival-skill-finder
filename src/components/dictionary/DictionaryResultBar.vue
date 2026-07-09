@@ -9,6 +9,10 @@ const props = defineProps({
   resultCount: {
     type: Number,
     required: true
+  },
+  hideSearchChips: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -24,11 +28,27 @@ const CHIP_DEFS = [
 ]
 
 const activeChips = computed(() => {
-  const chips = CHIP_DEFS.filter((def) => filters[def.key]).map((def) => ({
-    key: def.key,
-    label: t(def.i18nKey, t(filters[def.key])),
-    icon: def.category ? { name: filters[def.key], category: def.category } : null,
-  }))
+  const chips = []
+  
+  if (!props.hideSearchChips) {
+    if (filters.search.trim()) {
+      chips.push({ key: 'search_input', label: filters.search.trim(), isSearch: true, icon: null })
+    }
+    if (filters.searchTags && filters.searchTags.length > 0) {
+      filters.searchTags.forEach((tag, idx) => {
+        chips.push({ key: `search_tag_${idx}`, label: tag, isSearchTag: true, tagIndex: idx, icon: null })
+      })
+    }
+  }
+
+  CHIP_DEFS.filter((def) => filters[def.key]).forEach((def) => {
+    chips.push({
+      key: def.key,
+      label: t(def.i18nKey, t(filters[def.key])),
+      icon: def.category ? { name: filters[def.key], category: def.category } : null,
+    })
+  })
+  
   if (filters.ultimate) {
     chips.push({ key: 'ultimate', label: t('ui.dict.onlyUltimate'), icon: null })
   }
@@ -38,12 +58,16 @@ const activeChips = computed(() => {
   return chips
 })
 
-const removeFilter = (key) => {
-  if (key === 'baseSkill') {
+const removeFilter = (chip) => {
+  if (chip.isSearch) {
+    filters.search = ''
+  } else if (chip.isSearchTag) {
+    filters.searchTags.splice(chip.tagIndex, 1)
+  } else if (chip.key === 'baseSkill') {
     filters.baseSkill = ''
     filters.enchant = ''
   } else {
-    filters[key] = typeof filters[key] === 'boolean' ? false : ''
+    filters[chip.key] = typeof filters[chip.key] === 'boolean' ? false : ''
   }
 }
 </script>
@@ -56,7 +80,7 @@ const removeFilter = (key) => {
         v-for="chip in activeChips"
         :key="chip.key"
         class="filter-chip"
-        @click="removeFilter(chip.key)"
+        @click="removeFilter(chip)"
         :aria-label="t('ui.dict.removeFilter', chip.label)"
       >
         <GameIcon

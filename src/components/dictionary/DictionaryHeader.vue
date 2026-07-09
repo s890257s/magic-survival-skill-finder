@@ -1,49 +1,82 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Search, X } from '@lucide/vue'
 import { useI18n } from '@/composables/useI18n'
+import { useDictionaryStore } from '@/stores/dictionary'
 
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  }
-})
-
-const emit = defineEmits(['update:modelValue'])
-
+// No props needed since we are using the store directly
 const { t } = useI18n()
+const dictionaryStore = useDictionaryStore()
+const filters = dictionaryStore.filters
 
-const search = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
-})
+const searchInputRef = ref(null)
+
+const addTag = () => {
+  const val = filters.search.trim()
+  if (val && !filters.searchTags.includes(val)) {
+    filters.searchTags.push(val)
+  }
+  filters.search = ''
+}
+
+const removeTag = (index) => {
+  filters.searchTags.splice(index, 1)
+}
+
+const handleBackspace = (e) => {
+  if (filters.search === '' && filters.searchTags.length > 0) {
+    filters.searchTags.pop()
+  }
+}
 
 const clearSearch = () => {
-  search.value = ''
+  filters.search = ''
+  filters.searchTags = []
+}
+
+const hasSearch = computed(() => filters.search !== '' || filters.searchTags.length > 0)
+
+const focusInput = () => {
+  searchInputRef.value?.focus()
 }
 </script>
 
 <template>
   <div class="search-bar">
-      <div class="search-wrapper">
-        <Search class="search-icon" :size="20" />
+    <div class="search-wrapper" @click="focusInput">
+      <Search class="search-icon" :size="20" />
+      
+      <div class="search-input-container">
+        <!-- Tags -->
+        <span v-for="(tag, index) in filters.searchTags" :key="index" class="search-tag">
+          {{ tag }}
+          <button @click.stop="removeTag(index)" class="tag-remove-btn">
+            <X :size="14" />
+          </button>
+        </span>
+        
+        <!-- Input -->
         <input
+          ref="searchInputRef"
           type="text"
-          v-model="search"
-          :placeholder="t('ui.dict.searchPlaceholder')"
+          v-model="filters.search"
+          @keydown.enter.prevent="addTag"
+          @keydown.backspace="handleBackspace"
+          :placeholder="filters.searchTags.length === 0 ? t('ui.dict.searchPlaceholder') : ''"
           class="search-input"
         />
-        <button
-          v-if="search"
-          @click="clearSearch"
-          class="btn btn-icon-rounded clear-search"
-          :aria-label="t('ui.dict.clearSearch')"
-        >
-          <X :size="18" />
-        </button>
       </div>
+
+      <button
+        v-if="hasSearch"
+        @click.stop="clearSearch"
+        class="btn btn-icon-rounded clear-search"
+        :aria-label="t('ui.dict.clearSearch')"
+      >
+        <X :size="18" />
+      </button>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -62,6 +95,19 @@ const clearSearch = () => {
   position: relative;
   align-items: center;
   min-width: 0;
+  
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 8px 40px 8px 48px;
+  transition: all 0.3s ease;
+  cursor: text;
+  min-height: 46px;
+}
+
+.search-wrapper:focus-within {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px var(--accent-cyan-glow);
 }
 
 .search-icon {
@@ -71,25 +117,58 @@ const clearSearch = () => {
   pointer-events: none;
 }
 
-.search-input {
+.search-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   width: 100%;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 12px 40px 12px 48px;
+}
+
+.search-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--accent-cyan-bg);
+  border: 1px solid var(--accent-cyan-border);
+  color: var(--accent-cyan);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tag-remove-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: var(--accent-cyan);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.tag-remove-btn:hover {
+  opacity: 1;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 60px;
+  background: transparent;
+  border: none;
   color: var(--text-primary);
   font-size: 1rem;
   outline: none;
-  transition: all 0.3s ease;
+  padding: 4px 0;
 }
 
 .clear-search {
   position: absolute;
   right: 12px;
-}
-
-.search-input:focus {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 2px var(--accent-cyan-glow);
 }
 </style>

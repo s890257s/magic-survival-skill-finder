@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import Sortable from 'sortablejs'
-import { Search, Pin, Sparkles } from '@lucide/vue'
+import { Search, Pin, Sparkles, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, Book } from '@lucide/vue'
 import { skillsData } from '@/data'
 import { gameVersion } from '@/data/meta'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
@@ -23,6 +23,7 @@ const dictionaryStore = useDictionaryStore()
 const { t } = useI18n()
 
 const filters = dictionaryStore.filters
+const ui = dictionaryStore.ui
 const { resetAll } = dictionaryStore
 
 const clearFavoritesWithUndo = () => {
@@ -63,9 +64,13 @@ const usedBases = computed(() => {
 
 const filteredSkills = computed(() => {
   return skillsData.filter((skill) => {
-    if (filters.search) {
-      const q = filters.search.trim().toLowerCase()
-      if (q && !skill.searchText.includes(q)) return false
+    const searchTerms = [
+      ...(filters.searchTags || []),
+      filters.search.trim()
+    ].filter(Boolean).map(t => t.toLowerCase())
+
+    if (searchTerms.length > 0) {
+      if (searchTerms.some(q => !skill.searchText.includes(q))) return false
     }
     // 學派篩選：等待遊戲學派資料補齊，暫時停用
     if (
@@ -136,7 +141,20 @@ const unpinAll = () => {
 
 const pinnedCards = ref([])
 const unpinnedCards = ref([])
-const isBuildSummaryExpanded = ref(true)
+
+const setAllSectionsExpanded = (val) => {
+  ui.isBuildSummaryExpanded = val
+  ui.isPinnedExpanded = val
+  ui.isOtherExpanded = val
+  ui.isSearchExpanded = val
+}
+
+watch(() => [filters.search, filters.searchTags], () => {
+  if (filters.search || (filters.searchTags && filters.searchTags.length > 0)) {
+    ui.isPinnedExpanded = true
+    ui.isOtherExpanded = true
+  }
+}, { deep: true })
 
 const toggleExpandAll = (cards, val) => {
   if (cards && cards.length) {
@@ -222,6 +240,15 @@ onBeforeUnmount(() => {
         </div>
         <div class="header-actions-row">
           <HeaderActions />
+          
+          <div class="action-divider global-divider"></div>
+
+          <button class="btn-icon-rounded global-collapse-btn" @click="setAllSectionsExpanded(true)" title="全部展開">
+            <ChevronsDown :size="20" />
+          </button>
+          <button class="btn-icon-rounded global-collapse-btn" @click="setAllSectionsExpanded(false)" title="全部收合">
+            <ChevronsUp :size="20" />
+          </button>
         </div>
       </div>
       <hr class="header-divider" />
@@ -229,83 +256,93 @@ onBeforeUnmount(() => {
     <div class="list-area">
       <!-- Section 1: Build Summary -->
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header clickable" @click="ui.isBuildSummaryExpanded = !ui.isBuildSummaryExpanded">
           <div class="section-title">
             <Sparkles :size="18" class="section-icon" />
             <span>{{ t('ui.builder.summaryTitle') }}</span>
             <span class="count-badge">{{ favoritesStore.favoriteSkills.length }}/{{ favoritesStore.maxSlots }}</span>
           </div>
           <div class="section-actions">
-            <button class="btn-text danger" @click="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
+            <button class="btn-text danger" @click.stop="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
               {{ t('ui.builder.clear') }}
             </button>
             <div class="action-divider"></div>
-            <button class="btn-text" @click="isBuildSummaryExpanded = !isBuildSummaryExpanded" :disabled="favoritesStore.favoriteSkills.length === 0">
-              {{ isBuildSummaryExpanded ? t('ui.dict.collapseAll') : t('ui.dict.expandAll') }}
-            </button>
+            <div class="collapse-icon">
+              <ChevronUp v-if="ui.isBuildSummaryExpanded" :size="20" />
+              <ChevronDown v-else :size="20" />
+            </div>
           </div>
         </div>
         
-        <div v-if="favoritesStore.favoriteSkills.length === 0" class="section-empty-state">
-          {{ t('ui.builder.empty') }}
-        </div>
-        <div v-show="isBuildSummaryExpanded" v-else>
-          <BuildSummary hideHeader />
+        <div v-show="ui.isBuildSummaryExpanded">
+          <div v-if="favoritesStore.favoriteSkills.length === 0" class="section-empty-state">
+            {{ t('ui.builder.empty') }}
+          </div>
+          <div v-else>
+            <BuildSummary hideHeader />
+          </div>
         </div>
       </div>
 
       <!-- Section 2: Pinned Skills -->
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header clickable" @click="ui.isPinnedExpanded = !ui.isPinnedExpanded">
           <div class="section-title">
             <Pin :size="18" class="section-icon" />
             <span>{{ t('ui.dict.pinnedSkills') }}</span>
             <span class="count-badge">{{ pinnedStore.pinnedIds.length }}</span>
           </div>
           <div class="section-actions">
-            <button class="btn-text danger" @click="unpinAll" :disabled="pinnedInView.length === 0">
+            <button class="btn-text danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
               {{ t('ui.dict.unpinAll') }}
             </button>
             <div class="action-divider"></div>
-            <button class="btn-text" @click="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandAll') }}</button>
-            <button class="btn-text" @click="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandAll') }}</button>
+            <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+            <div class="action-divider"></div>
+            <div class="collapse-icon">
+              <ChevronUp v-if="ui.isPinnedExpanded" :size="20" />
+              <ChevronDown v-else :size="20" />
+            </div>
           </div>
         </div>
         
-        <div v-if="pinnedInView.length === 0" class="section-empty-state">
-          {{ t('ui.dict.emptyPinned') }}
-        </div>
-        <div v-else ref="pinnedListRef" class="skill-list pinned-list">
-          <SkillCard
-            v-for="(skill, index) in pinnedInView"
-            :key="skill.id"
-            ref="pinnedCards"
-            :data-id="skill.id"
-            :skill="skill"
-            clickableBases
-            pinnable
-            :reorderable="pinnedInView.length > 1"
-            :isFirst="index === 0"
-            :isLast="index === pinnedInView.length - 1"
-            :pinOrder="index + 1"
-            @move="(delta) => onMovePinned(skill, delta)"
-            @select-base="onSelectBase"
-            @select-enchant="onSelectEnchant"
-            @select-subject="onSelectSubject"
-          />
+        <div v-show="ui.isPinnedExpanded">
+          <div v-if="pinnedInView.length === 0" class="section-empty-state">
+            {{ t('ui.dict.emptyPinned') }}
+          </div>
+          <div v-else ref="pinnedListRef" class="skill-list pinned-list">
+            <SkillCard
+              v-for="(skill, index) in pinnedInView"
+              :key="skill.id"
+              ref="pinnedCards"
+              :data-id="skill.id"
+              :skill="skill"
+              clickableBases
+              pinnable
+              :reorderable="pinnedInView.length > 1"
+              :isFirst="index === 0"
+              :isLast="index === pinnedInView.length - 1"
+              :pinOrder="index + 1"
+              @move="(delta) => onMovePinned(skill, delta)"
+              @select-base="onSelectBase"
+              @select-enchant="onSelectEnchant"
+              @select-subject="onSelectSubject"
+            />
+          </div>
         </div>
       </div>
     </div>
 
     <!-- DictionaryTopBar -->
-    <DictionaryTopBar v-model="filters.search" :resultCount="filteredSkills.length" />
+    <DictionaryTopBar :resultCount="filteredSkills.length" />
 
     <div class="list-area">
       <!-- Main Content Empty State (Filters) -->
       <EmptyState
         v-if="filteredSkills.length === 0"
         :text="t('ui.dict.noResults')"
-        :showAction="hasActiveFilters || filters.search !== ''"
+        :showAction="hasActiveFilters || filters.search !== '' || (filters.searchTags && filters.searchTags.length > 0)"
         :actionText="t('ui.resetSearchAndFilter')"
         @action="resetAll"
       >
@@ -318,31 +355,39 @@ onBeforeUnmount(() => {
       <div class="results-area" v-else>
         <!-- Section 3: Other Skills -->
         <div class="section-container">
-          <div class="section-header">
+          <div class="section-header clickable" @click="ui.isOtherExpanded = !ui.isOtherExpanded">
             <div class="section-title">
+              <Book :size="18" class="section-icon" />
               <span>{{ t('ui.dict.otherSkills') }}</span>
               <span class="count-badge">{{ unpinnedSkills.length }}</span>
             </div>
             <div class="section-actions">
-              <button class="btn-text" @click="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandAll') }}</button>
-              <button class="btn-text" @click="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, true)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.expandAll') }}</button>
+              <button class="btn-text" @click.stop="toggleExpandAll(unpinnedCards, false)" :disabled="unpinnedSkills.length === 0">{{ t('ui.dict.collapseAll') }}</button>
+              <div class="action-divider"></div>
+              <div class="collapse-icon">
+                <ChevronUp v-if="ui.isOtherExpanded" :size="20" />
+                <ChevronDown v-else :size="20" />
+              </div>
             </div>
           </div>
           
-          <div v-if="unpinnedSkills.length > 0" class="skill-list unpinned-list">
-            <SkillCard
-              v-for="skill in unpinnedSkills"
-              :key="skill.id"
-              ref="unpinnedCards"
-              :data-id="skill.id"
-              :skill="skill"
-              clickableBases
-              pinnable
-              :reorderable="false"
-              @select-base="onSelectBase"
-              @select-enchant="onSelectEnchant"
-              @select-subject="onSelectSubject"
-            />
+          <div v-show="ui.isOtherExpanded">
+            <div v-if="unpinnedSkills.length > 0" class="skill-list unpinned-list">
+              <SkillCard
+                v-for="skill in unpinnedSkills"
+                :key="skill.id"
+                ref="unpinnedCards"
+                :data-id="skill.id"
+                :skill="skill"
+                clickableBases
+                pinnable
+                :reorderable="false"
+                @select-base="onSelectBase"
+                @select-enchant="onSelectEnchant"
+                @select-subject="onSelectSubject"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -385,6 +430,30 @@ onBeforeUnmount(() => {
 .header-actions-row {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.global-collapse-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.global-collapse-btn:hover {
+  background: var(--glass-border);
+  color: var(--text-primary);
+}
+
+.global-divider {
+  margin: 0 4px;
 }
 
 .header-divider {
@@ -435,6 +504,16 @@ onBeforeUnmount(() => {
   border-left: 4px solid var(--accent-cyan);
   border-bottom: 1px solid var(--glass-border);
   margin-bottom: 16px;
+  transition: background 0.2s ease;
+}
+
+.section-header.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-header.clickable:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .section-title {
@@ -497,6 +576,17 @@ onBeforeUnmount(() => {
 .btn-text:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+.collapse-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.section-header:hover .collapse-icon {
+  color: var(--text-primary);
 }
 
 .section-empty-state {
