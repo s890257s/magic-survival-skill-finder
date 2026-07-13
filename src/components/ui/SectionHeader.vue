@@ -48,7 +48,8 @@ const emit = defineEmits(['toggle'])
   user-select: none;
   
   position: sticky;
-  top: 0;
+  /* 預設吸附頂端；Dictionary 頁由 --section-sticky-top 讓位給 sticky 搜尋列 */
+  top: var(--section-sticky-top, 0);
   z-index: 90;
 }
 

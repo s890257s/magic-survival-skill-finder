@@ -44,7 +44,7 @@ const handleAction = (toast) => {
 /* Toast Stack */
 .toast-stack {
   position: fixed;
-  bottom: 20px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-toast, 2000);
@@ -63,6 +63,6 @@ const handleAction = (toast) => {
 .toast-slide-enter-from,
 .toast-slide-leave-to {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(-20px);
 }
 </style>

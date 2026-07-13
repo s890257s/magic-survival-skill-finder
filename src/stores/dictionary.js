@@ -23,11 +23,11 @@ export const useDictionaryStore = defineStore('dictionary', () => {
   const ui = usePersistedReactive(
     STORAGE_KEYS.dictionaryUi,
     reactive({
-      isSearchExpanded: true,
-      isBuildSummaryExpanded: true,
+      // 底部 dock：單一抽屜 + 雙 tab，互斥由結構保證
+      dockTab: 'search',
+      isDockExpanded: false,
       isPinnedExpanded: true,
       isOtherExpanded: true,
-      fabPosition: 'right',
     }),
     { debounceMs: 300 },
   )

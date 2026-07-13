@@ -1,13 +1,11 @@
 <script setup>
 import { ref } from 'vue'
-import { Sparkles, Share2, Save, FolderOpen, AlertTriangle, Layers } from '@lucide/vue'
+import { Share2, Save, FolderOpen, AlertTriangle, Layers } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useSavedBuildsStore } from '@/stores/savedBuilds'
 import { useToastStore } from '@/stores/toast'
-import { useDictionaryStore } from '@/stores/dictionary'
 import { useI18n } from '@/composables/useI18n'
 import { useShareBuild } from '@/composables/useShareBuild'
-import SectionHeader from '@/components/ui/SectionHeader.vue'
 import Modal from '@/components/ui/Modal.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import BuildSummary from '@/components/builder/BuildSummary.vue'
@@ -17,9 +15,7 @@ import SavedBuildsPanel from '@/components/builder/SavedBuildsPanel.vue'
 const favoritesStore = useFavoritesStore()
 const savedBuildsStore = useSavedBuildsStore()
 const toastStore = useToastStore()
-const dictionaryStore = useDictionaryStore()
 const { t } = useI18n()
-const ui = dictionaryStore.ui
 
 const {
   showShareModal,
@@ -53,63 +49,38 @@ const clearFavoritesWithUndo = () => {
 </script>
 
 <template>
-  <div class="section-container">
-    <SectionHeader
-      :expanded="ui.isBuildSummaryExpanded"
-      :count="`${favoritesStore.favoriteSkills.length}/${favoritesStore.maxSlots}`"
-      @toggle="ui.isBuildSummaryExpanded = !ui.isBuildSummaryExpanded"
-    >
-      <template #icon><Sparkles :size="18" /></template>
-      {{ t('ui.builder.summaryTitle') }}
-      <template #actions>
-        <template v-if="ui.isBuildSummaryExpanded">
-          <button
-            class="action-btn"
-            @click.stop="showSavedBuildsModal = true"
-            :title="t('ui.builder.savedBuilds')"
-          >
-            <FolderOpen :size="16" />
-          </button>
-          <button
-            class="action-btn"
-            @click.stop="handleSaveClick"
-            :disabled="favoritesStore.favoriteSkills.length === 0"
-            :title="t('ui.builder.save')"
-          >
-            <Save :size="16" />
-          </button>
-          <button class="action-btn" @click.stop="openExportModal" :title="t('ui.builder.export')">
-            <Share2 :size="16" />
-          </button>
-          <div class="action-divider"></div>
-          <button
-            class="btn-text danger"
-            @click.stop="clearFavoritesWithUndo"
-            :disabled="favoritesStore.favoriteSkills.length === 0"
-          >
-            {{ t('ui.builder.clear') }}
-          </button>
-          <div class="action-divider"></div>
-        </template>
-      </template>
-    </SectionHeader>
-
-    <div v-show="ui.isBuildSummaryExpanded">
-      <!-- Banners -->
-      <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
-        <Layers :size="16" />
-        <span>{{ t('ui.builder.limitWarning', favoritesStore.maxSlots) }}</span>
-      </div>
-      <div v-if="favoritesStore.conflicts.size > 0" class="banner conflict-banner">
-        <AlertTriangle :size="16" />
-        <span>{{ t('ui.builder.conflictWarning') }}</span>
-      </div>
-
-      <div v-if="favoritesStore.favoriteSkills.length === 0" class="section-empty-state">
-        {{ t('ui.builder.empty') }}
-      </div>
-      <BuildSummary v-else />
+  <div class="build-panel">
+    <!-- 工具列（原抽屜 header 的動作鈕） -->
+    <div class="panel-toolbar">
+      <button class="action-btn" @click="showSavedBuildsModal = true" :title="t('ui.builder.savedBuilds')">
+        <FolderOpen :size="18" />
+      </button>
+      <button class="action-btn" @click="handleSaveClick" :disabled="favoritesStore.favoriteSkills.length === 0" :title="t('ui.builder.save')">
+        <Save :size="18" />
+      </button>
+      <button class="action-btn" @click="openExportModal" :title="t('ui.builder.export')">
+        <Share2 :size="18" />
+      </button>
+      <div class="action-divider"></div>
+      <button class="btn-text danger" @click="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
+        {{ t('ui.builder.clear') }}
+      </button>
     </div>
+
+    <!-- Banners -->
+    <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
+      <Layers :size="16" />
+      <span>{{ t('ui.builder.limitWarning', favoritesStore.maxSlots) }}</span>
+    </div>
+    <div v-if="favoritesStore.conflicts.size > 0" class="banner conflict-banner">
+      <AlertTriangle :size="16" />
+      <span>{{ t('ui.builder.conflictWarning') }}</span>
+    </div>
+
+    <div v-if="favoritesStore.favoriteSkills.length === 0" class="section-empty-state">
+      {{ t('ui.builder.empty') }}
+    </div>
+    <BuildSummary v-else />
 
     <!-- Modals -->
     <Modal :show="showShareModal" :title="t('ui.builder.shareModalTitle')" @close="showShareModal = false">
@@ -139,11 +110,7 @@ const clearFavoritesWithUndo = () => {
       @close="showExportChoiceModal = false"
     >
       <div class="export-choice-content">
-        <button
-          class="btn btn-primary export-btn"
-          @click="doExport('current')"
-          :disabled="favoritesStore.favoriteSkills.length === 0"
-        >
+        <button class="btn btn-primary export-btn" @click="doExport('current')" :disabled="favoritesStore.favoriteSkills.length === 0">
           <Share2 :size="18" />
           {{ t('ui.builder.exportCurrent') }}
         </button>
@@ -154,11 +121,7 @@ const clearFavoritesWithUndo = () => {
       </div>
     </Modal>
 
-    <Modal
-      :show="showSavedBuildsModal"
-      :title="t('ui.builder.savedBuilds')"
-      @close="showSavedBuildsModal = false"
-    >
+    <Modal :show="showSavedBuildsModal" :title="t('ui.builder.savedBuilds')" @close="showSavedBuildsModal = false">
       <div v-if="savedBuildsStore.savedBuilds.length === 0" class="section-empty-state">
         {{ t('ui.builder.empty') }}
       </div>
@@ -168,19 +131,94 @@ const clearFavoritesWithUndo = () => {
 </template>
 
 <style scoped>
-.section-container {
-  margin-bottom: 24px;
+.build-panel {
+  padding-bottom: 16px;
+  /* 面板為固定高度，內容以縱向 flex 佈局讓空狀態能置中 */
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.build-panel > :deep(.build-summary) {
+  flex-shrink: 0;
+}
+
+.panel-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface);
+  z-index: 1;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: var(--glass-border);
+  color: var(--text-primary);
+}
+
+.action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn-text.danger {
+  color: var(--danger);
+}
+
+.btn-text.danger:hover:not(:disabled) {
+  color: var(--danger-hover, #ff6b6b);
+}
+
+.btn-text:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.action-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--glass-border);
+  margin: 0 4px;
 }
 
 .section-empty-state {
-  padding: 16px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
   text-align: center;
   color: var(--text-muted);
   font-size: 0.9rem;
   font-style: italic;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  margin: 0 16px;
 }
 
 .banner {
@@ -190,7 +228,7 @@ const clearFavoritesWithUndo = () => {
   padding: 8px 12px;
   font-size: 0.85rem;
   font-weight: 500;
-  margin: 0 16px 12px 16px;
+  margin: 12px 16px 0 16px;
   border-radius: 6px;
 }
 
@@ -206,24 +244,15 @@ const clearFavoritesWithUndo = () => {
   color: var(--warning);
 }
 
-.share-content {
+.share-content,
+.export-choice-content {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.share-copy-btn {
-  align-self: flex-end;
-}
+.export-choice-content { gap: 12px; }
 
-.export-choice-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.export-btn {
-  justify-content: center;
-  gap: 12px;
-}
+.share-copy-btn { align-self: flex-end; }
+.export-btn { justify-content: center; gap: 12px; }
 </style>

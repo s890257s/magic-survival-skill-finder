@@ -1,13 +1,15 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { Trash2, ChevronUp, ChevronDown } from '@lucide/vue'
+import { Trash2, ChevronUp, ChevronDown, CheckCircle2 } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
+import { useTrackerStore } from '@/stores/tracker'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { useSortableList } from '@/composables/useSortableList'
 import GameIcon from '@/components/ui/GameIcon.vue'
 
 const favoritesStore = useFavoritesStore()
+const trackerStore = useTrackerStore()
 const toastStore = useToastStore()
 const { t } = useI18n()
 
@@ -73,10 +75,15 @@ useSortableList(
             <span class="operator">=</span>
           </td>
 
-          <td class="td-icon">
-            <GameIcon :name="skill.mainSkill.name" category="skill" class="part-icon" />
+          <td class="td-icon tracker-cell" @click="trackerStore.toggleAcquired(skill.mainSkill.name)" :class="{ 'is-acquired': trackerStore.isAcquired(skill.mainSkill.name) }">
+            <div class="tracker-icon-wrapper">
+              <GameIcon :name="skill.mainSkill.name" category="skill" class="part-icon" />
+              <div v-if="trackerStore.isAcquired(skill.mainSkill.name)" class="acquired-badge">
+                <CheckCircle2 :size="16" />
+              </div>
+            </div>
           </td>
-          <td class="td-text main-text" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) ? t('ui.card.conflictBadge') : undefined">
+          <td class="td-text main-text tracker-cell" @click="trackerStore.toggleAcquired(skill.mainSkill.name)" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name), 'is-acquired': trackerStore.isAcquired(skill.mainSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.mainSkill.name) ? t('ui.card.conflictBadge') : undefined">
             <div class="part-title-group">
               <div class="part-name">{{ t(skill.mainSkill.name) }}</div>
               <span v-if="skill.mainSkill.enchant" class="enchant">({{ t(skill.mainSkill.enchant) }})</span>
@@ -87,10 +94,15 @@ useSortableList(
             <span class="operator">+</span>
           </td>
 
-          <td class="td-icon">
-            <GameIcon :name="skill.subSkill.name" category="skill" class="part-icon" />
+          <td class="td-icon tracker-cell" @click="trackerStore.toggleAcquired(skill.subSkill.name)" :class="{ 'is-acquired': trackerStore.isAcquired(skill.subSkill.name) }">
+            <div class="tracker-icon-wrapper">
+              <GameIcon :name="skill.subSkill.name" category="skill" class="part-icon" />
+              <div v-if="trackerStore.isAcquired(skill.subSkill.name)" class="acquired-badge">
+                <CheckCircle2 :size="16" />
+              </div>
+            </div>
           </td>
-          <td class="td-text sub-text" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) ? t('ui.card.conflictBadge') : undefined">
+          <td class="td-text sub-text tracker-cell" @click="trackerStore.toggleAcquired(skill.subSkill.name)" :class="{ 'is-conflicted': favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name), 'is-acquired': trackerStore.isAcquired(skill.subSkill.name) }" :title="favoritesStore.conflicts.get(skill.id)?.includes(skill.subSkill.name) ? t('ui.card.conflictBadge') : undefined">
             <div class="part-title-group">
               <div class="part-name">{{ t(skill.subSkill.name) }}</div>
               <span v-if="skill.subSkill.enchant" class="enchant">({{ t(skill.subSkill.enchant) }})</span>
@@ -245,5 +257,53 @@ useSortableList(
 .enchant {
   font-size: 0.75em;
   opacity: 0.85;
+}
+
+/* Tracker UI Styles */
+.tracker-cell {
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.tracker-cell:active {
+  transform: scale(0.95);
+}
+
+.tracker-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.acquired-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  color: var(--success, #10b981);
+  background: var(--bg-primary, #1e1e2e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  animation: pop-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+.td-icon.is-acquired .part-icon {
+  filter: drop-shadow(0 0 6px var(--success, rgba(16, 185, 129, 0.6)));
+}
+
+.td-text.is-acquired {
+  color: var(--success, #10b981);
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.td-text.is-acquired .enchant {
+  color: var(--text-muted);
 }
 </style>

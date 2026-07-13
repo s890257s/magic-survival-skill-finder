@@ -5,8 +5,10 @@ export const STORAGE_KEYS = {
   savedBuilds: 'saved_builds',
   pinned: 'pinned_skills',
   dictionaryFilters: 'dictionary_filters',
-  dictionaryUi: 'dictionary_ui',
+  // v2：底部 dock 改版，捨棄舊版 isSearchExpanded / isBuildSummaryExpanded / fabPosition 殘留
+  dictionaryUi: 'dictionary_ui_v2',
   theme: 'theme',
   showEnglish: 'show_english',
   locale: 'app_locale',
+  tracker: 'in_run_tracker',
 }

@@ -24,7 +24,8 @@ npm run dev   # Vite, http://localhost:5173（背景執行）
 - `.theme-toggle` 切換 `data-theme`，reload 後保持
 
 - 圖示系統：`.game-icon.placeholder`（字首色塊）vs `img.game-icon`（真圖）；對照表在 `src/data/icons.js`，圖檔在 `public/icons/{fusion,skills,subjects,schools}/`。錯誤 fallback 可用 `page.route(...abort)` 驗證
-- 篩選下拉是自訂元件（IconSelect，Teleport 到 body）：trigger `.icon-select .select-trigger`、面板 `.select-panel`、選項 `.option`；Esc / 外點可關閉；截圖前等 fade-in（~200ms）完成否則會拍到半透明中間幀
+- 篩選下拉是自訂元件（IconSelect，Teleport 到 body）：trigger `.icon-select .select-trigger`、面板 `.dropdown-panel`、選項 `.dropdown-option`；Esc / 外點可關閉；截圖前等 fade-in（~200ms）完成否則會拍到半透明中間幀
+- 底部 dock（搜尋/配技雙 tab）：tab 列 `.dock-tabbar`、tab `.dock-tab`（徽章 `.tab-badge`）、面板 `.dock-panel`、scrim `.dock-scrim`；點擊 tab 用文字區而非元素中心，避免誤觸徽章
 
 ## 注意
 - 路由是 hash 模式：配技頁在 `/#/builder`，導覽連結 selector 是 `a[href="#/builder"]`

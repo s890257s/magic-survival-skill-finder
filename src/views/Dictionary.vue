@@ -1,22 +1,19 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { Search, Pin, ChevronsUp, ChevronsDown, Book } from '@lucide/vue'
+import { Search, Pin, Book } from '@lucide/vue'
 import { skillsData } from '@/data'
 import { gameVersion } from '@/data/meta'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
 import SkillCard from '@/components/SkillCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import SectionHeader from '@/components/ui/SectionHeader.vue'
-import BuildSection from '@/components/builder/BuildSection.vue'
-import DictionaryTopBar from '@/components/dictionary/DictionaryTopBar.vue'
-import DictionaryFab from '@/components/dictionary/DictionaryFab.vue'
+import BottomDock from '@/components/dock/BottomDock.vue'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useDictionaryStore } from '@/stores/dictionary'
 import { useI18n } from '@/composables/useI18n'
 import { useSortableList } from '@/composables/useSortableList'
-import { onMounted, onUnmounted } from 'vue'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
@@ -27,19 +24,6 @@ const { t } = useI18n()
 const filters = dictionaryStore.filters
 const ui = dictionaryStore.ui
 const { resetAll } = dictionaryStore
-
-const showFab = ref(false)
-const handleScroll = () => {
-  showFab.value = window.scrollY > 120
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
 
 // --- 篩選 ---
 
@@ -170,13 +154,6 @@ useSortableList(
 const pinnedCards = ref([])
 const allSkillCards = ref([])
 
-const setAllSectionsExpanded = (val) => {
-  ui.isBuildSummaryExpanded = val
-  ui.isPinnedExpanded = val
-  ui.isOtherExpanded = val
-  ui.isSearchExpanded = val
-}
-
 const toggleExpandAll = (cards, val) => {
   if (cards && cards.length) {
     cards.forEach((card) => card?.setExpanded?.(val))
@@ -196,23 +173,13 @@ const toggleExpandAll = (cards, val) => {
         </div>
         <div class="header-actions-row">
           <HeaderActions />
-
-          <div class="action-divider global-divider"></div>
-
-          <button class="btn-icon-rounded global-collapse-btn" @click="setAllSectionsExpanded(true)" :title="t('ui.expandAll')">
-            <ChevronsDown :size="20" />
-          </button>
-          <button class="btn-icon-rounded global-collapse-btn" @click="setAllSectionsExpanded(false)" :title="t('ui.collapseAll')">
-            <ChevronsUp :size="20" />
-          </button>
         </div>
       </div>
       <hr class="header-divider" />
     </div>
 
     <div class="list-area">
-      <!-- Section 1: Build Summary -->
-      <BuildSection />
+      <!-- Section 1: Build Summary (Removed, now in Drawer) -->
 
       <!-- Section 2: Pinned Skills -->
       <div class="section-container">
@@ -261,10 +228,7 @@ const toggleExpandAll = (cards, val) => {
       </div>
     </div>
 
-    <!-- DictionaryTopBar -->
-    <DictionaryTopBar :resultCount="filteredSkills.length" />
-
-    <div class="list-area">
+    <div class="list-area" id="results-anchor">
       <!-- Main Content Empty State (Filters) -->
       <EmptyState
         v-if="filteredSkills.length === 0"
@@ -320,8 +284,8 @@ const toggleExpandAll = (cards, val) => {
       </div>
     </div>
 
-    <!-- 浮動按鈕選單 -->
-    <DictionaryFab :show="showFab" />
+    <!-- 底部 dock：搜尋 / 配技 雙 tab 抽屜 -->
+    <BottomDock :resultCount="filteredSkills.length" />
   </div>
 </template>
 
@@ -330,6 +294,8 @@ const toggleExpandAll = (cards, val) => {
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  /* 留給底部 dock tab 列的空間 */
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
 }
 
 .app-header-container {
@@ -364,34 +330,6 @@ const toggleExpandAll = (cards, val) => {
   gap: 8px;
 }
 
-.global-collapse-btn {
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.global-collapse-btn:hover {
-  background: var(--glass-border);
-  color: var(--text-primary);
-}
-
-.action-divider {
-  width: 1px;
-  height: 14px;
-  background: var(--glass-border);
-}
-
-.global-divider {
-  margin: 0 4px;
-}
-
 .header-divider {
   border: 0;
   height: 1px;
@@ -423,7 +361,7 @@ const toggleExpandAll = (cards, val) => {
 }
 
 .list-area {
-  scroll-margin-top: 96px;
+  scroll-margin-top: 8px;
 }
 
 .section-container {
