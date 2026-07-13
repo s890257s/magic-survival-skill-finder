@@ -1,23 +1,19 @@
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Search, Sparkles, AlertTriangle, ArrowUpToLine } from '@lucide/vue'
 import SearchPanel from '@/components/dictionary/SearchPanel.vue'
 import BuildPanel from '@/components/builder/BuildPanel.vue'
 import { useDictionaryStore } from '@/stores/dictionary'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useI18n } from '@/composables/useI18n'
-
-defineProps({
-  resultCount: {
-    type: Number,
-    required: true
-  }
-})
+import { useBodyScrollLock, hasOpenOverlay } from '@/composables/useOverlays'
 
 const { t } = useI18n()
 const dictionaryStore = useDictionaryStore()
 const favoritesStore = useFavoritesStore()
 const ui = dictionaryStore.ui
+
+const resultCount = computed(() => dictionaryStore.filteredSkills.length)
 
 // 收合時點 tab → 展開該面板；展開時點另一 tab → 切換；點當前 tab → 收合
 const onTabClick = (tab) => {
@@ -35,19 +31,13 @@ const collapse = () => {
 
 const onKeydown = (e) => {
   if (e.key !== 'Escape' || !ui.isDockExpanded) return
-  // 有更上層浮層（modal / dropdown，皆為 v-if 渲染）開著時，Esc 讓它們先關，dock 不動
-  if (document.querySelector('.modal-overlay, .dropdown-backdrop')) return
+  // 有更上層浮層（modal / dropdown）開著時，Esc 讓它們先關，dock 不動
+  if (hasOpenOverlay()) return
   collapse()
 }
 
-// 展開時鎖背景捲動
-watch(
-  () => ui.isDockExpanded,
-  (val) => {
-    document.body.style.overflow = val ? 'hidden' : ''
-  },
-  { immediate: true },
-)
+// 展開時鎖背景捲動（計數式，與 Modal 共用，互不覆蓋）
+useBodyScrollLock(() => ui.isDockExpanded)
 
 // 回頂部小鈕：捲動超過約一屏才浮現
 const showTopBtn = ref(false)
@@ -66,7 +56,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('keydown', onKeydown)
   window.removeEventListener('scroll', onScroll)
-  document.body.style.overflow = ''
 })
 </script>
 
@@ -94,7 +83,7 @@ onUnmounted(() => {
     <Transition name="panel-slide">
       <div v-show="ui.isDockExpanded" class="dock-panel">
         <div class="panel-inner">
-          <SearchPanel v-show="ui.dockTab === 'search'" :resultCount="resultCount" />
+          <SearchPanel v-show="ui.dockTab === 'search'" />
           <BuildPanel v-show="ui.dockTab === 'build'" />
         </div>
       </div>

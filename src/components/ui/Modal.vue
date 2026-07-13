@@ -1,17 +1,7 @@
-<script>
-// 背景捲動鎖：模組層計數（跨 Modal 實例共用），支援多個 modal 疊加
-let scrollLockCount = 0
-const lockScroll = () => {
-  if (++scrollLockCount === 1) document.body.style.overflow = 'hidden'
-}
-const unlockScroll = () => {
-  if (scrollLockCount > 0 && --scrollLockCount === 0) document.body.style.overflow = ''
-}
-</script>
-
 <script setup>
 import { X } from '@lucide/vue'
 import { ref, watch, nextTick, onUnmounted } from 'vue'
+import { useBodyScrollLock, useOverlayPresence } from '@/composables/useOverlays'
 
 const props = defineProps({
   show: Boolean,
@@ -19,6 +9,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
+
+useBodyScrollLock(() => props.show)
+useOverlayPresence(() => props.show)
 
 const containerRef = ref(null)
 
@@ -51,7 +44,6 @@ const handleKeydown = (e) => {
 let previouslyFocused = null
 
 const onOpen = async () => {
-  lockScroll()
   window.addEventListener('keydown', handleKeydown)
   previouslyFocused = document.activeElement
   await nextTick()
@@ -59,7 +51,6 @@ const onOpen = async () => {
 }
 
 const onClose = () => {
-  unlockScroll()
   window.removeEventListener('keydown', handleKeydown)
   previouslyFocused?.focus?.()
   previouslyFocused = null

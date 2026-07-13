@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { X, Plus, Pin, AlertTriangle, ChevronDown, Crown } from '@lucide/vue'
+import { X, Plus, Pin, AlertTriangle, ChevronDown } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useSettingsStore } from '@/stores/settings'

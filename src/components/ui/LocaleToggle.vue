@@ -1,16 +1,14 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { Globe, Check } from '@lucide/vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
-import { usePanelPosition } from '@/composables/usePanelPosition'
+import { useDropdown } from '@/composables/useDropdown'
 
-const { locale, setLocale } = useI18n()
+const { locale, setLocale, t } = useI18n()
 
-const isOpen = ref(false)
-const triggerRef = ref(null)
 // icon 按鈕觸發：面板寬度不對齊、靠右緣展開
-const { panelStyle, positionPanel } = usePanelPosition(triggerRef, {
+const { isOpen, triggerRef, panelStyle, close, toggle } = useDropdown({
   matchWidth: false,
   align: 'end',
 })
@@ -26,19 +24,6 @@ const currentLabel = computed(() => {
   return opt ? (locale.value === 'en' ? 'EN' : opt.label[0]) : 'EN'
 })
 
-const close = () => {
-  isOpen.value = false
-}
-
-const toggle = () => {
-  if (isOpen.value) {
-    close()
-    return
-  }
-  positionPanel()
-  isOpen.value = true
-}
-
 const select = (value) => {
   setLocale(value)
   close()
@@ -53,7 +38,7 @@ const select = (value) => {
       class="glass-icon-btn locale-toggle"
       :class="{ 'is-open': isOpen }"
       @click="toggle"
-      :aria-label="`切換語系，目前為 ${locale}`"
+      :aria-label="t('ui.toggle.switchLocale', locale)"
     >
       <Globe :size="20" />
       <span class="locale-text">{{ currentLabel }}</span>

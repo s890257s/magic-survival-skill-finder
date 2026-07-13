@@ -4,7 +4,7 @@ import { Search, X } from '@lucide/vue'
 import { useI18n } from '@/composables/useI18n'
 import { useDictionaryStore } from '@/stores/dictionary'
 
-// No props needed since we are using the store directly
+// 搜尋標籤輸入列：輸入中的字即時篩選，Enter 固定成 tag（多關鍵字 AND），狀態直接讀寫 store
 const { t } = useI18n()
 const dictionaryStore = useDictionaryStore()
 const filters = dictionaryStore.filters

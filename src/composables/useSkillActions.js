@@ -14,8 +14,10 @@ export function useSkillActions(getSkill) {
 
   const togglePin = () => {
     const skill = getSkill()
+    // 快照式復原：即使按下復原前狀態又被改過，也能回到動作前的樣子
+    const backup = [...pinnedStore.pinnedIds]
     pinnedStore.togglePin(skill.id)
-    const undoPin = () => pinnedStore.togglePin(skill.id)
+    const undoPin = () => pinnedStore.setPins(backup)
     toastStore.showToast(
       pinnedStore.isPinned(skill.id)
         ? t('ui.card.pinned', t(skill.name))
@@ -27,7 +29,9 @@ export function useSkillActions(getSkill) {
 
   const toggleFavorite = () => {
     const skill = getSkill()
-    const undoToggle = () => favoritesStore.toggleFavorite(skill.id)
+    // 快照式復原（同上）
+    const backup = [...favoritesStore.favoriteIds]
+    const undoToggle = () => favoritesStore.setFavorites(backup)
 
     if (favoritesStore.isFavorite(skill.id)) {
       favoritesStore.toggleFavorite(skill.id)

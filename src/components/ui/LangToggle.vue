@@ -4,7 +4,7 @@ import { useSettingsStore } from '@/stores/settings'
 import { useI18n } from '@/composables/useI18n'
 
 const settingsStore = useSettingsStore()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 </script>
 
 <template>
@@ -13,8 +13,8 @@ const { locale } = useI18n()
     :class="{ active: settingsStore.showEnglish, disabled: locale === 'en' }"
     :disabled="locale === 'en'"
     @click="settingsStore.toggleEnglish"
-    :aria-label="settingsStore.showEnglish ? '隱藏英文' : '顯示英文'"
-    :title="locale === 'en' ? '目前語系為英文，無法啟用雙語顯示' : ''"
+    :aria-label="settingsStore.showEnglish ? t('ui.toggle.hideEnglish') : t('ui.toggle.showEnglish')"
+    :title="locale === 'en' ? t('ui.toggle.englishDisabled') : ''"
   >
     <Languages :size="20" />
     <span class="lang-text">EN</span>

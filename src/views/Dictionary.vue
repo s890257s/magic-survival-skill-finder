@@ -1,8 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Search, Pin, Book } from '@lucide/vue'
-import { skillsData } from '@/data'
+import { skillsData, skillsById } from '@/data'
 import { gameVersion } from '@/data/meta'
+import { RESULTS_ANCHOR_ID } from '@/constants/dom'
 import HeaderActions from '@/components/layout/HeaderActions.vue'
 import SkillCard from '@/components/SkillCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
@@ -25,53 +26,8 @@ const filters = dictionaryStore.filters
 const ui = dictionaryStore.ui
 const { resetAll } = dictionaryStore
 
-// --- 篩選 ---
-
-const filteredSkills = computed(() => {
-  const searchTerms = [...filters.searchTags, filters.search.trim()]
-    .filter(Boolean)
-    .map((term) => term.toLowerCase())
-
-  return skillsData.filter((skill) => {
-    if (searchTerms.some((q) => !skill.searchText.includes(q))) return false
-
-    // 學派篩選：等待遊戲學派資料補齊，暫時停用
-    if (
-      filters.school &&
-      skill.requirements?.school &&
-      skill.requirements.school !== filters.school
-    ) {
-      return false
-    }
-    if (filters.subject && skill.requirements?.subject !== filters.subject) {
-      return false
-    }
-    if (filters.baseSkill) {
-      const matchMain = skill.mainSkill?.name === filters.baseSkill
-      const matchSub = skill.subSkill?.name === filters.baseSkill
-      if (!matchMain && !matchSub) return false
-
-      if (filters.enchant) {
-        let enchantMatched = false
-        if (matchMain && skill.mainSkill?.enchant === filters.enchant) enchantMatched = true
-        if (matchSub && skill.subSkill?.enchant === filters.enchant) enchantMatched = true
-        if (!enchantMatched) return false
-      }
-    }
-    if (filters.ultimate && !skill.requirements?.ultimate) {
-      return false
-    }
-    if (filters.excludeConsumed) {
-      const main = skill.mainSkill?.name
-      const sub = skill.subSkill?.name
-      const usedBases = favoritesStore.favoriteBaseUsage
-      if ((main && usedBases.has(main)) || (sub && usedBases.has(sub))) {
-        return false
-      }
-    }
-    return true
-  })
-})
+// 篩選邏輯在 dictionary store（與 filters 狀態同處）；此處僅取結果
+const filteredSkills = computed(() => dictionaryStore.filteredSkills)
 
 // 衝突標記：Map<skillId, conflictBases[]>，一次算完供整個列表使用
 const conflictInfo = computed(() => {
@@ -106,9 +62,7 @@ const onSelectSubject = (name) => {
 // --- 頂置區 ---
 
 const pinnedInView = computed(() => {
-  return pinnedStore.pinnedIds
-    .map((id) => skillsData.find((s) => s.id === id))
-    .filter(Boolean)
+  return pinnedStore.pinnedIds.map((id) => skillsById.get(id)).filter(Boolean)
 })
 
 const unpinAll = () => {
@@ -123,23 +77,11 @@ const pinnedListRef = ref(null)
 useSortableList(
   pinnedListRef,
   (oldIndex, newIndex) => {
-    // 以可見清單算出新順序，再回寫到完整 pinnedIds（保留失效 id 的位置）
-    const visible = pinnedInView.value
-    const visibleIds = visible.map((s) => s.id)
-    const moved = visibleIds.splice(oldIndex, 1)[0]
-    visibleIds.splice(newIndex, 0, moved)
-
-    const newPins = []
-    let visiblePtr = 0
-    for (const id of pinnedStore.pinnedIds) {
-      if (visible.some((s) => s.id === id)) {
-        newPins.push(visibleIds[visiblePtr])
-        visiblePtr++
-      } else {
-        newPins.push(id)
-      }
-    }
-    pinnedStore.setPins(newPins)
+    pinnedStore.reorderVisible(
+      pinnedInView.value.map((s) => s.id),
+      oldIndex,
+      newIndex,
+    )
   },
   {
     delay: 200,
@@ -179,9 +121,7 @@ const toggleExpandAll = (cards, val) => {
     </div>
 
     <div class="list-area">
-      <!-- Section 1: Build Summary (Removed, now in Drawer) -->
-
-      <!-- Section 2: Pinned Skills -->
+      <!-- 頂置技能區 -->
       <div class="section-container">
         <SectionHeader
           :expanded="ui.isPinnedExpanded"
@@ -192,12 +132,12 @@ const toggleExpandAll = (cards, val) => {
           {{ t('ui.dict.pinnedSkills') }}
           <template #actions>
             <template v-if="ui.isPinnedExpanded">
-              <button class="btn-text danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
+              <button class="text-action danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
                 {{ t('ui.dict.unpinAll') }}
               </button>
               <div class="action-divider"></div>
-              <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-              <button class="btn-text" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+              <button class="text-action" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+              <button class="text-action" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
               <div class="action-divider"></div>
             </template>
           </template>
@@ -228,7 +168,7 @@ const toggleExpandAll = (cards, val) => {
       </div>
     </div>
 
-    <div class="list-area" id="results-anchor">
+    <div class="list-area" :id="RESULTS_ANCHOR_ID">
       <!-- Main Content Empty State (Filters) -->
       <EmptyState
         v-if="filteredSkills.length === 0"
@@ -255,8 +195,8 @@ const toggleExpandAll = (cards, val) => {
             {{ t('ui.dict.allSkills') }}
             <template #actions>
               <template v-if="ui.isOtherExpanded">
-                <button class="btn-text" @click.stop="toggleExpandAll(allSkillCards, true)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-                <button class="btn-text" @click.stop="toggleExpandAll(allSkillCards, false)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+                <button class="text-action" @click.stop="toggleExpandAll(allSkillCards, true)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+                <button class="text-action" @click.stop="toggleExpandAll(allSkillCards, false)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
                 <div class="action-divider"></div>
               </template>
             </template>
@@ -285,7 +225,7 @@ const toggleExpandAll = (cards, val) => {
     </div>
 
     <!-- 底部 dock：搜尋 / 配技 雙 tab 抽屜 -->
-    <BottomDock :resultCount="filteredSkills.length" />
+    <BottomDock />
   </div>
 </template>
 
@@ -368,12 +308,8 @@ const toggleExpandAll = (cards, val) => {
   margin-bottom: 24px;
 }
 
+/* 基底樣式在全域 .section-empty-state（main.css），此處只放本頁差異 */
 .section-empty-state {
-  padding: 16px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-style: italic;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   margin: 0 16px;

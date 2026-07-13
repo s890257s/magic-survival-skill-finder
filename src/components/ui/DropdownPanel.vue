@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onBeforeUnmount } from 'vue'
+import { useOverlayPresence } from '@/composables/useOverlays'
 
 const props = defineProps({
   isOpen: {
@@ -9,6 +10,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
+
+// 讓底層 UI（BottomDock 的 Esc 處理）知道上方還有浮層開著
+useOverlayPresence(() => props.isOpen)
 
 const panelRef = ref(null)
 

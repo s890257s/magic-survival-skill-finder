@@ -78,60 +78,8 @@ const onBaseSkillChange = (val) => {
   margin-top: 16px;
 }
 
-.filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.filter-header.clickable {
-  cursor: pointer;
-}
-
-.filter-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  margin: 0;
-}
-
-.filter-dot-inline {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent-cyan);
-  box-shadow: 0 0 8px var(--accent-cyan);
-}
-
-.header-actions-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.collapse-icon {
-  color: var(--text-muted);
-}
-
 .filter-content {
   margin-top: 16px;
-}
-
-.clear-btn {
-  font-size: 0.85rem;
-  color: var(--accent-purple);
-  padding: 6px 12px;
-  background: transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-}
-
-.clear-btn:hover {
-  background: var(--accent-purple-bg);
 }
 
 .filter-grid {

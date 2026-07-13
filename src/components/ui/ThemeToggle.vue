@@ -1,15 +1,17 @@
 <script setup>
 import { Sun, Moon } from '@lucide/vue'
 import { useThemeStore } from '@/stores/theme'
+import { useI18n } from '@/composables/useI18n'
 
 const themeStore = useThemeStore()
+const { t } = useI18n()
 </script>
 
 <template>
   <button
     class="glass-icon-btn theme-toggle"
     @click="themeStore.toggleTheme"
-    :aria-label="themeStore.theme === 'dark' ? '切換至淺色模式' : '切換至深色模式'"
+    :aria-label="themeStore.theme === 'dark' ? t('ui.toggle.lightMode') : t('ui.toggle.darkMode')"
   >
     <Transition name="icon-swap" mode="out-in">
       <Sun v-if="themeStore.theme === 'dark'" :size="20" />

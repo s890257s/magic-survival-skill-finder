@@ -1,44 +1,38 @@
 <script setup>
-import { nextTick } from 'vue'
-import DictionaryHeader from '@/components/dictionary/DictionaryHeader.vue'
+import { computed, nextTick } from 'vue'
+import SearchTagInput from '@/components/dictionary/SearchTagInput.vue'
 import DictionaryFilterPanel from '@/components/dictionary/DictionaryFilterPanel.vue'
 import DictionaryResultBar from '@/components/dictionary/DictionaryResultBar.vue'
-import LangToggle from '@/components/ui/LangToggle.vue'
-import ThemeToggle from '@/components/ui/ThemeToggle.vue'
-import LocaleToggle from '@/components/ui/LocaleToggle.vue'
+import HeaderActions from '@/components/layout/HeaderActions.vue'
+import { RESULTS_ANCHOR_ID } from '@/constants/dom'
 import { useI18n } from '@/composables/useI18n'
 import { useDictionaryStore } from '@/stores/dictionary'
-
-const props = defineProps({
-  resultCount: {
-    type: Number,
-    required: true
-  }
-})
 
 const { t } = useI18n()
 const dictionaryStore = useDictionaryStore()
 const ui = dictionaryStore.ui
 
+const resultCount = computed(() => dictionaryStore.filteredSkills.length)
+
 const viewResults = () => {
   ui.isDockExpanded = false
   // 等 body 捲動鎖解除後再捲動
   nextTick(() => {
-    document.getElementById('results-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById(RESULTS_ANCHOR_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   })
 }
 </script>
 
 <template>
   <div class="search-panel">
-    <DictionaryHeader />
+    <SearchTagInput />
     <DictionaryFilterPanel />
 
     <div class="panel-result-row">
-      <DictionaryResultBar :resultCount="resultCount" />
+      <DictionaryResultBar />
       <button
         v-if="dictionaryStore.hasAnyFilters"
-        class="btn-text danger panel-clear-btn"
+        class="text-action danger panel-clear-btn"
         @click="dictionaryStore.resetAll"
       >
         {{ t('ui.clearAll') }}
@@ -47,11 +41,7 @@ const viewResults = () => {
 
     <div class="panel-divider"></div>
     <div class="panel-footer">
-      <div class="panel-settings">
-        <LocaleToggle />
-        <LangToggle />
-        <ThemeToggle />
-      </div>
+      <HeaderActions />
       <button class="btn btn-primary view-results-btn" @click="viewResults">
         {{ t('ui.dict.viewResults', resultCount) }}
       </button>
@@ -80,18 +70,6 @@ const viewResults = () => {
 .panel-clear-btn {
   flex-shrink: 0;
   margin-top: 12px;
-  background: none;
-  border: none;
-  color: var(--danger);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.panel-clear-btn:hover {
-  color: var(--danger-hover, #ff6b6b);
 }
 
 .panel-divider {
@@ -106,12 +84,6 @@ const viewResults = () => {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.panel-settings {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .view-results-btn {

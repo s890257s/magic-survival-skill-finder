@@ -1,14 +1,13 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from '@/composables/useI18n'
+import { usePersistedRef } from '@/composables/usePersistedRef'
 import { STORAGE_KEYS } from '@/constants/storageKeys'
-
-const STORAGE_KEY = STORAGE_KEYS.showEnglish
 
 export const useSettingsStore = defineStore('settings', () => {
   const { locale } = useI18n()
-  const stored = localStorage.getItem(STORAGE_KEY)
-  const _showEnglish = ref(stored !== null ? stored === 'true' : true)
+  // 舊版存的是 'true'/'false' 原始字串，恰為合法 JSON，與 usePersistedRef 相容
+  const _showEnglish = usePersistedRef(STORAGE_KEYS.showEnglish, true)
 
   const showEnglish = computed(() => {
     // 如果主語系已經是英文，強制不顯示額外的英文標籤
@@ -19,7 +18,6 @@ export const useSettingsStore = defineStore('settings', () => {
   const toggleEnglish = () => {
     if (locale.value === 'en') return // 英文語系下不可切換
     _showEnglish.value = !_showEnglish.value
-    localStorage.setItem(STORAGE_KEY, _showEnglish.value)
   }
 
   return { showEnglish, toggleEnglish }

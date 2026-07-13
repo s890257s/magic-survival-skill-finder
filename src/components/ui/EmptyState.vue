@@ -26,7 +26,6 @@ defineEmits(['action'])
     <button v-if="showAction" class="btn btn-primary" @click="$emit('action')">
       {{ actionText }}
     </button>
-    <slot name="action-slot"></slot>
   </div>
 </template>
 

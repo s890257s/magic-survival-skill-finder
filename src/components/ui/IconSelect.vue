@@ -4,7 +4,7 @@ import { ChevronDown, Check, Search } from '@lucide/vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
 import { useI18n } from '@/composables/useI18n'
-import { usePanelPosition } from '@/composables/usePanelPosition'
+import { useDropdown } from '@/composables/useDropdown'
 import { isDesktopWidth } from '@/utils/device'
 
 const props = defineProps({
@@ -35,9 +35,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const { t } = useI18n()
 
-const isOpen = ref(false)
-const triggerRef = ref(null)
-const { panelStyle, positionPanel } = usePanelPosition(triggerRef)
+const dropdown = useDropdown()
+const { isOpen, triggerRef, panelStyle } = dropdown
 
 const searchQuery = ref('')
 const searchInputRef = ref(null)
@@ -52,8 +51,9 @@ const filteredOptions = computed(() => {
   )
 })
 
+// 關閉時一併清空面板內的搜尋字
 const close = () => {
-  isOpen.value = false
+  dropdown.close()
   searchQuery.value = ''
 }
 
@@ -63,8 +63,7 @@ const toggle = async () => {
     close()
     return
   }
-  positionPanel()
-  isOpen.value = true
+  dropdown.open()
 
   await nextTick()
   if (searchInputRef.value && isDesktopWidth()) {
@@ -119,7 +118,7 @@ const select = (value) => {
           @keydown.enter.prevent
         />
       </div>
-      <ul class="dropdown-options">
+      <ul class="dropdown-options" role="listbox">
         <li>
           <button
             type="button"

@@ -62,7 +62,7 @@ const clearFavoritesWithUndo = () => {
         <Share2 :size="18" />
       </button>
       <div class="action-divider"></div>
-      <button class="btn-text danger" @click="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
+      <button class="text-action danger" @click="clearFavoritesWithUndo" :disabled="favoritesStore.favoriteSkills.length === 0">
         {{ t('ui.builder.clear') }}
       </button>
     </div>
@@ -156,69 +156,15 @@ const clearFavoritesWithUndo = () => {
   z-index: 1;
 }
 
-.action-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
+/* .action-btn / .text-action / .action-divider 為全域樣式（main.css） */
 
-.action-btn:hover:not(:disabled) {
-  background: var(--glass-border);
-  color: var(--text-primary);
-}
-
-.action-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.btn-text {
-  background: none;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.btn-text.danger {
-  color: var(--danger);
-}
-
-.btn-text.danger:hover:not(:disabled) {
-  color: var(--danger-hover, #ff6b6b);
-}
-
-.btn-text:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.action-divider {
-  width: 1px;
-  height: 16px;
-  background: var(--glass-border);
-  margin: 0 4px;
-}
-
+/* 空狀態基底在全域 .section-empty-state，此處補固定高度面板的置中排版 */
 .section-empty-state {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-style: italic;
 }
 
 .banner {

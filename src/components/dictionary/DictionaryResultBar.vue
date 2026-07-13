@@ -5,20 +5,11 @@ import GameIcon from '@/components/ui/GameIcon.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useDictionaryStore } from '@/stores/dictionary'
 
-const props = defineProps({
-  resultCount: {
-    type: Number,
-    required: true
-  },
-  hideSearchChips: {
-    type: Boolean,
-    default: false
-  }
-})
-
 const { t } = useI18n()
 const dictionaryStore = useDictionaryStore()
 const filters = dictionaryStore.filters
+
+const resultCount = computed(() => dictionaryStore.filteredSkills.length)
 
 const CHIP_DEFS = [
   { key: 'school', i18nKey: 'ui.chip.school', category: 'school' },
@@ -29,16 +20,14 @@ const CHIP_DEFS = [
 
 const activeChips = computed(() => {
   const chips = []
-  
-  if (!props.hideSearchChips) {
-    if (filters.search.trim()) {
-      chips.push({ key: 'search_input', label: filters.search.trim(), isSearch: true, icon: null })
-    }
-    // tag 內容不可重複（DictionaryHeader.addTag 已擋），可直接當 key
-    filters.searchTags.forEach((tag, idx) => {
-      chips.push({ key: `search_tag_${tag}`, label: tag, isSearchTag: true, tagIndex: idx, icon: null })
-    })
+
+  if (filters.search.trim()) {
+    chips.push({ key: 'search_input', label: filters.search.trim(), isSearch: true, icon: null })
   }
+  // tag 內容不可重複（SearchTagInput.addTag 已擋），可直接當 key
+  filters.searchTags.forEach((tag, idx) => {
+    chips.push({ key: `search_tag_${tag}`, label: tag, isSearchTag: true, tagIndex: idx, icon: null })
+  })
 
   CHIP_DEFS.filter((def) => filters[def.key]).forEach((def) => {
     chips.push({

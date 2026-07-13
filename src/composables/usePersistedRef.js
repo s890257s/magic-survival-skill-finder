@@ -17,15 +17,33 @@ const readStored = (key) => {
 
 // debounceMs > 0 時延遲寫入，避免高頻變更（如搜尋輸入）每次都同步寫 localStorage
 const createWriter = (key, debounceMs) => {
+  if (debounceMs <= 0) {
+    return (val) => localStorage.setItem(key, JSON.stringify(val))
+  }
+
   let timer = null
-  return (val) => {
-    const write = () => localStorage.setItem(key, JSON.stringify(val))
-    if (debounceMs <= 0) {
-      write()
-      return
-    }
+  let pending = null
+  let hasPending = false
+
+  const flush = () => {
+    if (!hasPending) return
     clearTimeout(timer)
-    timer = setTimeout(write, debounceMs)
+    localStorage.setItem(key, JSON.stringify(pending))
+    hasPending = false
+    pending = null
+  }
+
+  // 關頁 / 切到背景時補寫未落地的變更，避免 debounce 視窗內的輸入遺失
+  window.addEventListener('beforeunload', flush)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) flush()
+  })
+
+  return (val) => {
+    pending = val
+    hasPending = true
+    clearTimeout(timer)
+    timer = setTimeout(flush, debounceMs)
   }
 }
 
