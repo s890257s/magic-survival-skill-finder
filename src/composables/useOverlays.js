@@ -5,6 +5,7 @@ import { ref, watch, onUnmounted } from 'vue'
 // - 浮層登記:讓底層 UI(如 BottomDock 的 Esc 處理)判斷上方是否還有 modal / dropdown
 
 let scrollLockCount = 0
+
 const lockScroll = () => {
   if (++scrollLockCount === 1) document.body.style.overflow = 'hidden'
 }
