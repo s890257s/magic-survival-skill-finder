@@ -221,21 +221,8 @@ const executeClearAll = () => {
     </div>
 
     <div class="list-area" :id="RESULTS_ANCHOR_ID">
-      <!-- Main Content Empty State (Filters) -->
-      <EmptyState
-        v-if="filteredSkills.length === 0"
-        :text="t('ui.dict.noResults')"
-        :showAction="dictionaryStore.hasAnyFilters"
-        :actionText="t('ui.resetSearchAndFilter')"
-        @action="resetAll"
-      >
-        <template #icon>
-          <Search :size="48" />
-        </template>
-      </EmptyState>
-
       <!-- Results (Other Skills) -->
-      <div class="results-area" v-else>
+      <div class="results-area">
         <!-- Section 3: Other Skills -->
         <div class="section-container">
           <SectionHeader
@@ -267,7 +254,19 @@ const executeClearAll = () => {
           </SectionHeader>
 
           <div v-show="ui.isOtherExpanded">
-            <div v-if="filteredSkills.length > 0" class="skill-list unpinned-list">
+            <EmptyState
+              v-if="filteredSkills.length === 0"
+              :text="t('ui.dict.noResults')"
+              :showAction="dictionaryStore.hasAnyFilters"
+              :actionText="t('ui.resetSearchAndFilter')"
+              @action="resetAll"
+            >
+              <template #icon>
+                <Search :size="48" />
+              </template>
+            </EmptyState>
+
+            <div v-else class="skill-list unpinned-list">
               <SkillCard
                 v-for="skill in filteredSkills"
                 :key="skill.id"

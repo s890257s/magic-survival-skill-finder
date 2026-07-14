@@ -351,10 +351,14 @@
   "ui.card.removeLabel": "Remove from build",
   "ui.builder.exportTooLongMsg": "The share link is very long and may not open on some platforms",
   "ui.notify.settings": "Notification Settings",
-  "ui.notify.general": "General Operations",
-  "ui.notify.pin": "Pin Skills",
-  "ui.notify.favoriteSuccess": "Skill Build (Success/Remove)",
-  "ui.notify.favoriteWarning": "Skill Build (Warning/Conflict)",
+  "ui.notify.general": "System & General",
+  "ui.notify.general.desc": "Includes copy text, import/export success notifications",
+  "ui.notify.pin": "Pin / Unpin",
+  "ui.notify.pin.desc": "Notifications when pinning or unpinning skills in Dictionary",
+  "ui.notify.favoriteSuccess": "Skill Build Changed (Success)",
+  "ui.notify.favoriteSuccess.desc": "Notifications when successfully adding or removing from Skill Build",
+  "ui.notify.favoriteWarning": "Skill Build Warning (Conflict)",
+  "ui.notify.favoriteWarning.desc": "Warnings for prerequisite conflicts or exceeding limits",
   "ui.notify.selectAll": "Select All",
   "ui.notify.deselectAll": "Deselect All"
 }
