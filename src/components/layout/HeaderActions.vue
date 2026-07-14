@@ -2,6 +2,7 @@
 import LangToggle from '@/components/ui/LangToggle.vue'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import LocaleToggle from '@/components/ui/LocaleToggle.vue'
+import NotificationSettings from '@/components/ui/NotificationSettings.vue'
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import LocaleToggle from '@/components/ui/LocaleToggle.vue'
     <LocaleToggle class="toggle" />
     <LangToggle class="toggle" />
     <ThemeToggle class="toggle" />
+    <NotificationSettings class="toggle" />
   </div>
 </template>
 

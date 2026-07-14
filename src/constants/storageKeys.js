@@ -10,5 +10,6 @@ export const STORAGE_KEYS = {
   theme: 'theme',
   showEnglish: 'show_english',
   locale: 'app_locale',
+  notifications: 'notification_settings',
   tracker: 'in_run_tracker',
 }

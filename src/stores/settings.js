@@ -9,6 +9,13 @@ export const useSettingsStore = defineStore('settings', () => {
   // 舊版存的是 'true'/'false' 原始字串，恰為合法 JSON，與 usePersistedRef 相容
   const _showEnglish = usePersistedRef(STORAGE_KEYS.showEnglish, true)
 
+  const notificationPrefs = usePersistedRef(STORAGE_KEYS.notifications, {
+    general: true,
+    pin: true,
+    favoriteSuccess: true,
+    favoriteWarning: true
+  })
+
   const showEnglish = computed(() => {
     // 如果主語系已經是英文，強制不顯示額外的英文標籤
     if (locale.value === 'en') return false
@@ -20,7 +27,28 @@ export const useSettingsStore = defineStore('settings', () => {
     _showEnglish.value = !_showEnglish.value
   }
 
-  return { showEnglish, toggleEnglish }
+  const toggleNotification = (key) => {
+    if (key in notificationPrefs.value) {
+      notificationPrefs.value[key] = !notificationPrefs.value[key]
+    }
+  }
+
+  const setAllNotifications = (val) => {
+    notificationPrefs.value = {
+      general: val,
+      pin: val,
+      favoriteSuccess: val,
+      favoriteWarning: val
+    }
+  }
+
+  return { 
+    showEnglish, 
+    toggleEnglish,
+    notificationPrefs,
+    toggleNotification,
+    setAllNotifications
+  }
 })
 
 // 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）

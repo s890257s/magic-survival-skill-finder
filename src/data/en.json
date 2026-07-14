@@ -349,5 +349,12 @@
   "ui.card.unpinLabel": "Unpin",
   "ui.card.addLabel": "Add to build",
   "ui.card.removeLabel": "Remove from build",
-  "ui.builder.exportTooLongMsg": "The share link is very long and may not open on some platforms"
+  "ui.builder.exportTooLongMsg": "The share link is very long and may not open on some platforms",
+  "ui.notify.settings": "Notification Settings",
+  "ui.notify.general": "General Operations",
+  "ui.notify.pin": "Pin Skills",
+  "ui.notify.favoriteSuccess": "Skill Build (Success/Remove)",
+  "ui.notify.favoriteWarning": "Skill Build (Warning/Conflict)",
+  "ui.notify.selectAll": "Select All",
+  "ui.notify.deselectAll": "Deselect All"
 }

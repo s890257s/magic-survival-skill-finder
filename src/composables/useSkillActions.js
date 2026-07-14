@@ -3,6 +3,7 @@ import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { useParticles } from '@/composables/useParticles'
+import { useSettingsStore } from '@/stores/settings'
 
 // 技能卡的「加入配技 / 頂置」動作與對應 toast 文案。
 // 業務規則（衝突提示、超限提示、復原）集中於此，卡片元件只負責呈現。
@@ -11,6 +12,7 @@ export function useSkillActions(getSkill) {
   const favoritesStore = useFavoritesStore()
   const pinnedStore = usePinnedStore()
   const toastStore = useToastStore()
+  const settingsStore = useSettingsStore()
   const { t } = useI18n()
   const { spawnParticle } = useParticles()
 
@@ -20,13 +22,15 @@ export function useSkillActions(getSkill) {
     const backup = [...pinnedStore.pinnedIds]
     pinnedStore.togglePin(skill.id)
     const undoPin = () => pinnedStore.setPins(backup)
-    toastStore.showToast(
-      pinnedStore.isPinned(skill.id)
-        ? t('ui.card.pinned', t(skill.name))
-        : t('ui.card.unpinned', t(skill.name)),
-      'info',
-      { duration: 4000, actionLabel: t('ui.restore'), onAction: undoPin },
-    )
+    if (settingsStore.notificationPrefs.pin) {
+      toastStore.showToast(
+        pinnedStore.isPinned(skill.id)
+          ? t('ui.card.pinned', t(skill.name))
+          : t('ui.card.unpinned', t(skill.name)),
+        'info',
+        { duration: 4000, actionLabel: t('ui.restore'), onAction: undoPin },
+      )
+    }
   }
 
   const toggleFavorite = (e) => {
@@ -37,11 +41,13 @@ export function useSkillActions(getSkill) {
 
     if (favoritesStore.isFavorite(skill.id)) {
       favoritesStore.toggleFavorite(skill.id)
-      toastStore.showToast(t('ui.card.removed', t(skill.name)), 'info', {
-        duration: 4000,
-        actionLabel: t('ui.restore'),
-        onAction: undoToggle,
-      })
+      if (settingsStore.notificationPrefs.favoriteSuccess) {
+        toastStore.showToast(t('ui.card.removed', t(skill.name)), 'info', {
+          duration: 4000,
+          actionLabel: t('ui.restore'),
+          onAction: undoToggle,
+        })
+      }
       return
     }
 
@@ -62,26 +68,32 @@ export function useSkillActions(getSkill) {
     }
 
     if (hits.length > 0) {
-      const detail = hits
-        .map((h) => t('ui.card.conflictDetailItem', t(h.base), t(h.skillName)))
-        .join('、')
-      toastStore.showToast(t('ui.card.conflictDetail', detail), 'danger', {
-        duration: 6000,
-        actionLabel: t('ui.restore'),
-        onAction: undoToggle,
-      })
+      if (settingsStore.notificationPrefs.favoriteWarning) {
+        const detail = hits
+          .map((h) => t('ui.card.conflictDetailItem', t(h.base), t(h.skillName)))
+          .join('、')
+        toastStore.showToast(t('ui.card.conflictDetail', detail), 'danger', {
+          duration: 6000,
+          actionLabel: t('ui.restore'),
+          onAction: undoToggle,
+        })
+      }
     } else if (favoritesStore.isOverLimit) {
-      toastStore.showToast(
-        t('ui.card.addedOverLimit', favoritesStore.count, favoritesStore.maxSlots),
-        'warning',
-        { duration: 4000, actionLabel: t('ui.restore'), onAction: undoToggle },
-      )
+      if (settingsStore.notificationPrefs.favoriteWarning) {
+        toastStore.showToast(
+          t('ui.card.addedOverLimit', favoritesStore.count, favoritesStore.maxSlots),
+          'warning',
+          { duration: 4000, actionLabel: t('ui.restore'), onAction: undoToggle },
+        )
+      }
     } else {
-      toastStore.showToast(
-        t('ui.card.added', t(skill.name), favoritesStore.count, favoritesStore.maxSlots),
-        'success',
-        { duration: 4000, actionLabel: t('ui.restore'), onAction: undoToggle },
-      )
+      if (settingsStore.notificationPrefs.favoriteSuccess) {
+        toastStore.showToast(
+          t('ui.card.added', t(skill.name), favoritesStore.count, favoritesStore.maxSlots),
+          'success',
+          { duration: 4000, actionLabel: t('ui.restore'), onAction: undoToggle },
+        )
+      }
     }
   }
 

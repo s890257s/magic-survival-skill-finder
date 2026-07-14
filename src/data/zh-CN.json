@@ -349,5 +349,12 @@
   "ui.card.unpinLabel": "取消置顶",
   "ui.card.addLabel": "加入配技",
   "ui.card.removeLabel": "移出配技",
-  "ui.builder.exportTooLongMsg": "分享链接过长，部分平台可能无法完整打开"
+  "ui.builder.exportTooLongMsg": "分享链接过长，部分平台可能无法完整打开",
+  "ui.notify.settings": "通知设置",
+  "ui.notify.general": "常规操作",
+  "ui.notify.pin": "技能置顶",
+  "ui.notify.favoriteSuccess": "技能组合 (成功/移除)",
+  "ui.notify.favoriteWarning": "技能组合 (警告/冲突)",
+  "ui.notify.selectAll": "全选",
+  "ui.notify.deselectAll": "全不选"
 }

@@ -16,11 +16,13 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { useDictionaryStore } from '@/stores/dictionary'
 import { useI18n } from '@/composables/useI18n'
 import { useSortableList } from '@/composables/useSortableList'
+import { useSettingsStore } from '@/stores/settings'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const favoritesStore = useFavoritesStore()
 const dictionaryStore = useDictionaryStore()
+const settingsStore = useSettingsStore()
 const { t } = useI18n()
 
 const filters = dictionaryStore.filters
@@ -35,7 +37,11 @@ const conflictInfo = computed(() => {
   const map = new Map()
   for (const skill of skillsData) {
     const hits = favoritesStore.getConflictingWith(skill)
-    if (hits.length > 0) map.set(skill.id, hits.map((h) => h.base))
+    if (hits.length > 0)
+      map.set(
+        skill.id,
+        hits.map((h) => h.base),
+      )
   }
   return map
 })
@@ -69,9 +75,11 @@ const pinnedInView = computed(() => {
 const unpinAll = () => {
   const backup = [...pinnedStore.pinnedIds]
   pinnedStore.clearPins()
-  toastStore.showUndoToast(t('ui.dict.unpinnedAllMsg'), t('ui.restore'), () =>
-    pinnedStore.setPins(backup),
-  )
+  if (settingsStore.notificationPrefs.general) {
+    toastStore.showUndoToast(t('ui.dict.unpinnedAllMsg'), t('ui.restore'), () =>
+      pinnedStore.setPins(backup),
+    )
+  }
 }
 
 const pinnedListRef = ref(null)
@@ -111,11 +119,15 @@ const executeClearAll = () => {
   if (favoritesStore.favoriteIds.length > 0) {
     const backup = [...favoritesStore.favoriteIds]
     favoritesStore.clearFavorites()
-    toastStore.showUndoToast(t('ui.dict.clearAllSuccessMsg'), t('ui.restore'), () =>
-      favoritesStore.setFavorites(backup),
-    )
+    if (settingsStore.notificationPrefs.general) {
+      toastStore.showUndoToast(t('ui.dict.clearAllSuccessMsg'), t('ui.restore'), () =>
+        favoritesStore.setFavorites(backup),
+      )
+    }
   } else {
-    toastStore.showToast(t('ui.dict.clearAllSuccessMsg'), 'success')
+    if (settingsStore.notificationPrefs.general) {
+      toastStore.showToast(t('ui.dict.clearAllSuccessMsg'), 'success')
+    }
   }
 }
 </script>
@@ -131,10 +143,14 @@ const executeClearAll = () => {
           </h1>
         </div>
         <div class="header-actions-row">
-          <button class="glass-icon-btn" @click="showClearConfirm = true" :title="t('ui.dict.clearAll')">
+          <HeaderActions />
+          <button
+            class="glass-icon-btn"
+            @click="showClearConfirm = true"
+            :title="t('ui.dict.clearAll')"
+          >
             <Trash2 :size="20" />
           </button>
-          <HeaderActions />
         </div>
       </div>
       <hr class="header-divider" />
@@ -152,12 +168,28 @@ const executeClearAll = () => {
           {{ t('ui.dict.pinnedSkills') }}
           <template #actions>
             <template v-if="ui.isPinnedExpanded">
-              <button class="header-action-btn danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
+              <button
+                class="header-action-btn danger"
+                @click.stop="unpinAll"
+                :disabled="pinnedInView.length === 0"
+              >
                 {{ t('ui.dict.unpinAll') }}
               </button>
               <div class="action-divider"></div>
-              <button class="header-action-btn" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-              <button class="header-action-btn" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+              <button
+                class="header-action-btn"
+                @click.stop="toggleExpandAll(pinnedCards, true)"
+                :disabled="pinnedInView.length === 0"
+              >
+                {{ t('ui.dict.expandSkills') }}
+              </button>
+              <button
+                class="header-action-btn"
+                @click.stop="toggleExpandAll(pinnedCards, false)"
+                :disabled="pinnedInView.length === 0"
+              >
+                {{ t('ui.dict.collapseSkills') }}
+              </button>
               <div class="action-divider"></div>
             </template>
           </template>
@@ -215,8 +247,20 @@ const executeClearAll = () => {
             {{ t('ui.dict.allSkills') }}
             <template #actions>
               <template v-if="ui.isOtherExpanded">
-                <button class="header-action-btn" @click.stop="toggleExpandAll(allSkillCards, true)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-                <button class="header-action-btn" @click.stop="toggleExpandAll(allSkillCards, false)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+                <button
+                  class="header-action-btn"
+                  @click.stop="toggleExpandAll(allSkillCards, true)"
+                  :disabled="filteredSkills.length === 0"
+                >
+                  {{ t('ui.dict.expandSkills') }}
+                </button>
+                <button
+                  class="header-action-btn"
+                  @click.stop="toggleExpandAll(allSkillCards, false)"
+                  :disabled="filteredSkills.length === 0"
+                >
+                  {{ t('ui.dict.collapseSkills') }}
+                </button>
                 <div class="action-divider"></div>
               </template>
             </template>
@@ -257,8 +301,13 @@ const executeClearAll = () => {
     >
       <p>{{ t('ui.dict.clearAllConfirmMsg') }}</p>
       <ul class="clear-confirm-list">
-        <li><Search :size="16" style="color: var(--accent-cyan)" /> {{ t('ui.dict.searchTitle') }}</li>
-        <li><Sparkles :size="16" style="color: var(--accent-purple)" /> {{ t('ui.builder.summaryTitle') }}</li>
+        <li>
+          <Search :size="16" style="color: var(--accent-cyan)" /> {{ t('ui.dict.searchTitle') }}
+        </li>
+        <li>
+          <Sparkles :size="16" style="color: var(--accent-purple)" />
+          {{ t('ui.builder.summaryTitle') }}
+        </li>
       </ul>
     </ConfirmDialog>
   </div>
@@ -451,7 +500,7 @@ const executeClearAll = () => {
     font-size: 0.8rem;
     white-space: nowrap;
   }
-  
+
   /* 隱藏手機版的分隔線，讓按鈕均分更乾淨 */
   :deep(.action-divider) {
     display: none;
