@@ -152,12 +152,12 @@ const executeClearAll = () => {
           {{ t('ui.dict.pinnedSkills') }}
           <template #actions>
             <template v-if="ui.isPinnedExpanded">
-              <button class="text-action danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
+              <button class="header-action-btn danger" @click.stop="unpinAll" :disabled="pinnedInView.length === 0">
                 {{ t('ui.dict.unpinAll') }}
               </button>
               <div class="action-divider"></div>
-              <button class="text-action" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-              <button class="text-action" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+              <button class="header-action-btn" @click.stop="toggleExpandAll(pinnedCards, true)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+              <button class="header-action-btn" @click.stop="toggleExpandAll(pinnedCards, false)" :disabled="pinnedInView.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
               <div class="action-divider"></div>
             </template>
           </template>
@@ -215,8 +215,8 @@ const executeClearAll = () => {
             {{ t('ui.dict.allSkills') }}
             <template #actions>
               <template v-if="ui.isOtherExpanded">
-                <button class="text-action" @click.stop="toggleExpandAll(allSkillCards, true)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
-                <button class="text-action" @click.stop="toggleExpandAll(allSkillCards, false)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
+                <button class="header-action-btn" @click.stop="toggleExpandAll(allSkillCards, true)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.expandSkills') }}</button>
+                <button class="header-action-btn" @click.stop="toggleExpandAll(allSkillCards, false)" :disabled="filteredSkills.length === 0">{{ t('ui.dict.collapseSkills') }}</button>
                 <div class="action-divider"></div>
               </template>
             </template>
@@ -393,5 +393,72 @@ const executeClearAll = () => {
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid var(--glass-border);
+}
+
+.header-action-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 12px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 放大隱形點擊區 (向上/下補齊 Header 的 padding) */
+.header-action-btn::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  bottom: -12px;
+  left: -4px;
+  right: -4px;
+}
+
+.header-action-btn:hover:not(:disabled) {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.header-action-btn.danger {
+  color: var(--danger);
+  border-color: rgba(255, 82, 82, 0.3);
+}
+
+.header-action-btn.danger:hover:not(:disabled) {
+  background: rgba(255, 82, 82, 0.1);
+  color: var(--danger-hover);
+  border-color: var(--danger);
+}
+
+.header-action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: transparent;
+}
+
+@media (max-width: 767px) {
+  .header-action-btn {
+    flex: 1;
+    padding: 6px 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  /* 隱藏手機版的分隔線，讓按鈕均分更乾淨 */
+  :deep(.action-divider) {
+    display: none;
+  }
+  /* 在 Dictionary.vue 裡的 action-divider 是直接寫在 template 中，不需要 deep，但加上以防萬一 */
+  .action-divider {
+    display: none;
+  }
 }
 </style>

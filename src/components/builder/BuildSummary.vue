@@ -16,11 +16,23 @@ const { t } = useI18n()
 const favoriteSkills = computed(() => favoritesStore.favoriteSkills)
 
 const removeWithUndo = (skill) => {
-  const backup = [...favoritesStore.favoriteIds]
+  const backupFavs = [...favoritesStore.favoriteIds]
+  const backupTracker = [...trackerStore.acquiredBases]
+  
   favoritesStore.toggleFavorite(skill.id)
-  toastStore.showUndoToast(t('ui.card.removed', t(skill.name)), t('ui.restore'), () =>
-    favoritesStore.setFavorites(backup),
-  )
+  
+  // 垃圾回收：如果移除後，該基礎技能已沒有其他配方使用，則同步取消打勾狀態
+  const bases = [skill.mainSkill?.name, skill.subSkill?.name].filter(Boolean)
+  bases.forEach((base) => {
+    if (!favoritesStore.favoriteBaseUsage.has(base)) {
+      trackerStore.removeAcquired(base)
+    }
+  })
+
+  toastStore.showUndoToast(t('ui.card.removed', t(skill.name)), t('ui.restore'), () => {
+    favoritesStore.setFavorites(backupFavs)
+    trackerStore.setTracker(backupTracker)
+  })
 }
 
 const summaryListRef = ref(null)

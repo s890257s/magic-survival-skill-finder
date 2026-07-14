@@ -11,10 +11,28 @@ export const useTrackerStore = defineStore('tracker', () => {
 
   const isAcquired = (baseName) => acquiredBases.value.includes(baseName)
 
+  const removeAcquired = (baseName) => {
+    const idx = acquiredBases.value.indexOf(baseName)
+    if (idx > -1) {
+      acquiredBases.value.splice(idx, 1)
+    }
+  }
+
+  const clearTracker = () => {
+    acquiredBases.value = []
+  }
+
+  const setTracker = (bases) => {
+    acquiredBases.value = [...bases]
+  }
+
   return {
     acquiredBases,
     toggleAcquired,
     isAcquired,
+    removeAcquired,
+    clearTracker,
+    setTracker,
   }
 })
 

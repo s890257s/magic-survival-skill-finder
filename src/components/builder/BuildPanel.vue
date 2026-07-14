@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { Share2, Save, FolderOpen, AlertTriangle, Layers } from '@lucide/vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useSavedBuildsStore } from '@/stores/savedBuilds'
+import { useTrackerStore } from '@/stores/tracker'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { useShareBuild } from '@/composables/useShareBuild'
@@ -14,6 +15,7 @@ import SavedBuildsPanel from '@/components/builder/SavedBuildsPanel.vue'
 
 const favoritesStore = useFavoritesStore()
 const savedBuildsStore = useSavedBuildsStore()
+const trackerStore = useTrackerStore()
 const toastStore = useToastStore()
 const { t } = useI18n()
 
@@ -40,11 +42,16 @@ const handleSaveClick = () => {
 
 const clearFavoritesWithUndo = () => {
   if (favoritesStore.favoriteIds.length === 0) return
-  const backup = [...favoritesStore.favoriteIds]
+  const backupFavs = [...favoritesStore.favoriteIds]
+  const backupTracker = [...trackerStore.acquiredBases]
+  
   favoritesStore.clearFavorites()
-  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () =>
-    favoritesStore.setFavorites(backup),
-  )
+  trackerStore.clearTracker()
+  
+  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () => {
+    favoritesStore.setFavorites(backupFavs)
+    trackerStore.setTracker(backupTracker)
+  })
 }
 </script>
 
@@ -143,20 +150,7 @@ const clearFavoritesWithUndo = () => {
   flex-shrink: 0;
 }
 
-.panel-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--glass-border);
-  position: sticky;
-  top: 0;
-  background: var(--bg-surface);
-  z-index: 1;
-}
-
-/* .action-btn / .text-action / .action-divider 為全域樣式（main.css） */
+/* .panel-toolbar / .action-btn / .text-action / .action-divider 為全域樣式（main.css） */
 
 /* 空狀態基底在全域 .section-empty-state，此處補固定高度面板的置中排版 */
 .section-empty-state {

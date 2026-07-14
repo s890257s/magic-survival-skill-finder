@@ -3,7 +3,6 @@ import { computed, nextTick } from 'vue'
 import SearchTagInput from '@/components/dictionary/SearchTagInput.vue'
 import DictionaryFilterPanel from '@/components/dictionary/DictionaryFilterPanel.vue'
 import DictionaryResultBar from '@/components/dictionary/DictionaryResultBar.vue'
-import HeaderActions from '@/components/layout/HeaderActions.vue'
 import { RESULTS_ANCHOR_ID } from '@/constants/dom'
 import { useI18n } from '@/composables/useI18n'
 import { useDictionaryStore } from '@/stores/dictionary'
@@ -25,70 +24,43 @@ const viewResults = () => {
 
 <template>
   <div class="search-panel">
-    <SearchTagInput />
-    <DictionaryFilterPanel />
-
-    <div class="panel-result-row">
-      <DictionaryResultBar />
+    <div class="panel-toolbar">
       <button
         v-if="dictionaryStore.hasAnyFilters"
-        class="text-action danger panel-clear-btn"
+        class="text-action danger"
         @click="dictionaryStore.resetAll"
       >
         {{ t('ui.clearAll') }}
       </button>
-    </div>
-
-    <div class="panel-divider"></div>
-    <div class="panel-footer">
-      <HeaderActions />
+      <div class="action-divider" v-if="dictionaryStore.hasAnyFilters"></div>
       <button class="btn btn-primary view-results-btn" @click="viewResults">
         {{ t('ui.dict.viewResults', resultCount) }}
       </button>
+    </div>
+
+    <div class="panel-content">
+      <SearchTagInput />
+      <DictionaryFilterPanel />
+      <DictionaryResultBar />
     </div>
   </div>
 </template>
 
 <style scoped>
 .search-panel {
-  padding: 16px;
+  padding-bottom: 16px;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.panel-result-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-}
-
-.panel-result-row :deep(.result-bar) {
+.panel-content {
+  padding: 16px;
   flex: 1;
-  min-width: 0;
-}
-
-.panel-clear-btn {
-  flex-shrink: 0;
-  margin-top: 12px;
-}
-
-.panel-divider {
-  height: 1px;
-  background: var(--glass-border);
-  margin: 16px 0 12px;
-}
-
-.panel-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
 .view-results-btn {
-  flex: 1;
-  min-width: 160px;
-  justify-content: center;
+  padding: 6px 12px;
+  font-size: 0.85rem;
 }
 </style>
