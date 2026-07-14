@@ -2,6 +2,7 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
+import { useParticles } from '@/composables/useParticles'
 
 // 技能卡的「加入配技 / 頂置」動作與對應 toast 文案。
 // 業務規則（衝突提示、超限提示、復原）集中於此，卡片元件只負責呈現。
@@ -11,6 +12,7 @@ export function useSkillActions(getSkill) {
   const pinnedStore = usePinnedStore()
   const toastStore = useToastStore()
   const { t } = useI18n()
+  const { spawnParticle } = useParticles()
 
   const togglePin = () => {
     const skill = getSkill()
@@ -27,7 +29,7 @@ export function useSkillActions(getSkill) {
     )
   }
 
-  const toggleFavorite = () => {
+  const toggleFavorite = (e) => {
     const skill = getSkill()
     // 快照式復原（同上）
     const backup = [...favoritesStore.favoriteIds]
@@ -46,6 +48,18 @@ export function useSkillActions(getSkill) {
     // 加入前先偵測衝突，訊息才能列出「跟誰衝突」
     const hits = favoritesStore.getConflictingWith(skill)
     favoritesStore.toggleFavorite(skill.id)
+
+    // 觸發飛行動畫
+    if (e && e.clientX && e.clientY) {
+      const targetEl = document.getElementById('dock-build-tab')
+      if (targetEl) {
+        const rect = targetEl.getBoundingClientRect()
+        // 目標位置：Tab 的正中心
+        const endX = rect.left + rect.width / 2
+        const endY = rect.top + rect.height / 2
+        spawnParticle(e.clientX, e.clientY, endX, endY, skill.name)
+      }
+    }
 
     if (hits.length > 0) {
       const detail = hits

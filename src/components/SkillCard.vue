@@ -131,7 +131,7 @@ defineExpose({
         </button>
         <button
           class="favorite-btn"
-          @click.stop="toggleFavorite"
+          @click.stop="toggleFavorite($event)"
           :class="{ active: isFavorite }"
           :aria-pressed="isFavorite"
           :aria-label="isFavorite ? t('ui.card.removeLabel') : t('ui.card.addLabel')"

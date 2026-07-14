@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router'
 import Toast from '@/components/ui/Toast.vue'
 import { useToastStore } from '@/stores/toast'
 import { useThemeStore } from '@/stores/theme'
+import ParticleContainer from '@/components/ui/ParticleContainer.vue'
 
 const toastStore = useToastStore()
 useThemeStore() // 初始化主題（套用 data-theme）
@@ -33,6 +34,8 @@ const handleAction = (toast) => {
       />
     </TransitionGroup>
   </div>
+
+  <ParticleContainer />
 </template>
 
 <style scoped>

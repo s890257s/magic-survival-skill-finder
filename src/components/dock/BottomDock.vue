@@ -126,6 +126,7 @@ onUnmounted(() => {
       <div class="tab-divider"></div>
 
       <button
+        id="dock-build-tab"
         class="dock-tab"
         :class="{ 
           'is-active': ui.isDockExpanded && ui.dockTab === 'build',
