@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { Search, Pin, Book } from '@lucide/vue'
+import { Search, Pin, Book, Trash2, Sparkles } from '@lucide/vue'
 import { skillsData, skillsById } from '@/data'
 import { gameVersion } from '@/data/meta'
 import { RESULTS_ANCHOR_ID } from '@/constants/dom'
@@ -8,6 +8,7 @@ import HeaderActions from '@/components/layout/HeaderActions.vue'
 import SkillCard from '@/components/SkillCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import SectionHeader from '@/components/ui/SectionHeader.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import BottomDock from '@/components/dock/BottomDock.vue'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -101,6 +102,22 @@ const toggleExpandAll = (cards, val) => {
     cards.forEach((card) => card?.setExpanded?.(val))
   }
 }
+
+// --- 清空狀態 ---
+const showClearConfirm = ref(false)
+
+const executeClearAll = () => {
+  dictionaryStore.resetAll()
+  if (favoritesStore.favoriteIds.length > 0) {
+    const backup = [...favoritesStore.favoriteIds]
+    favoritesStore.clearFavorites()
+    toastStore.showUndoToast(t('ui.dict.clearAllSuccessMsg'), t('ui.restore'), () =>
+      favoritesStore.setFavorites(backup),
+    )
+  } else {
+    toastStore.showToast(t('ui.dict.clearAllSuccessMsg'), 'success')
+  }
+}
 </script>
 
 <template>
@@ -114,6 +131,9 @@ const toggleExpandAll = (cards, val) => {
           </h1>
         </div>
         <div class="header-actions-row">
+          <button class="glass-icon-btn" @click="showClearConfirm = true" :title="t('ui.dict.clearAll')">
+            <Trash2 :size="20" />
+          </button>
           <HeaderActions />
         </div>
       </div>
@@ -226,6 +246,21 @@ const toggleExpandAll = (cards, val) => {
 
     <!-- 底部 dock：搜尋 / 配技 雙 tab 抽屜 -->
     <BottomDock />
+
+    <ConfirmDialog
+      v-model:show="showClearConfirm"
+      :title="t('ui.dict.clearAllTitle')"
+      :confirmText="t('ui.confirm')"
+      :cancelText="t('ui.cancel')"
+      variant="danger"
+      @confirm="executeClearAll"
+    >
+      <p>{{ t('ui.dict.clearAllConfirmMsg') }}</p>
+      <ul class="clear-confirm-list">
+        <li><Search :size="16" style="color: var(--accent-cyan)" /> {{ t('ui.dict.searchTitle') }}</li>
+        <li><Sparkles :size="16" style="color: var(--accent-purple)" /> {{ t('ui.builder.summaryTitle') }}</li>
+      </ul>
+    </ConfirmDialog>
   </div>
 </template>
 
@@ -255,6 +290,13 @@ const toggleExpandAll = (cards, val) => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions-row {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
 
@@ -332,5 +374,24 @@ const toggleExpandAll = (cards, val) => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
+}
+
+.clear-confirm-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+.clear-confirm-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass-bg);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
 }
 </style>

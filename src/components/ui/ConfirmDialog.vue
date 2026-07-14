@@ -31,7 +31,9 @@ const handleCancel = () => {
 <template>
   <Modal :show="show" :title="title" @close="handleCancel">
     <div class="confirm-content">
-      <p>{{ message }}</p>
+      <slot>
+        <p>{{ message }}</p>
+      </slot>
       <div class="confirm-actions">
         <button class="btn btn-text" @click="handleCancel">{{ cancelText }}</button>
         <button class="btn btn-primary" @click="handleConfirm">{{ confirmText }}</button>

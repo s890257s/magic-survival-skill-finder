@@ -5,6 +5,7 @@ import { useSavedBuildsStore } from '@/stores/savedBuilds'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { exportDataToToken, parseTokenToData } from '@/utils/share'
+import { useDictionaryStore } from '@/stores/dictionary'
 
 // 常見平台（LINE、舊版瀏覽器等）的 URL 安全長度上限
 const MAX_SHARE_URL_LENGTH = 2000
@@ -14,6 +15,7 @@ export function useShareBuild() {
   const favoritesStore = useFavoritesStore()
   const savedBuildsStore = useSavedBuildsStore()
   const toastStore = useToastStore()
+  const dictionaryStore = useDictionaryStore()
   const { t } = useI18n()
   const router = useRouter()
   const route = useRoute()
@@ -111,6 +113,10 @@ export function useShareBuild() {
         onAction: () => savedBuildsStore.setSavedBuilds(backup),
       })
     }
+    
+    dictionaryStore.ui.dockTab = 'build'
+    dictionaryStore.ui.isDockExpanded = true
+    
     router.replace({ query: {} })
     importData.value = null
   }
