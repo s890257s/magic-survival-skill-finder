@@ -1,233 +1,233 @@
-魔法師	Wizard
-天文學者	Astronomer
-冰凍師	Cryomancer
-咒術師	Shaman
-巫術師	Warlock
-魔道學者	Arcanist
-召喚師	Summoner
-大主教	Bishop
-神秘術士	Occultist
-德魯伊	Druid
-火焰術士	Pyromancer
-術士	Sorcerer
-煉金術士	Alchemist
-學者	Scholar
-魔女	Witch
-電荷術士	Electromancer
-協調者	Arbitrator
-大魔法師	Archmage
-考古學者	Archaeologist
-魔術師	Magician
-魔學者	Mage
-戰鬥法師	Battlemage
-戰爭領主	Warlord
-黑魔法師	Black Mage
-傑克燈籠	Jack o' Lantern
-魔力彈	Magic Bolt
-火焰球	Fireball
-落雷	Thunderstorm
-隕石墜落	Meteor
-旋風	Cyclone
-電氣衝擊	Electric Shock
-能量彈	Energy Bolt
-焚燒	Incineration
-暴風雪	Blizzard
-海嘯	Tsunami
-精靈	Spirit
-衛星	Satellite
-幻視光線	Arcane Ray
-導電地帶	Electric Zone
-凜霜	Frost Nova
-熔岩地帶	Lava Zone
-護盾	Shield
-疾行	Cloaking
-魔法陣	Magic Circle
-末日審判	Armageddon
-閃光衝擊	Flash Shock
-智力	Intelligence
-高速施展	Fast Casting
-生命力	Vitality
-加速	Haste
-魔力發散	Arcane Effuse
-集中	Concentration
-狙擊	Snipe
-探索	Explorer
-破裂	Rupture
-高級魔法	Advanced Magic
-火之支配者	Lord of Fire
-烏雲	Stormy Clouds
-自然之怒	Nature's Wrath
-能源工學	Energy Engineering
-奧秘	Arcana
-守護天使	Guardian Angel
-默言詠唱	Silent Casting
-戰爭魔法	War Magic
-計時者	Timekeeper
-開拓者	Pioneer
-猛擊	Smite
-封印	Seal
-詛咒	Curse
-脈輪	Chakra
-法力工廠	Mana Factory
-博士	Doctor
-血魔法	Blood Magic
-腎上腺素	Adrenaline
-巨型主宰	Juggernaut
-聖職者	Priest
-艾亞德里奇	Eldritch
-貴族	Noblesse
-道士	Taoist
-花藝師	Florist
-魔力箭矢	Magic Arrow
-爆竹	Fireworks
-分裂	Fission
-連續施展	Chain Casting
-亂射	Fire at Bolt
-分身	Doppelganger
-大爆炸	Big Bang
-毒氣	Toxic Gas
-星座	Constellation
-晴天霹靂	Thunderclap
-閃電爆炸	Lightning Explosion
-審判	Judgment
-火山爆炸	Volcanic Eruption
-流星雨	Meteor Shower
-小行星	Asteroid
-極端天氣	Extreme Weather
-電氣球	Electric Orb
-虛無	Void
-連鎖閃電	Chain Lightning
-高功率	High Output
-超導	Superconductivity
-帶電粒子	Charged Particle
-火星飛濺	Spark
-閃焰	Flare
-火焰猛擊	Flamestrike
-縱火狂	Pyromaniac
-地獄三頭犬之焰	Cerberus Flame
-嚴寒期	Sub-Zero
-流星	Shooting Star
-火災	Conflagration
-極點	Pole
-賽蓮之歌	Siren's Song
-大噴發	Great Eruption
-魔法導彈	Magic Missile
-魔力刀刃	Magic Blade
-使魔	Familiar
-反重力	Anti-Gravity
-怪火	Will o' the Wisp
-核融合	Nuclear Fusion
-反射	Reflect
-破壞光線	Destruction Ray
-電磁放射	Electromagnetic Burst
-電荷排放	Electricity Blast
-EMP	EMP
-火之光環	Fire Aura
-絕對零度	Absolute Zero
-冰河期	Ice Age
-地震	Earthquake
-融解	Melt
-噴火口	Crater
-岩漿噴湧	Magma Eruption
-屏障	Barrier
-重築	Reconstruct
-破壞場	Destruction Field
-海市蜃樓	Mirage
-空間扭曲	Space Warp
-靈魂收割	Soul Harvest
-魔力釋放	Unleash Mana
-物質彈性	Material Synthesis
-大魔法陣	Great Magic Circle
-末世	Apocalypse
-被提	Rapture
-末日預言	Doom Prophet
-殲滅	Wipeout
-諸神黃昏	Ragnarok
-惡魔利爪	Satan's Nails
-蒼穹之怒	Empyrean Wrath
-以氣馭劍	Telekinetic Sword
-光彈亂射	Crazed Spray
-大地電流	Terra Current
-戰爭之後	War Climate
-邪靈方程式	Demon Equation
-狂暴	Frenzy
-百鬼夜行	Ghastly Rampage
-反作用	Reaction
-渦流	Vortex
-火之息	Breath of Fire
-以太縱火	Ether Blaze
-軌道轟炸	Orbital Strike
-中子產生	Neutron Generation
-寒冬風暴	Winter Storm
-等離子光線	Plasma Ray
-閃電轟炸	Lightning Bolts
-量子爆炸	Photon Explosion
-煉獄	Inferno
-閃電韻律	Lightning Calibration
-熔爐	Furnace
-電流暴走	Current Overload
-大洪水	Great Flood
-雪花綻放	Snowflake Blossom
-暴風支配者	Ruler of Storms
-主宰	Overmind
-無限動力	Perpetual Engine
-創造之門	Gate of Creation
-原點爆炸	Origin Explosion
-棱鏡亂射	Prism Spray
-大崩裂	Great Rift
-海柏利昂	Hyperion
-分身	Avatar
-閃電之心	Heart of Lightning
-大碰撞	Great Impact
-冰凍之心	Frozen Heart
-邁斯納效應	Meisner Effect
-能量飽和	Energy Bombardment
-超級颱風	Super Cyclone
-瞬間移動	Teleport
-火焰風暴	Fire Storm
-煙火秀	Pyrotechnics
-魔力之矛	Mana Spear
-天門	Gate
-磁場	Magnetic Field
-鼠疫	Black Death
-閃電之息	Lightning Breath
-鳳凰	Phoenix
-揮舞	Brandish
-黑洞	Black Hole
-創世紀	Genesis
-阿斯特拉普	Astrape
-超新星	Supernova
-爆能槍	Blaster
-地獄火	Hellfire
-太陽時代	Age of the Sun
-毀滅者	Destroyer
-種族滅絕	Genocide
-厄克西迪姆	Exidium
-機械降神	Deus Ex Machina
-冰川領域	Glacium
-靈魂之刃	Soul Blades
-放電	Discharge
-風暴使者	Stormbringer
-光刃	Aura Blade
-零點地帶	Ground Zero
-復仇女神	Nemesis
-狂戰士	Berserk
-黑暗	Darkness
-歐米伽	Omega
-量子雷射	Quantum Laser
-死亡風暴	Death Storm
-審判者	Inquisitor
-巨型海嘯	Mega Tsunami
-零度新星	Zero Nova
-閃擊	Blitz
-亞巴頓	Abaddon
-均衡	Equilibrium
-弧光	Arc
-巨力衝擊	Giant Impact
-封鎖	Lockdown
-幻覺	Hallucination
-昇華	Ascension
-核心	Core
-宇宙	Cosmos
-超載	Overload
-終結者	Terminator
+魔法師	Wizard	魔法使い	마법사
+天文學者	Astronomer	天文学者	천문학자
+冰凍師	Cryomancer	氷結師	빙결술사
+咒術師	Shaman	呪術師	주술사
+巫術師	Warlock	ウォーロック	흑마법사
+魔道學者	Arcanist	魔道学者	아르카니스트
+召喚師	Summoner	召喚士	소환사
+大主教	Bishop	ビショップ	비숍
+神秘術士	Occultist	神秘術師	오컬티스트
+德魯伊	Druid	ドルイド	드루이드
+火焰術士	Pyromancer	火炎術師	화염술사
+術士	Sorcerer	ソーサラー	소서러
+煉金術士	Alchemist	錬金術師	연금술사
+學者	Scholar	学者	학자
+魔女	Witch	魔女	마녀
+電荷術士	Electromancer	電荷術師	전격술사
+協調者	Arbitrator	調律者	조율자
+大魔法師	Archmage	大魔法使い	대마법사
+考古學者	Archaeologist	考古学者	고고학자
+魔術師	Magician	魔術師	마술사
+魔學者	Mage	メイジ	메이지
+戰鬥法師	Battlemage	戦闘魔法使い	전투마법사
+戰爭領主	Warlord	ウォーロード	워로드
+黑魔法師	Black Mage	黒魔法使い	블랙 메이지
+傑克燈籠	Jack o' Lantern	ジャック・オー・ランタン	잭 오 랜턴
+魔力彈	Magic Bolt	魔力弾	마력탄
+火焰球	Fireball	ファイアボール	화염구
+落雷	Thunderstorm	落雷	낙뢰
+隕石墜落	Meteor	隕石落下	운석 낙하
+旋風	Cyclone	つむじ風	돌개바람
+電氣衝擊	Electric Shock	電気ショック	감전
+能量彈	Energy Bolt	エネルギー弾	에너지탄
+焚燒	Incineration	焼却	소각
+暴風雪	Blizzard	吹雪	눈보라
+海嘯	Tsunami	津波	해일
+精靈	Spirit	精霊	정령
+衛星	Satellite	衛星	위성
+幻視光線	Arcane Ray	ビジョン光線	환영 광선
+導電地帶	Electric Zone	感電地帯	감전 지대
+凜霜	Frost Nova	霜柱	서릿발
+熔岩地帶	Lava Zone	熔岩地帯	용암 지대
+護盾	Shield	シールド	보호막
+疾行	Cloaking	幽体化	은신
+魔法陣	Magic Circle	魔法陣	마법진
+末日審判	Armageddon	アルマゲドン	아마겟돈
+閃光衝擊	Flash Shock	閃光ショック	섬광 충격
+智力	Intelligence	知能	지능
+高速施展	Fast Casting	高速発動	고속 영창
+生命力	Vitality	生命力	활력
+加速	Haste	加速	가속
+魔力發散	Arcane Effuse	魔力発散	마력 발산
+集中	Concentration	集中	집중
+狙擊	Snipe	狙撃	저격
+探索	Explorer	探索	탐험가
+破裂	Rupture	破裂	파열
+高級魔法	Advanced Magic	上級魔法	상급 마법
+火之支配者	Lord of Fire	火の支配者	화염의 지배자
+烏雲	Stormy Clouds	雷雲	먹구름
+自然之怒	Nature's Wrath	自然の怒り	자연의 분노
+能源工學	Energy Engineering	エネルギー工学	에너지 공학
+奧秘	Arcana	アルカナ	아르카나
+守護天使	Guardian Angel	守護天使	수호 천사
+默言詠唱	Silent Casting	無言詠唱	무언 영창
+戰爭魔法	War Magic	戦争魔法	전투 마법
+計時者	Timekeeper	タイムキーパー	시간 기록자
+開拓者	Pioneer	開拓者	개척자
+猛擊	Smite	強打	강타
+封印	Seal	封印	봉인
+詛咒	Curse	呪い	저주
+脈輪	Chakra	チャクラ	차크라
+法力工廠	Mana Factory	マナ工場	마나 공장
+博士	Doctor	博士	의사
+血魔法	Blood Magic	血の魔法	혈마법
+腎上腺素	Adrenaline	アドレナリン	아드레날린
+巨型主宰	Juggernaut	ジャガーノート	저거너트
+聖職者	Priest	プリースト	사제
+艾亞德里奇	Eldritch	エルドリッチ	엘드리치
+貴族	Noblesse	ノブレス	노블레스
+道士	Taoist	導師	도사
+花藝師	Florist	フローリスト	플로리스트
+魔力箭矢	Magic Arrow	魔力の矢	마력 화살
+爆竹	Fireworks	花火	불꽃놀이
+分裂	Fission	分裂	핵분열
+連續施展	Chain Casting	連続発動	연속 영창
+亂射	Fire at Bolt	乱射	난사
+分身	Doppelganger	ドッペルゲンガー	도플갱어
+大爆炸	Big Bang	大爆発	빅뱅
+毒氣	Toxic Gas	毒ガス	독가스
+星座	Constellation	星座	별자리
+晴天霹靂	Thunderclap	青天の霹靂	청천벽력
+閃電爆炸	Lightning Explosion	雷爆発	번개 폭발
+審判	Judgment	審判	심판
+火山爆炸	Volcanic Eruption	火山爆発	화산 폭발
+流星雨	Meteor Shower	流星群	유성우
+小行星	Asteroid	小惑星	소행성
+極端天氣	Extreme Weather	気象異変	기상 이변
+電氣球	Electric Orb	電気球体	전기 구슬
+虛無	Void	ボイド	공허
+連鎖閃電	Chain Lightning	連鎖する雷	연쇄 번개
+高功率	High Output	高出力	고출력
+超導	Superconductivity	超電導	초전도
+帶電粒子	Charged Particle	荷電粒子	하전 입자
+火星飛濺	Spark	スパーク	스파크
+閃焰	Flare	フレア	플레어
+火焰猛擊	Flamestrike	火炎強打	화염 강타
+縱火狂	Pyromaniac	放火癖	방화광
+地獄三頭犬之焰	Cerberus Flame	ケルベロスの炎	케르베로스의 불꽃
+嚴寒期	Sub-Zero	極寒期	혹한기
+流星	Shooting Star	流れ星	별똥별
+火災	Conflagration	火災	대화재
+極點	Pole	極点	극점
+賽蓮之歌	Siren's Song	セイレーンの歌	세이렌의 노래
+大噴發	Great Eruption	大噴火	대분출
+魔法導彈	Magic Missile	魔法ミサイル	매직 미사일
+魔力刀刃	Magic Blade	魔力の刃	매직 블레이드
+使魔	Familiar	使い魔	사역마
+反重力	Anti-Gravity	反重力	반중력
+怪火	Will o' the Wisp	鬼火	도깨비불
+核融合	Nuclear Fusion	核融合	핵융합
+反射	Reflect	反射	반사
+破壞光線	Destruction Ray	破壊光線	파괴 광선
+電磁放射	Electromagnetic Burst	電磁波放出	전자기 폭발
+電荷排放	Electricity Blast	電荷放出	전기 방출
+EMP	EMP	EMP	EMP
+火之光環	Fire Aura	炎のオーラ	화염 오라
+絕對零度	Absolute Zero	絶対零度	절대 영도
+冰河期	Ice Age	氷河期	빙하기
+地震	Earthquake	地震	지진
+融解	Melt	融解	융해
+噴火口	Crater	噴火口	크레이터
+岩漿噴湧	Magma Eruption	マグマ噴出	마그마 분출
+屏障	Barrier	バリア	장벽
+重築	Reconstruct	再構築	재구성
+破壞場	Destruction Field	破壊場	파괴 필드
+海市蜃樓	Mirage	蜃気楼	신기루
+空間扭曲	Space Warp	空間歪曲	공간 왜곡
+靈魂收割	Soul Harvest	魂收穫	영혼 수확
+魔力釋放	Unleash Mana	魔力解放	마나 해방
+物質彈性	Material Synthesis	物質錬成	물질 합성
+大魔法陣	Great Magic Circle	大魔法陣	대마법진
+末世	Apocalypse	アポカリプス	아포칼립스
+被提	Rapture	携挙	휴거
+末日預言	Doom Prophet	終末の予言	파멸의 예언자
+殲滅	Wipeout	殲滅	절멸
+諸神黃昏	Ragnarok	ラグナロク	라그나로크
+惡魔利爪	Satan's Nails	悪魔の爪	사탄의 손톱
+蒼穹之怒	Empyrean Wrath	蒼天の怒り	창공의 분노
+以氣馭劍	Telekinetic Sword	以気御剣	이기어검
+光彈亂射	Crazed Spray	光弾乱射	광탄 난사
+大地電流	Terra Current	テラ電流	테라 전류
+戰爭之後	War Climate	戦争気候	전쟁 기후
+邪靈方程式	Demon Equation	デーモンの方程式	데몬 방정식
+狂暴	Frenzy	フレンジー	광란
+百鬼夜行	Ghastly Rampage	百鬼夜行	백귀야행
+反作用	Reaction	反作用	반작용
+渦流	Vortex	ボルテックス	소용돌이
+火之息	Breath of Fire	火の息	불꽃의 숨결
+以太縱火	Ether Blaze	エーテル放火	에테르 블레이즈
+軌道轟炸	Orbital Strike	軌道爆撃	궤도 폭격
+中子產生	Neutron Generation	中性子発生	중성자 생성
+寒冬風暴	Winter Storm	冬の嵐	겨울 폭풍
+等離子光線	Plasma Ray	プラズマ光線	플라즈마 광선
+閃電轟炸	Lightning Bolts	雷炸裂	벼락 폭격
+量子爆炸	Photon Explosion	量子爆発	광자 폭발
+煉獄	Inferno	インフェルノ	인페르노
+閃電韻律	Lightning Calibration	雷の調律	번개 조정
+熔爐	Furnace	溶鉱炉	용광로
+電流暴走	Current Overload	電流暴走	전류 과부하
+大洪水	Great Flood	大洪水	대홍수
+雪花綻放	Snowflake Blossom	雪花開花	눈꽃 만발
+暴風支配者	Ruler of Storms	嵐の支配者	폭풍의 지배자
+主宰	Overmind	オーバーマインド	오버마인드
+無限動力	Perpetual Engine	無限動力	영구 기관
+創造之門	Gate of Creation	創造の門	창조의 문
+原點爆炸	Origin Explosion	原点爆発	기원 폭발
+棱鏡亂射	Prism Spray	プリズム乱射	프리즘 스프레이
+大崩裂	Great Rift	大亀裂	대균열
+海柏利昂	Hyperion	ヒュペリオン	히페리온
+分身	Avatar	アバター	아바타
+閃電之心	Heart of Lightning	雷の心臓	번개의 심장
+大碰撞	Great Impact	大衝突	대충돌
+冰凍之心	Frozen Heart	氷の心臓	얼어붙은 심장
+邁斯納效應	Meisner Effect	マイスナー効果	마이스너 효과
+能量飽和	Energy Bombardment	エネルギー飽和	에너지 포격
+超級颱風	Super Cyclone	スーパー台風	초태풍
+瞬間移動	Teleport	テレポート	순간이동
+火焰風暴	Fire Storm	炎の嵐	화염 폭풍
+煙火秀	Pyrotechnics	花火	불꽃놀이 쇼
+魔力之矛	Mana Spear	魔力の槍	마나 창
+天門	Gate	ゲート	관문
+磁場	Magnetic Field	磁場	자기장
+鼠疫	Black Death	黒死病	흑사병
+閃電之息	Lightning Breath	雷の息吹	번개의 숨결
+鳳凰	Phoenix	不死鳥	불사조
+揮舞	Brandish	ブランディッシュ	휘두르기
+黑洞	Black Hole	ブラックホール	블랙홀
+創世紀	Genesis	ジェネシス	제네시스
+阿斯特拉普	Astrape	アストラペ	아스트라페
+超新星	Supernova	超新星	초신성
+爆能槍	Blaster	ブラスター	블래스터
+地獄火	Hellfire	ヘルファイア	지옥불
+太陽時代	Age of the Sun	太陽の時代	태양의 시대
+毀滅者	Destroyer	デストロイヤー	파괴자
+種族滅絕	Genocide	ジェノサイド	제노사이드
+厄克西迪姆	Exidium	エクシディウム	엑시디움
+機械降神	Deus Ex Machina	デウス‧エクス‧マキナ	데우스 엑스 마키나
+冰川領域	Glacium	グレイシウム	글라시움
+靈魂之刃	Soul Blades	ソウルブレード	영혼의 칼날
+放電	Discharge	ディスチャージ	방전
+風暴使者	Stormbringer	ストームブリンガー	스톰브링어
+光刃	Aura Blade	オーラブレード	오라 블레이드
+零點地帶	Ground Zero	グラウンドゼロ	그라운드 제로
+復仇女神	Nemesis	ネメシス	네메시스
+狂戰士	Berserk	ベルセルク	광전사
+黑暗	Darkness	ダークネス	암흑
+歐米伽	Omega	オメガ	오메가
+量子雷射	Quantum Laser	クアンタムレーザー	양자 레이저
+死亡風暴	Death Storm	デスストーム	죽음의 폭풍
+審判者	Inquisitor	インクィジター	이단심문관
+巨型海嘯	Mega Tsunami	メガツナミ	메가 해일
+零度新星	Zero Nova	ゼロノヴァ	제로 노바
+閃擊	Blitz	ブリッツ	전격
+亞巴頓	Abaddon	アバドン	아바돈
+均衡	Equilibrium	イクイリブリウム	균형
+弧光	Arc	アーク	아크
+巨力衝擊	Giant Impact	ジャイアントインパクト	거대 충돌
+封鎖	Lockdown	ロックダウン	봉쇄
+幻覺	Hallucination	ハルシネーション	환각
+昇華	Ascension	アセンション	승천
+核心	Core	コア	코어
+宇宙	Cosmos	コスモス	코스모스
+超載	Overload	オーバーロード	과부하
+終結者	Terminator	ターミネーター	터미네이터

@@ -17,12 +17,18 @@ const { isOpen, triggerRef, panelStyle, close, toggle } = useDropdown({
 const options = [
   { value: 'zh-TW', label: '繁體中文' },
   { value: 'zh-CN', label: '简体中文' },
-  { value: 'en', label: 'English' }
+  { value: 'en', label: 'English' },
+  { value: 'ja', label: '日本語' },
+  { value: 'ko', label: '한국어' }
 ]
 
 const currentLabel = computed(() => {
   const opt = options.find((o) => o.value === locale.value)
-  return opt ? (locale.value === 'en' ? 'EN' : opt.label[0]) : 'EN'
+  if (!opt) return 'EN'
+  if (locale.value === 'en') return 'EN'
+  if (locale.value === 'ja') return '日'
+  if (locale.value === 'ko') return '한'
+  return opt.label[0]
 })
 
 const select = (value) => {
