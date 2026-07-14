@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useSavedBuildsStore } from '@/stores/savedBuilds'
+import { useSettingsStore } from '@/stores/settings'
+import { useToastStore } from '@/stores/toast'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import { Save, Trash2, Download } from '@lucide/vue'
@@ -11,6 +13,8 @@ import { formatDate } from '@/utils/format'
 
 const favoritesStore = useFavoritesStore()
 const savedBuildsStore = useSavedBuildsStore()
+const settingsStore = useSettingsStore()
+const toastStore = useToastStore()
 const { t } = useI18n()
 
 const showClearSavedConfirm = ref(false)
@@ -20,6 +24,26 @@ const handleClearSaved = () => {
 const clearSavedBuilds = () => {
   savedBuildsStore.clearSavedBuilds()
   showClearSavedConfirm.value = false
+}
+
+const handleDeleteSavedBuild = (id) => {
+  const index = savedBuildsStore.savedBuilds.findIndex(b => b.id === id)
+  const build = savedBuildsStore.savedBuilds[index]
+  
+  if (build) {
+    const buildCopy = JSON.parse(JSON.stringify(build)) // deep clone to prevent reactivity issues
+    savedBuildsStore.deleteSavedBuild(id)
+
+    if (settingsStore.notificationPrefs.deleteSavedBuild) {
+      toastStore.showUndoToast(
+        t('ui.builder.deletedBuildMsg', buildCopy.name),
+        t('ui.undo'),
+        () => {
+          savedBuildsStore.restoreBuild(buildCopy, index)
+        }
+      )
+    }
+  }
 }
 
 // 讀取存檔＝把存檔的技能組套用為當前配技
@@ -76,7 +100,7 @@ const enrichedSavedBuilds = computed(() => {
       </button>
     </div>
     <div class="saved-builds-container">
-      <div v-for="build in enrichedSavedBuilds" :key="build.id" class="saved-build-card glass-panel">
+      <div v-for="build in enrichedSavedBuilds" :key="build.id" class="saved-build-card glass-panel" @click="loadBuild(build)">
         <div class="saved-build-header">
           <template v-if="editingBuildId === build.id">
             <input 
@@ -84,11 +108,12 @@ const enrichedSavedBuilds = computed(() => {
               v-model="editingBuildName" 
               @blur="finishEditingBuild"
               @keyup.enter="finishEditingBuild"
+              @click.stop
               class="inline-edit-input"
               v-focus
             />
           </template>
-          <span v-else class="saved-build-name" @click="startEditingBuild(build)" :title="t('ui.builder.saveTitle')">
+          <span v-else class="saved-build-name" @click.stop="startEditingBuild(build)" :title="t('ui.builder.saveTitle')">
             {{ build.name }}
           </span>
           <span class="saved-build-date">{{ formatDate(build.date) }}</span>
@@ -101,10 +126,10 @@ const enrichedSavedBuilds = computed(() => {
           </div>
         </div>
         <div class="saved-build-actions">
-          <button class="btn btn-text btn-sm" @click="loadBuild(build)">
+          <button class="btn btn-text btn-sm" @click.stop="loadBuild(build)">
             <Download :size="14" /> {{ t('ui.builder.load') }}
           </button>
-          <button class="btn btn-danger-text btn-sm" @click="savedBuildsStore.deleteSavedBuild(build.id)">
+          <button class="btn btn-danger-text btn-sm" @click.stop="handleDeleteSavedBuild(build.id)">
             <Trash2 :size="14" />
           </button>
         </div>
@@ -161,6 +186,13 @@ const enrichedSavedBuilds = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saved-build-card:hover {
+  border-color: rgba(0, 230, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .saved-build-header {

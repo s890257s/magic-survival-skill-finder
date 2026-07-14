@@ -18,7 +18,8 @@ const options = computed(() => [
   { key: 'general', label: t('ui.notify.general'), desc: t('ui.notify.general.desc') },
   { key: 'pin', label: t('ui.notify.pin'), desc: t('ui.notify.pin.desc') },
   { key: 'favoriteSuccess', label: t('ui.notify.favoriteSuccess'), desc: t('ui.notify.favoriteSuccess.desc') },
-  { key: 'favoriteWarning', label: t('ui.notify.favoriteWarning'), desc: t('ui.notify.favoriteWarning.desc') }
+  { key: 'favoriteWarning', label: t('ui.notify.favoriteWarning'), desc: t('ui.notify.favoriteWarning.desc') },
+  { key: 'deleteSavedBuild', label: t('ui.notify.deleteSavedBuild'), desc: t('ui.notify.deleteSavedBuild.desc') }
 ])
 
 const togglePref = (key) => {

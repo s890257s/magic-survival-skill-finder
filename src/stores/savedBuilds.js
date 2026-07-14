@@ -41,6 +41,15 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
     }
   }
 
+  const restoreBuild = (build, index) => {
+    // If index is out of bounds or not provided, push to end
+    if (typeof index === 'number' && index >= 0 && index <= savedBuilds.value.length) {
+      savedBuilds.value.splice(index, 0, build)
+    } else {
+      savedBuilds.value.push(build)
+    }
+  }
+
   const clearSavedBuilds = () => {
     savedBuilds.value = []
   }
@@ -56,6 +65,7 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
     overwriteBuild,
     deleteSavedBuild,
     renameBuild,
+    restoreBuild,
     clearSavedBuilds,
     setSavedBuilds,
     maxSavedBuilds: MAX_SAVED_BUILDS,

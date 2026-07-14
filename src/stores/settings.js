@@ -13,7 +13,8 @@ export const useSettingsStore = defineStore('settings', () => {
     general: true,
     pin: true,
     favoriteSuccess: true,
-    favoriteWarning: true
+    favoriteWarning: true,
+    deleteSavedBuild: true
   })
 
   const showEnglish = computed(() => {
@@ -38,7 +39,8 @@ export const useSettingsStore = defineStore('settings', () => {
       general: val,
       pin: val,
       favoriteSuccess: val,
-      favoriteWarning: val
+      favoriteWarning: val,
+      deleteSavedBuild: val
     }
   }
 

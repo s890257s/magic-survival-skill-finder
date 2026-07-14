@@ -55,14 +55,18 @@ const confirmSave = () => {
   if (saveMode.value === 'new') {
     if (!savedBuildsStore.saveBuild(name, favoritesStore.favoriteIds)) {
       // 達存檔上限（開啟 modal 後上限才被觸及的邊界情況）
-      toastStore.showToast(t('ui.builder.saveLimitMsg', savedBuildsStore.maxSavedBuilds), 'warning')
+      if (settingsStore.notificationPrefs.general) {
+        toastStore.showToast(t('ui.builder.saveLimitMsg', savedBuildsStore.maxSavedBuilds), 'warning')
+      }
       return
     }
   } else {
     savedBuildsStore.overwriteBuild(saveMode.value, favoritesStore.favoriteIds)
     savedBuildsStore.renameBuild(saveMode.value, name)
   }
-  toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
+  if (settingsStore.notificationPrefs.general) {
+    toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
+  }
   emit('update:show', false)
 }
 </script>

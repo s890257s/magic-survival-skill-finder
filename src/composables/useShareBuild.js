@@ -6,6 +6,7 @@ import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { exportDataToToken, parseTokenToData } from '@/utils/share'
 import { useDictionaryStore } from '@/stores/dictionary'
+import { useSettingsStore } from '@/stores/settings'
 
 // 常見平台（LINE、舊版瀏覽器等）的 URL 安全長度上限
 const MAX_SHARE_URL_LENGTH = 2000
@@ -16,6 +17,7 @@ export function useShareBuild() {
   const savedBuildsStore = useSavedBuildsStore()
   const toastStore = useToastStore()
   const dictionaryStore = useDictionaryStore()
+  const settingsStore = useSettingsStore()
   const { t } = useI18n()
   const router = useRouter()
   const route = useRoute()
@@ -35,15 +37,15 @@ export function useShareBuild() {
   const copyWithFeedback = async (text) => {
     try {
       await navigator.clipboard.writeText(text)
-      toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
+      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
     } catch {
-      toastStore.showToast(t('ui.builder.exportFail'), 'warning')
+      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportFail'), 'warning')
     }
   }
 
   const openExportModal = () => {
     if (favoritesStore.favoriteSkills.length === 0 && savedBuildsStore.savedBuilds.length === 0) {
-      toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
       return
     }
     if (savedBuildsStore.savedBuilds.length === 0) {
@@ -58,7 +60,7 @@ export function useShareBuild() {
     let dataObj
     if (type === 'current') {
       if (favoritesStore.favoriteSkills.length === 0) {
-        toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+        if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
         return
       }
       dataObj = { type: 'current', data: favoritesStore.favoriteSkills.map((s) => s.id) }
@@ -71,7 +73,7 @@ export function useShareBuild() {
     shareUrl.value = `${base}#/?share=${token}`
 
     if (shareUrl.value.length > MAX_SHARE_URL_LENGTH) {
-      toastStore.showToast(t('ui.builder.exportTooLongMsg'), 'warning', { duration: 6000 })
+      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportTooLongMsg'), 'warning', { duration: 6000 })
     }
 
     await copyWithFeedback(shareUrl.value)
@@ -99,19 +101,23 @@ export function useShareBuild() {
     if (importData.value.type === 'current') {
       const backup = [...favoritesStore.favoriteIds]
       favoritesStore.setFavorites(importData.value.data)
-      toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
-        duration: 6000,
-        actionLabel: t('ui.restore'),
-        onAction: () => favoritesStore.setFavorites(backup),
-      })
+      if (settingsStore.notificationPrefs.general) {
+        toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
+          duration: 6000,
+          actionLabel: t('ui.restore'),
+          onAction: () => favoritesStore.setFavorites(backup),
+        })
+      }
     } else if (importData.value.type === 'saves') {
       const backup = [...savedBuildsStore.savedBuilds]
       savedBuildsStore.setSavedBuilds(importData.value.data)
-      toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
-        duration: 6000,
-        actionLabel: t('ui.restore'),
-        onAction: () => savedBuildsStore.setSavedBuilds(backup),
-      })
+      if (settingsStore.notificationPrefs.general) {
+        toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
+          duration: 6000,
+          actionLabel: t('ui.restore'),
+          onAction: () => savedBuildsStore.setSavedBuilds(backup),
+        })
+      }
     }
     
     dictionaryStore.ui.dockTab = 'build'
