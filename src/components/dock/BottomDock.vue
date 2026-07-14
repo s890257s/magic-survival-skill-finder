@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Search, Sparkles, AlertTriangle, ArrowUpToLine } from '@lucide/vue'
 import SearchPanel from '@/components/dictionary/SearchPanel.vue'
 import BuildPanel from '@/components/builder/BuildPanel.vue'
@@ -14,6 +14,24 @@ const favoritesStore = useFavoritesStore()
 const ui = dictionaryStore.ui
 
 const resultCount = computed(() => dictionaryStore.filteredSkills.length)
+
+// 新增技能時的動畫狀態
+const isBuildTabBouncing = ref(false)
+let bounceTimeout = null
+
+watch(() => favoritesStore.count, (newCount, oldCount) => {
+  if (newCount > oldCount) {
+    isBuildTabBouncing.value = false
+    clearTimeout(bounceTimeout)
+    // 微小延遲確保 CSS 動畫重置
+    setTimeout(() => {
+      isBuildTabBouncing.value = true
+      bounceTimeout = setTimeout(() => {
+        isBuildTabBouncing.value = false
+      }, 500)
+    }, 10)
+  }
+})
 
 // 收合時點 tab → 展開該面板；展開時點另一 tab → 切換；點當前 tab → 收合
 const onTabClick = (tab) => {
@@ -109,7 +127,10 @@ onUnmounted(() => {
 
       <button
         class="dock-tab"
-        :class="{ 'is-active': ui.isDockExpanded && ui.dockTab === 'build' }"
+        :class="{ 
+          'is-active': ui.isDockExpanded && ui.dockTab === 'build',
+          'is-bouncing': isBuildTabBouncing
+        }"
         role="tab"
         :aria-selected="ui.dockTab === 'build'"
         :aria-expanded="ui.isDockExpanded && ui.dockTab === 'build'"
@@ -329,5 +350,31 @@ onUnmounted(() => {
 .top-btn-fade-leave-to {
   opacity: 0;
   transform: translateY(8px);
+}
+
+/* 動畫效果 - 針對技能組合 Tab 新增 */
+.dock-tab.is-bouncing .tab-icon--build {
+  animation: pop-glow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dock-tab.is-bouncing .tab-badge {
+  animation: badge-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-glow {
+  0% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  50% { transform: scale(1.4); filter: drop-shadow(0 0 8px var(--accent-purple)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+}
+
+@keyframes badge-pop {
+  0% { transform: scale(1); }
+  50% { 
+    transform: scale(1.3); 
+    background: var(--accent-purple-bg, rgba(187, 134, 252, 0.2)); 
+    color: var(--accent-purple); 
+    border-color: var(--accent-purple-border, rgba(187, 134, 252, 0.4)); 
+  }
+  100% { transform: scale(1); }
 }
 </style>
