@@ -15,7 +15,7 @@ export function useParticles() {
       iconName
     })
     
-    // Safety fallback: if particle component fails to remove itself, remove it after animation
+    // 保險：動畫元件若未自行移除（如 onfinish 未觸發），時限後強制清除
     setTimeout(() => {
       removeParticle(id)
     }, 1000)

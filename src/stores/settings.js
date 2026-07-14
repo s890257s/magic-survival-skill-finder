@@ -9,13 +9,17 @@ export const useSettingsStore = defineStore('settings', () => {
   // 舊版存的是 'true'/'false' 原始字串，恰為合法 JSON，與 usePersistedRef 相容
   const _showEnglish = usePersistedRef(STORAGE_KEYS.showEnglish, true)
 
-  const notificationPrefs = usePersistedRef(STORAGE_KEYS.notifications, {
-    general: true,
-    pin: true,
-    favoriteSuccess: true,
-    favoriteWarning: true,
-    deleteSavedBuild: true
-  })
+  // mergeDefaults：舊使用者的存檔缺新增的偏好 key 時自動補預設值
+  const notificationPrefs = usePersistedRef(
+    STORAGE_KEYS.notifications,
+    {
+      general: true,
+      pin: true,
+      favoriteSuccess: true,
+      favoriteWarning: true,
+    },
+    { mergeDefaults: true },
+  )
 
   const showEnglish = computed(() => {
     // 如果主語系已經是英文，強制不顯示額外的英文標籤
@@ -35,13 +39,9 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   const setAllNotifications = (val) => {
-    notificationPrefs.value = {
-      general: val,
-      pin: val,
-      favoriteSuccess: val,
-      favoriteWarning: val,
-      deleteSavedBuild: val
-    }
+    Object.keys(notificationPrefs.value).forEach((key) => {
+      notificationPrefs.value[key] = val
+    })
   }
 
   return { 
@@ -53,7 +53,6 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 })
 
-// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
 }

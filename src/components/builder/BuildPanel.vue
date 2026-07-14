@@ -7,6 +7,7 @@ import { useTrackerStore } from '@/stores/tracker'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { useShareBuild } from '@/composables/useShareBuild'
+import { useBuildSnapshot } from '@/composables/useBuildSnapshot'
 import Modal from '@/components/ui/Modal.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import BuildSummary from '@/components/builder/BuildSummary.vue'
@@ -40,24 +41,21 @@ const handleSaveClick = () => {
   showSaveModal.value = true
 }
 
+const buildSnapshot = useBuildSnapshot()
+
 const clearFavoritesWithUndo = () => {
   if (favoritesStore.favoriteIds.length === 0) return
-  const backupFavs = [...favoritesStore.favoriteIds]
-  const backupTracker = [...trackerStore.acquiredBases]
-  
+  const backup = buildSnapshot.capture()
+
   favoritesStore.clearFavorites()
   trackerStore.clearTracker()
-  
-  toastStore.showUndoToast(t('ui.builder.clearedMsg'), t('ui.restore'), () => {
-    favoritesStore.setFavorites(backupFavs)
-    trackerStore.setTracker(backupTracker)
-  })
+
+  toastStore.showUndoToast(t('ui.builder.clearedMsg'), () => buildSnapshot.restore(backup))
 }
 </script>
 
 <template>
   <div class="build-panel">
-    <!-- 工具列（原抽屜 header 的動作鈕） -->
     <div class="panel-toolbar">
       <button class="action-btn" @click="showSavedBuildsModal = true" :title="t('ui.builder.savedBuilds')">
         <FolderOpen :size="18" />
@@ -74,7 +72,6 @@ const clearFavoritesWithUndo = () => {
       </button>
     </div>
 
-    <!-- Banners -->
     <div v-if="favoritesStore.isOverLimit" class="banner limit-banner">
       <Layers :size="16" />
       <span>{{ t('ui.builder.limitWarning', favoritesStore.maxSlots) }}</span>
@@ -89,7 +86,6 @@ const clearFavoritesWithUndo = () => {
     </div>
     <BuildSummary v-else />
 
-    <!-- Modals -->
     <Modal :show="showShareModal" :title="t('ui.builder.shareModalTitle')" @close="showShareModal = false">
       <div class="share-content">
         <input type="text" readonly :value="shareUrl" class="text-input" @click="$event.target.select()" />

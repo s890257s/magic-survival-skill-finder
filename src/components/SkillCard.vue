@@ -5,8 +5,9 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { usePinnedStore } from '@/stores/pinned'
 import { useSettingsStore } from '@/stores/settings'
 import GlassCard from '@/components/ui/GlassCard.vue'
-import MagicTag from '@/components/ui/MagicTag.vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
+import SkillFormula from '@/components/skill-card/SkillFormula.vue'
+import UltimateRecipe from '@/components/skill-card/UltimateRecipe.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useSkillActions } from '@/composables/useSkillActions'
 
@@ -51,46 +52,22 @@ const isExpanded = ref(false)
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
 
-// 主/副技能欄位設定；副技能帶附魔時會被消耗（遊戲規則）
-const formulaParts = computed(() => [
-  { labelKey: 'ui.card.mainSkill', part: props.skill.mainSkill, consume: false },
-  { labelKey: 'ui.card.subSkill', part: props.skill.subSkill, consume: !!props.skill.subSkill.enchant },
-])
-
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
   emit('toggled', isExpanded.value)
 }
 
-const onBaseClick = (name) => {
-  if (props.clickableBases) {
-    emit('select-base', name)
-  }
-}
-
-const onEnchantClick = (baseName, enchantName) => {
-  if (props.clickableBases) {
-    emit('select-enchant', { baseName, enchantName })
-  }
-}
-
-const onSubjectClick = (subjectName) => {
-  if (props.clickableBases) {
-    emit('select-subject', subjectName)
-  }
-}
-
 defineExpose({
   setExpanded: (val) => {
     isExpanded.value = val
-  }
+  },
 })
 </script>
 
 <template>
   <GlassCard class="skill-card">
     <div v-if="hasConflict" class="conflict-badge">{{ t('ui.card.conflictBadge') }}</div>
-    <div 
+    <div
       class="skill-header"
       @click="toggleExpand"
       role="button"
@@ -102,24 +79,21 @@ defineExpose({
       <div class="name-area">
         <div class="icon-wrapper">
           <GameIcon :name="skill.name" category="fusion" class="card-fusion-icon" />
-          <div v-if="pinOrder > 0" class="pin-order-badge">
-            #{{ pinOrder }}
-          </div>
+          <div v-if="pinOrder > 0" class="pin-order-badge">#{{ pinOrder }}</div>
         </div>
         <div class="name-text">
           <div class="skill-title-group">
             <div class="skill-name-row">
               <h3 class="skill-name">{{ t(skill.name) }}</h3>
-              <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name">→{{ t(skill.requirements.ultimate) }} (Lv100)</span>
+              <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name"
+                >→{{ t(skill.requirements.ultimate) }} (Lv100)</span
+              >
             </div>
-            <span v-if="settingsStore.showEnglish" class="skill-name-en">{{
-              skill.name
-            }}</span>
+            <span v-if="settingsStore.showEnglish" class="skill-name-en">{{ skill.name }}</span>
           </div>
         </div>
       </div>
       <div class="header-actions">
-
         <button
           v-if="pinnable"
           class="pin-btn"
@@ -141,16 +115,8 @@ defineExpose({
           :aria-pressed="isFavorite"
           :aria-label="isFavorite ? t('ui.card.removeLabel') : t('ui.card.addLabel')"
         >
-          <X
-            v-if="isFavorite"
-            color="var(--danger)"
-            :size="24"
-          />
-          <Plus
-            v-else
-            color="var(--text-muted)"
-            :size="24"
-          />
+          <X v-if="isFavorite" color="var(--danger)" :size="24" />
+          <Plus v-else color="var(--text-muted)" :size="24" />
         </button>
         <div class="expand-icon" :class="{ 'is-expanded': isExpanded }">
           <ChevronDown :size="20" color="var(--text-muted)" />
@@ -160,109 +126,25 @@ defineExpose({
 
     <Transition name="expand">
       <div v-show="isExpanded" class="skill-content-wrapper">
-        <div class="skill-body">
-          <div class="skill-formula">
-        <template v-for="(item, index) in formulaParts" :key="item.labelKey">
-          <div v-if="index > 0" class="formula-divider">+</div>
-          <div class="formula-item">
-            <span class="formula-label">
-              {{ t(item.labelKey) }}
-              <em :class="item.consume ? 'consume' : 'keep'">{{ t(item.consume ? 'ui.card.consume' : 'ui.card.keep') }}</em>
-            </span>
-            <div class="formula-name-row">
-              <GameIcon :name="item.part.name" category="skill" class="card-part-icon" />
-              <div class="formula-title-group">
-                <div class="base-name-group">
-                  <component
-                    :is="clickableBases ? 'button' : 'span'"
-                    class="formula-value"
-                    :class="{
-                      clickable: clickableBases,
-                      'in-conflict': conflictBases.includes(item.part.name),
-                    }"
-                    @click="onBaseClick(item.part.name)"
-                  >
-                    {{ t(item.part.name) }}
-                  </component>
-                  <span v-if="settingsStore.showEnglish" class="formula-en">{{
-                    item.part.name
-                  }}</span>
-                </div>
-                <MagicTag
-                  v-if="item.part.enchant"
-                  :text="t(item.part.enchant)"
-                  :enText="settingsStore.showEnglish ? item.part.enchant : ''"
-                  type="primary"
-                  :class="{ 'clickable-tag': clickableBases }"
-                  @click="onEnchantClick(item.part.name, item.part.enchant)"
-                />
-              </div>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
+        <SkillFormula
+          :skill="skill"
+          :clickableBases="clickableBases"
+          :conflictBases="conflictBases"
+          @select-base="emit('select-base', $event)"
+          @select-enchant="emit('select-enchant', $event)"
+        />
 
-    <div v-if="conflictBases.length > 0" class="conflict-detail">
-      <AlertTriangle :size="14" />
-      <span>{{ t('ui.card.baseConflict', conflictBases.map((b) => t(b)).join('、')) }}</span>
-    </div>
-
-    <div class="skill-footer" v-if="skill.requirements?.ultimate">
-      <div class="ultimate-area">
-        <div class="ultimate-group">
-          <span class="part-label invisible" aria-hidden="true">_</span>
-          <div class="ultimate-group-content">
-            <GameIcon :name="skill.requirements.ultimate" category="ultimate" class="ultimate-icon" />
-            <span class="ultimate-text">{{ t('ui.card.ultimateSkill', t(skill.requirements.ultimate)) }}</span>
-          </div>
-        </div>
-        
-        <div class="ultimate-group">
-          <span class="part-label invisible" aria-hidden="true">_</span>
-          <div class="ultimate-group-content">
-            <span class="ultimate-operator">=</span>
-          </div>
-        </div>
-        
-        <div class="ultimate-group" v-if="skill.requirements.subject">
-          <span class="part-label">{{ t('ui.builder.exportSubject') }}</span>
-          <div class="ultimate-group-content">
-            <MagicTag
-              :text="t(skill.requirements.subject)"
-              type="secondary"
-              :class="{ 'clickable-tag': clickableBases }"
-              @click="onSubjectClick(skill.requirements.subject)"
-            >
-              <template #icon>
-                <GameIcon :name="skill.requirements.subject" category="subject" class="card-tiny-icon" />
-              </template>
-            </MagicTag>
-          </div>
+        <div v-if="conflictBases.length > 0" class="conflict-detail">
+          <AlertTriangle :size="14" />
+          <span>{{ t('ui.card.baseConflict', conflictBases.map((b) => t(b)).join('、')) }}</span>
         </div>
 
-        <div class="ultimate-group" v-if="skill.requirements.subject && skill.requirements.school">
-          <span class="part-label invisible" aria-hidden="true">_</span>
-          <div class="ultimate-group-content">
-            <span class="ultimate-operator">+</span>
-          </div>
-        </div>
-        
-        <div class="ultimate-group" v-if="skill.requirements.school">
-          <span class="part-label">{{ t('ui.builder.exportSchool') }}</span>
-          <div class="ultimate-group-content">
-            <MagicTag
-              :text="t(skill.requirements.school)"
-              type="primary"
-            >
-              <template #icon>
-                <GameIcon :name="skill.requirements.school" category="school" class="card-tiny-icon" />
-              </template>
-            </MagicTag>
-          </div>
-        </div>
-      </div>
-    </div>
+        <UltimateRecipe
+          v-if="skill.requirements?.ultimate"
+          :requirements="skill.requirements"
+          :clickable="clickableBases"
+          @select-subject="emit('select-subject', $event)"
+        />
       </div>
     </Transition>
   </GlassCard>
@@ -274,13 +156,12 @@ defineExpose({
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-fusion-icon { --icon-size: var(--icon-size-card-fusion); }
-.card-part-icon { --icon-size: var(--icon-size-card-part); }
-.ultimate-icon { --icon-size: var(--icon-size-card-small); }
-.card-tiny-icon { --icon-size: var(--icon-size-card-tiny); }
+.card-fusion-icon {
+  --icon-size: var(--icon-size-card-fusion);
+}
 
 .conflict-badge {
   position: absolute;
@@ -295,7 +176,7 @@ defineExpose({
   border-top-right-radius: 16px;
   z-index: 10;
   pointer-events: none;
-  box-shadow: -2px 2px 8px rgba(0,0,0,0.3);
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .skill-header {
@@ -331,37 +212,6 @@ defineExpose({
   gap: 12px;
   flex-wrap: wrap;
   min-width: 0;
-}
-
-.formula-name-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.formula-title-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-}
-
-.base-name-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.formula-en {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  font-style: italic;
-  line-height: 1;
-  text-align: center;
 }
 
 .skill-title-group {
@@ -456,7 +306,6 @@ defineExpose({
   opacity: 0;
 }
 
-
 .favorite-btn,
 .pin-btn {
   background: none;
@@ -498,90 +347,6 @@ defineExpose({
   }
 }
 
-.skill-body {
-  background: var(--inset-bg);
-  border-radius: 8px;
-  padding: 12px;
-}
-
-.skill-formula {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-}
-
-.formula-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-}
-
-.formula-label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.formula-label em {
-  font-style: normal;
-  font-size: 0.65rem;
-  padding: 1px 6px;
-  border-radius: 4px;
-  line-height: 1.5;
-}
-
-.formula-label .keep {
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-}
-
-.formula-label .consume {
-  background: var(--tag-default-bg);
-  color: var(--text-muted);
-}
-
-.formula-value {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
-  text-align: center;
-}
-
-.formula-value.clickable {
-  cursor: pointer;
-  border-bottom: 1px dashed var(--accent-cyan-border);
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.formula-value.clickable:hover {
-  color: var(--accent-cyan);
-  border-bottom-color: var(--accent-cyan);
-}
-
-.formula-value.in-conflict {
-  color: var(--danger);
-}
-
-.formula-divider {
-  font-weight: 700;
-  color: var(--text-muted);
-  font-size: 1.25rem;
-  text-align: center;
-  padding: 4px 0;
-  line-height: 1;
-}
-
 .conflict-detail {
   display: flex;
   align-items: center;
@@ -589,106 +354,6 @@ defineExpose({
   color: var(--danger);
   font-size: 0.8rem;
   font-weight: 500;
-}
-
-.skill-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.ultimate-area {
-  display: flex;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  gap: 8px;
-  background: var(--inset-bg);
-  padding: 8px 12px;
-  border-radius: 8px;
-  width: 100%;
-  overflow-x: auto;
-}
-
-.ultimate-area::before,
-.ultimate-area::after {
-  content: '';
-  margin: auto;
-}
-
-.ultimate-area::-webkit-scrollbar {
-  height: 4px;
-}
-
-.ultimate-area::-webkit-scrollbar-track {
-  background: transparent;
-  margin: 12px;
-}
-
-.ultimate-area::-webkit-scrollbar-thumb {
-  background: var(--glass-border);
-  border-radius: 4px;
-  transition: background 0.3s;
-}
-
-.ultimate-area:hover::-webkit-scrollbar-thumb {
-  background: var(--text-muted);
-}
-
-.ultimate-area::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
-.ultimate-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.ultimate-group-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: 4px;
-}
-
-.part-label {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-  line-height: 1;
-}
-
-.invisible {
-  visibility: hidden;
-  user-select: none;
-}
-
-.ultimate-icon {
-  color: var(--warning);
-  flex-shrink: 0;
-}
-
-.ultimate-text {
-  font-weight: 700;
-  color: var(--warning);
-  font-size: 0.8rem;
-  text-shadow: 0 0 10px rgba(255, 171, 0, 0.3);
-  white-space: nowrap;
-}
-
-.ultimate-operator {
-  color: var(--text-muted);
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
-.ultimate-area :deep(.magic-tag) {
-  padding: 2px 6px;
-  font-size: 0.65rem;
 }
 
 :deep(.clickable-tag) {
@@ -702,5 +367,4 @@ defineExpose({
   transform: translateY(-2px);
   filter: brightness(1.15);
 }
-
 </style>

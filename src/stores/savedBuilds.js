@@ -29,9 +29,12 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
     return true
   }
 
-  const overwriteBuild = (id, skillIds) => {
+  // 更新存檔：name / skillIds 皆為可選，只更新有給的欄位；改內容時同步更新時間
+  const updateBuild = (id, { name, skillIds } = {}) => {
     const build = findBuild(id)
-    if (build) {
+    if (!build) return
+    if (name !== undefined) build.name = name
+    if (skillIds !== undefined) {
       build.skills = [...skillIds]
       build.date = Date.now()
     }
@@ -41,15 +44,8 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
     savedBuilds.value = savedBuilds.value.filter((b) => b.id !== id)
   }
 
-  const renameBuild = (id, newName) => {
-    const build = findBuild(id)
-    if (build) {
-      build.name = newName
-    }
-  }
-
+  // 還原刪除的存檔到原位置；index 無效時附加到尾端
   const restoreBuild = (build, index) => {
-    // If index is out of bounds or not provided, push to end
     if (typeof index === 'number' && index >= 0 && index <= savedBuilds.value.length) {
       savedBuilds.value.splice(index, 0, build)
     } else {
@@ -69,9 +65,8 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
     savedBuilds,
     findBuild,
     saveBuild,
-    overwriteBuild,
+    updateBuild,
     deleteSavedBuild,
-    renameBuild,
     restoreBuild,
     clearSavedBuilds,
     setSavedBuilds,
@@ -79,7 +74,6 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
   }
 })
 
-// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useSavedBuildsStore, import.meta.hot))
 }

@@ -19,7 +19,6 @@ const handleAction = (toast) => {
     <RouterView />
   </main>
 
-  <!-- Global Toasts -->
   <div class="toast-stack" role="status" aria-live="polite">
     <TransitionGroup name="toast-slide">
       <Toast
@@ -44,7 +43,6 @@ const handleAction = (toast) => {
   overflow-x: clip;
 }
 
-/* Toast Stack */
 .toast-stack {
   position: fixed;
   top: 20px;
@@ -60,7 +58,7 @@ const handleAction = (toast) => {
 
 .toast-slide-enter-active,
 .toast-slide-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .toast-slide-enter-from,

@@ -1,14 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { Search, Pin, Book, Trash2, Sparkles } from '@lucide/vue'
+import { Search, Pin, Book, Sparkles } from '@lucide/vue'
 import { skillsData, skillsById } from '@/data'
-import { gameVersion } from '@/data/meta'
 import { RESULTS_ANCHOR_ID } from '@/constants/dom'
-import HeaderActions from '@/components/layout/HeaderActions.vue'
+import AppHeader from '@/components/layout/AppHeader.vue'
 import SkillCard from '@/components/SkillCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import SectionHeader from '@/components/ui/SectionHeader.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
+import ExpandCollapseActions from '@/components/dictionary/ExpandCollapseActions.vue'
 import BottomDock from '@/components/dock/BottomDock.vue'
 import { usePinnedStore } from '@/stores/pinned'
 import { useToastStore } from '@/stores/toast'
@@ -16,13 +16,12 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { useDictionaryStore } from '@/stores/dictionary'
 import { useI18n } from '@/composables/useI18n'
 import { useSortableList } from '@/composables/useSortableList'
-import { useSettingsStore } from '@/stores/settings'
+import { isDesktopWidth } from '@/utils/device'
 
 const pinnedStore = usePinnedStore()
 const toastStore = useToastStore()
 const favoritesStore = useFavoritesStore()
 const dictionaryStore = useDictionaryStore()
-const settingsStore = useSettingsStore()
 const { t } = useI18n()
 
 const filters = dictionaryStore.filters
@@ -75,18 +74,14 @@ const pinnedInView = computed(() => {
 const unpinAll = () => {
   const backup = [...pinnedStore.pinnedIds]
   pinnedStore.clearPins()
-  if (settingsStore.notificationPrefs.general) {
-    toastStore.showUndoToast(t('ui.dict.unpinnedAllMsg'), t('ui.restore'), () =>
-      pinnedStore.setPins(backup),
-    )
-  }
+  toastStore.showUndoToast(t('ui.dict.unpinnedAllMsg'), () => pinnedStore.setPins(backup))
 }
 
 const pinnedListRef = ref(null)
 useSortableList(
   pinnedListRef,
   (oldIndex, newIndex) => {
-    pinnedStore.reorderVisible(
+    pinnedStore.reorderPins(
       pinnedInView.value.map((s) => s.id),
       oldIndex,
       newIndex,
@@ -102,53 +97,48 @@ useSortableList(
 
 // --- 展開 / 收合 ---
 
-const pinnedCards = ref([])
-const allSkillCards = ref([])
+const allListRef = ref(null)
 
-const toggleExpandAll = (cards, val) => {
-  if (cards && cards.length) {
-    cards.forEach((card) => card?.setExpanded?.(val))
+// v-for 的 ref 陣列不保證與資料順序一致，改以 Map<skillId, exposed> 收集
+const pinnedCardRefs = new Map()
+const allCardRefs = new Map()
+
+const setCardRef = (refMap, id) => (card) => {
+  if (card) {
+    refMap.set(id, card)
+  } else {
+    refMap.delete(id)
   }
 }
 
+const toggleExpandAll = (refMap, val) => {
+  refMap.forEach((card) => card.setExpanded(val))
+}
+
+// 桌機多欄佈局：展開單張卡片時，同一列的卡片一起連動，避免列高參差
 const onCardToggled = (index, val, listType) => {
-  if (window.innerWidth < 768) return
+  if (!isDesktopWidth()) return
 
   const isPinned = listType === 'pinned'
-  const listSelector = isPinned ? '.pinned-list' : '.unpinned-list'
-  const listElement = document.querySelector(listSelector)
-  if (!listElement) return
+  const listEl = isPinned ? pinnedListRef.value : allListRef.value
+  if (!listEl) return
 
-  // 取得實際渲染的欄數 (透過 CSS Grid 計算結果)
-  const gridStyle = window.getComputedStyle(listElement)
-  const columns = gridStyle.gridTemplateColumns.split(' ').length
-  
-  if (columns <= 1) return // 單欄不需連動
+  // 欄數取自 CSS grid 的實際渲染結果
+  const columns = window.getComputedStyle(listEl).gridTemplateColumns.split(' ').length
+  if (columns <= 1) return
 
-  // 計算該卡片所在的列 (Row) 的起始與結束 Index
-  const rowIndex = Math.floor(index / columns)
-  const startIndex = rowIndex * columns
+  const startIndex = Math.floor(index / columns) * columns
   const endIndex = startIndex + columns
 
-  // 從資料源取得同一列的 skill id，確保順序 100% 正確
   const sourceArray = isPinned ? pinnedInView.value : filteredSkills.value
-  const targetIds = new Set()
+  const refMap = isPinned ? pinnedCardRefs : allCardRefs
   for (let i = startIndex; i < endIndex && i < sourceArray.length; i++) {
-    targetIds.add(sourceArray[i].id)
+    refMap.get(sourceArray[i].id)?.setExpanded(val)
   }
-
-  // 遍歷 Vue Ref 陣列，只要 id 吻合就同步狀態 (無視陣列順序)
-  const cards = isPinned ? pinnedCards.value : allSkillCards.value
-  cards.forEach((card) => {
-    if (card && card.$props && card.$props.skill) {
-      if (targetIds.has(card.$props.skill.id)) {
-        card.setExpanded(val)
-      }
-    }
-  })
 }
 
 // --- 清空狀態 ---
+
 const showClearConfirm = ref(false)
 
 const executeClearAll = () => {
@@ -156,45 +146,20 @@ const executeClearAll = () => {
   if (favoritesStore.favoriteIds.length > 0) {
     const backup = [...favoritesStore.favoriteIds]
     favoritesStore.clearFavorites()
-    if (settingsStore.notificationPrefs.general) {
-      toastStore.showUndoToast(t('ui.dict.clearAllSuccessMsg'), t('ui.restore'), () =>
-        favoritesStore.setFavorites(backup),
-      )
-    }
+    toastStore.showUndoToast(t('ui.dict.clearAllSuccessMsg'), () =>
+      favoritesStore.setFavorites(backup),
+    )
   } else {
-    if (settingsStore.notificationPrefs.general) {
-      toastStore.showToast(t('ui.dict.clearAllSuccessMsg'), 'success')
-    }
+    toastStore.showToast(t('ui.dict.clearAllSuccessMsg'), 'success', { prefKey: 'general' })
   }
 }
 </script>
 
 <template>
   <div class="dictionary-view">
-    <div class="app-header-container">
-      <div class="app-header-content">
-        <div class="app-header">
-          <h1 class="app-title">
-            {{ t('ui.magicSurvival') }}
-            <span class="version-tag">v{{ gameVersion }}</span>
-          </h1>
-        </div>
-        <div class="header-actions-row">
-          <HeaderActions />
-          <button
-            class="glass-icon-btn"
-            @click="showClearConfirm = true"
-            :title="t('ui.dict.clearAll')"
-          >
-            <Trash2 :size="20" />
-          </button>
-        </div>
-      </div>
-      <hr class="header-divider" />
-    </div>
+    <AppHeader @clear="showClearConfirm = true" />
 
     <div class="list-area">
-      <!-- 釘選技能區 -->
       <div class="section-container">
         <SectionHeader
           :expanded="ui.isPinnedExpanded"
@@ -213,21 +178,11 @@ const executeClearAll = () => {
                 {{ t('ui.dict.unpinAll') }}
               </button>
               <div class="action-divider"></div>
-              <button
-                class="header-action-btn"
-                @click.stop="toggleExpandAll(pinnedCards, true)"
+              <ExpandCollapseActions
                 :disabled="pinnedInView.length === 0"
-              >
-                {{ t('ui.dict.expandSkills') }}
-              </button>
-              <button
-                class="header-action-btn"
-                @click.stop="toggleExpandAll(pinnedCards, false)"
-                :disabled="pinnedInView.length === 0"
-              >
-                {{ t('ui.dict.collapseSkills') }}
-              </button>
-              <div class="action-divider"></div>
+                @expand-all="toggleExpandAll(pinnedCardRefs, true)"
+                @collapse-all="toggleExpandAll(pinnedCardRefs, false)"
+              />
             </template>
           </template>
         </SectionHeader>
@@ -236,11 +191,11 @@ const executeClearAll = () => {
           <div v-if="pinnedInView.length === 0" class="section-empty-state">
             {{ t('ui.dict.emptyPinned') }}
           </div>
-          <div v-else ref="pinnedListRef" class="skill-list pinned-list">
+          <div v-else ref="pinnedListRef" class="skill-list">
             <SkillCard
               v-for="(skill, index) in pinnedInView"
               :key="skill.id"
-              ref="pinnedCards"
+              :ref="setCardRef(pinnedCardRefs, skill.id)"
               :data-id="skill.id"
               :skill="skill"
               :hasConflict="conflictInfo.has(skill.id)"
@@ -259,68 +214,53 @@ const executeClearAll = () => {
     </div>
 
     <div class="list-area" :id="RESULTS_ANCHOR_ID">
-      <!-- Results (Other Skills) -->
-      <div class="results-area">
-        <!-- Section 3: Other Skills -->
-        <div class="section-container">
-          <SectionHeader
-            :expanded="ui.isOtherExpanded"
-            :count="filteredSkills.length"
-            @toggle="ui.isOtherExpanded = !ui.isOtherExpanded"
+      <div class="section-container">
+        <SectionHeader
+          :expanded="ui.isOtherExpanded"
+          :count="filteredSkills.length"
+          @toggle="ui.isOtherExpanded = !ui.isOtherExpanded"
+        >
+          <template #icon><Book :size="18" /></template>
+          {{ t('ui.dict.allSkills') }}
+          <template #actions>
+            <ExpandCollapseActions
+              v-if="ui.isOtherExpanded"
+              :disabled="filteredSkills.length === 0"
+              @expand-all="toggleExpandAll(allCardRefs, true)"
+              @collapse-all="toggleExpandAll(allCardRefs, false)"
+            />
+          </template>
+        </SectionHeader>
+
+        <div v-show="ui.isOtherExpanded">
+          <EmptyState
+            v-if="filteredSkills.length === 0"
+            :text="t('ui.dict.noResults')"
+            :showAction="dictionaryStore.hasAnyFilters"
+            :actionText="t('ui.resetSearchAndFilter')"
+            @action="resetAll"
           >
-            <template #icon><Book :size="18" /></template>
-            {{ t('ui.dict.allSkills') }}
-            <template #actions>
-              <template v-if="ui.isOtherExpanded">
-                <button
-                  class="header-action-btn"
-                  @click.stop="toggleExpandAll(allSkillCards, true)"
-                  :disabled="filteredSkills.length === 0"
-                >
-                  {{ t('ui.dict.expandSkills') }}
-                </button>
-                <button
-                  class="header-action-btn"
-                  @click.stop="toggleExpandAll(allSkillCards, false)"
-                  :disabled="filteredSkills.length === 0"
-                >
-                  {{ t('ui.dict.collapseSkills') }}
-                </button>
-                <div class="action-divider"></div>
-              </template>
+            <template #icon>
+              <Search :size="48" />
             </template>
-          </SectionHeader>
+          </EmptyState>
 
-          <div v-show="ui.isOtherExpanded">
-            <EmptyState
-              v-if="filteredSkills.length === 0"
-              :text="t('ui.dict.noResults')"
-              :showAction="dictionaryStore.hasAnyFilters"
-              :actionText="t('ui.resetSearchAndFilter')"
-              @action="resetAll"
-            >
-              <template #icon>
-                <Search :size="48" />
-              </template>
-            </EmptyState>
-
-            <div v-else class="skill-list unpinned-list">
-              <SkillCard
-                v-for="(skill, index) in filteredSkills"
-                :key="skill.id"
-                ref="allSkillCards"
-                :data-id="skill.id"
-                :skill="skill"
-                :hasConflict="conflictInfo.has(skill.id)"
-                :conflictBases="conflictInfo.get(skill.id)"
-                clickableBases
-                pinnable
-                @select-base="onSelectBase"
-                @select-enchant="onSelectEnchant"
-                @select-subject="onSelectSubject"
-                @toggled="(val) => onCardToggled(index, val, 'all')"
-              />
-            </div>
+          <div v-else ref="allListRef" class="skill-list">
+            <SkillCard
+              v-for="(skill, index) in filteredSkills"
+              :key="skill.id"
+              :ref="setCardRef(allCardRefs, skill.id)"
+              :data-id="skill.id"
+              :skill="skill"
+              :hasConflict="conflictInfo.has(skill.id)"
+              :conflictBases="conflictInfo.get(skill.id)"
+              clickableBases
+              pinnable
+              @select-base="onSelectBase"
+              @select-enchant="onSelectEnchant"
+              @select-subject="onSelectSubject"
+              @toggled="(val) => onCardToggled(index, val, 'all')"
+            />
           </div>
         </div>
       </div>
@@ -360,75 +300,6 @@ const executeClearAll = () => {
   padding-bottom: calc(76px + env(safe-area-inset-bottom));
 }
 
-.app-header-container {
-  padding: 16px 16px 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.app-header-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-@media (min-width: 768px) {
-  .app-header-content {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .header-actions-row {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
-.app-header {
-  display: flex;
-  align-items: center;
-}
-
-.header-actions-row {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-}
-
-.header-divider {
-  border: 0;
-  height: 1px;
-  background: var(--glass-border);
-  margin: 16px 0;
-}
-
-.app-title {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-shadow: var(--name-glow);
-}
-
-.version-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent-cyan);
-  background: var(--accent-cyan-bg);
-  padding: 3px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--accent-cyan-border);
-  box-shadow: 0 0 10px var(--accent-cyan-glow);
-  letter-spacing: 0.5px;
-}
-
 .list-area {
   scroll-margin-top: 8px;
 }
@@ -449,11 +320,6 @@ const executeClearAll = () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.results-area {
-  display: flex;
-  flex-direction: column;
 }
 
 @media (min-width: 768px) {
@@ -482,23 +348,25 @@ const executeClearAll = () => {
   border: 1px solid var(--glass-border);
 }
 
+/* 取消全部釘選鈕（danger 變體）；一般展開/收合鈕在 ExpandCollapseActions */
 .header-action-btn {
   background: transparent;
   border: 1px solid var(--glass-border);
   border-radius: 4px;
-  color: var(--text-secondary);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   padding: 4px 12px;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  color: var(--danger);
+  border-color: rgba(255, 82, 82, 0.3);
 }
 
-/* 放大隱形點擊區 (向上/下補齊 Header 的 padding) */
+/* 放大隱形點擊區（向上下補齊 SectionHeader 的 padding） */
 .header-action-btn::after {
   content: '';
   position: absolute;
@@ -509,17 +377,6 @@ const executeClearAll = () => {
 }
 
 .header-action-btn:hover:not(:disabled) {
-  background: var(--glass-bg);
-  color: var(--text-primary);
-  border-color: var(--text-muted);
-}
-
-.header-action-btn.danger {
-  color: var(--danger);
-  border-color: rgba(255, 82, 82, 0.3);
-}
-
-.header-action-btn.danger:hover:not(:disabled) {
   background: rgba(255, 82, 82, 0.1);
   color: var(--danger-hover);
   border-color: var(--danger);
@@ -539,11 +396,7 @@ const executeClearAll = () => {
     white-space: nowrap;
   }
 
-  /* 隱藏手機版的分隔線，讓按鈕均分更乾淨 */
-  :deep(.action-divider) {
-    display: none;
-  }
-  /* 在 Dictionary.vue 裡的 action-divider 是直接寫在 template 中，不需要 deep，但加上以防萬一 */
+  /* 手機版按鈕均分，不需要分隔線 */
   .action-divider {
     display: none;
   }

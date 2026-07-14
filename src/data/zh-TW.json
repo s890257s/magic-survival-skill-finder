@@ -359,11 +359,8 @@
   "ui.notify.favoriteSuccess.desc": "將技能加入或移出組合時的提示",
   "ui.notify.favoriteWarning": "衝突與滿載警告",
   "ui.notify.favoriteWarning.desc": "加入衝突技能或組合滿載時的警告提示",
-  "ui.notify.deleteSavedBuild": "刪除儲存庫存檔",
-  "ui.notify.deleteSavedBuild.desc": "刪除儲存庫的存檔後，顯示可「復原」的提示",
   "ui.notify.selectAll": "全選",
   "ui.notify.deselectAll": "全不選",
   "ui.builder.delete": "刪除",
-  "ui.builder.deletedBuildMsg": "已刪除「{0}」",
-  "ui.undo": "復原"
+  "ui.builder.deletedBuildMsg": "已刪除「{0}」"
 }

@@ -1,18 +1,25 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref } from 'vue'
+import { useSettingsStore } from '@/stores/settings'
+import { useI18n } from '@/composables/useI18n'
 
 const MAX_VISIBLE = 3
 
 export const useToastStore = defineStore('toast', () => {
+  const settingsStore = useSettingsStore()
+  const { t } = useI18n()
   const toasts = ref([])
   let seed = 0
 
   /**
    * @param {string} message
    * @param {'success'|'info'|'warning'|'danger'} type
-   * @param {{ duration?: number, actionLabel?: string, onAction?: Function }} options
+   * @param {{ duration?: number, actionLabel?: string, onAction?: Function, prefKey?: string }} options
+   * prefKey：對應的通知偏好 key，關閉時不顯示；未指定則一律顯示
    */
   const showToast = (message, type = 'info', options = {}) => {
+    if (options.prefKey && !settingsStore.notificationPrefs[options.prefKey]) return
+
     const id = ++seed
     toasts.value.push({
       id,
@@ -29,9 +36,14 @@ export const useToastStore = defineStore('toast', () => {
     }
   }
 
-  // 帶「復原」按鈕的資訊 toast（清空類操作專用）
-  const showUndoToast = (message, actionLabel, onUndo) => {
-    showToast(message, 'info', { duration: 6000, actionLabel, onAction: onUndo })
+  // 破壞性操作（清空、刪除、匯入覆蓋）專用：是復原的唯一入口，不受通知偏好管控
+  const showUndoToast = (message, onUndo, options = {}) => {
+    showToast(message, 'info', {
+      duration: 6000,
+      actionLabel: t('ui.restore'),
+      onAction: onUndo,
+      ...options,
+    })
   }
 
   const dismiss = (id) => {
@@ -41,7 +53,6 @@ export const useToastStore = defineStore('toast', () => {
   return { toasts, showToast, showUndoToast, dismiss }
 })
 
-// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useToastStore, import.meta.hot))
 }

@@ -47,15 +47,13 @@ const focusInput = () => {
       <Search class="search-icon" :size="20" />
       
       <div class="search-input-container">
-        <!-- Tags -->
         <span v-for="(tag, index) in filters.searchTags" :key="index" class="search-tag">
           {{ tag }}
           <button @click.stop="removeTag(index)" class="tag-remove-btn">
             <X :size="14" />
           </button>
         </span>
-        
-        <!-- Input -->
+
         <input
           ref="searchInputRef"
           type="text"
@@ -100,7 +98,7 @@ const focusInput = () => {
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 8px 40px 8px 48px;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   cursor: text;
   min-height: 46px;
 }

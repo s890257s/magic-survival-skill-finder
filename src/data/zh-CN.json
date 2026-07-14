@@ -359,11 +359,8 @@
   "ui.notify.favoriteSuccess.desc": "将技能加入或移出组合时的提示",
   "ui.notify.favoriteWarning": "冲突与满载警告",
   "ui.notify.favoriteWarning.desc": "加入冲突技能或组合满载时的警告提示",
-  "ui.notify.deleteSavedBuild": "删除储存库存档",
-  "ui.notify.deleteSavedBuild.desc": "删除储存库的存档后，显示可“撤销”的提示",
   "ui.notify.selectAll": "全选",
   "ui.notify.deselectAll": "全不选",
   "ui.builder.delete": "删除",
-  "ui.builder.deletedBuildMsg": "已删除“{0}”",
-  "ui.undo": "撤销"
+  "ui.builder.deletedBuildMsg": "已删除“{0}”"
 }

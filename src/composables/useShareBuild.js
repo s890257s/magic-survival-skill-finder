@@ -6,7 +6,6 @@ import { useToastStore } from '@/stores/toast'
 import { useI18n } from '@/composables/useI18n'
 import { exportDataToToken, parseTokenToData } from '@/utils/share'
 import { useDictionaryStore } from '@/stores/dictionary'
-import { useSettingsStore } from '@/stores/settings'
 
 // 常見平台（LINE、舊版瀏覽器等）的 URL 安全長度上限
 const MAX_SHARE_URL_LENGTH = 2000
@@ -17,7 +16,6 @@ export function useShareBuild() {
   const savedBuildsStore = useSavedBuildsStore()
   const toastStore = useToastStore()
   const dictionaryStore = useDictionaryStore()
-  const settingsStore = useSettingsStore()
   const { t } = useI18n()
   const router = useRouter()
   const route = useRoute()
@@ -28,10 +26,24 @@ export function useShareBuild() {
   const showImportConfirm = ref(false)
   const importData = ref(null)
 
+  // 匯入目標的差異集中於此，流程共用
+  const importTargets = {
+    current: {
+      isEmpty: () => favoritesStore.favoriteIds.length === 0,
+      backup: () => [...favoritesStore.favoriteIds],
+      apply: (data) => favoritesStore.setFavorites(data),
+      confirmKey: 'ui.builder.importConfirmMsg',
+    },
+    saves: {
+      isEmpty: () => savedBuildsStore.savedBuilds.length === 0,
+      backup: () => [...savedBuildsStore.savedBuilds],
+      apply: (data) => savedBuildsStore.setSavedBuilds(data),
+      confirmKey: 'ui.builder.importSavesConfirmMsg',
+    },
+  }
+
   const importConfirmMessage = computed(() =>
-    importData.value?.type === 'saves'
-      ? t('ui.builder.importSavesConfirmMsg')
-      : t('ui.builder.importConfirmMsg'),
+    t(importTargets[importData.value?.type]?.confirmKey || 'ui.builder.importConfirmMsg'),
   )
 
   const copyWithFeedback = async (text) => {
@@ -39,34 +51,33 @@ export function useShareBuild() {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text)
       } else {
-        // Fallback for non-secure contexts (like HTTP local network testing)
+        // 非安全來源（如區網 HTTP 測試）沒有 clipboard API，退回 execCommand
         const textArea = document.createElement('textarea')
         textArea.value = text
-        
-        // Prevent scrolling to bottom of page in MS Edge
+        // 固定在畫面外，避免部分瀏覽器聚焦時捲動到頁尾
         textArea.style.position = 'fixed'
         textArea.style.left = '-999999px'
         textArea.style.top = '-999999px'
-        
+
         document.body.appendChild(textArea)
         textArea.focus()
         textArea.select()
-        
+
         const successful = document.execCommand('copy')
         document.body.removeChild(textArea)
-        
+
         if (!successful) throw new Error('Fallback copy failed')
       }
-      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
+      toastStore.showToast(t('ui.builder.exportSuccess'), 'success', { prefKey: 'general' })
     } catch (e) {
       console.error('Clipboard write failed', e)
-      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportFail'), 'warning')
+      toastStore.showToast(t('ui.builder.exportFail'), 'warning', { prefKey: 'general' })
     }
   }
 
   const openExportModal = () => {
     if (favoritesStore.favoriteSkills.length === 0 && savedBuildsStore.savedBuilds.length === 0) {
-      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+      toastStore.showToast(t('ui.builder.exportEmpty'), 'warning', { prefKey: 'general' })
       return
     }
     if (savedBuildsStore.savedBuilds.length === 0) {
@@ -81,7 +92,7 @@ export function useShareBuild() {
     let dataObj
     if (type === 'current') {
       if (favoritesStore.favoriteSkills.length === 0) {
-        if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportEmpty'), 'warning')
+        toastStore.showToast(t('ui.builder.exportEmpty'), 'warning', { prefKey: 'general' })
         return
       }
       dataObj = { type: 'current', data: favoritesStore.favoriteSkills.map((s) => s.id) }
@@ -94,7 +105,10 @@ export function useShareBuild() {
     shareUrl.value = `${base}#/?share=${token}`
 
     if (shareUrl.value.length > MAX_SHARE_URL_LENGTH) {
-      if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportTooLongMsg'), 'warning', { duration: 6000 })
+      toastStore.showToast(t('ui.builder.exportTooLongMsg'), 'warning', {
+        duration: 6000,
+        prefKey: 'general',
+      })
     }
 
     await copyWithFeedback(shareUrl.value)
@@ -102,14 +116,11 @@ export function useShareBuild() {
   }
 
   const processImportData = (obj) => {
-    if (!obj || !obj.type || !obj.data) return
+    if (!obj || !importTargets[obj.type] || !obj.data) return
     importData.value = obj
 
-    const isEmpty =
-      obj.type === 'saves'
-        ? savedBuildsStore.savedBuilds.length === 0
-        : favoritesStore.favoriteIds.length === 0
-    if (isEmpty) {
+    // 目標為空直接套用；有資料才需要覆蓋確認
+    if (importTargets[obj.type].isEmpty()) {
       executeImport()
     } else {
       showImportConfirm.value = true
@@ -117,33 +128,16 @@ export function useShareBuild() {
   }
 
   const executeImport = () => {
-    if (!importData.value) return
+    const target = importTargets[importData.value?.type]
+    if (!target) return
 
-    if (importData.value.type === 'current') {
-      const backup = [...favoritesStore.favoriteIds]
-      favoritesStore.setFavorites(importData.value.data)
-      if (settingsStore.notificationPrefs.general) {
-        toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
-          duration: 6000,
-          actionLabel: t('ui.restore'),
-          onAction: () => favoritesStore.setFavorites(backup),
-        })
-      }
-    } else if (importData.value.type === 'saves') {
-      const backup = [...savedBuildsStore.savedBuilds]
-      savedBuildsStore.setSavedBuilds(importData.value.data)
-      if (settingsStore.notificationPrefs.general) {
-        toastStore.showToast(t('ui.builder.importSuccess'), 'success', {
-          duration: 6000,
-          actionLabel: t('ui.restore'),
-          onAction: () => savedBuildsStore.setSavedBuilds(backup),
-        })
-      }
-    }
-    
+    const backup = target.backup()
+    target.apply(importData.value.data)
+    toastStore.showUndoToast(t('ui.builder.importSuccess'), () => target.apply(backup))
+
     dictionaryStore.ui.dockTab = 'build'
     dictionaryStore.ui.isDockExpanded = true
-    
+
     router.replace({ query: {} })
     importData.value = null
   }

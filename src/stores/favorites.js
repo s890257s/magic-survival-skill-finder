@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { skillsById } from '@/data'
 import { usePersistedRef } from '@/composables/usePersistedRef'
 import { STORAGE_KEYS } from '@/constants/storageKeys'
-import { toggleInArray, swapInArray } from '@/utils/array'
+import { toggleInArray, swapInArray, reorderVisible } from '@/utils/array'
 
 const BASE_SLOTS = 3
 
@@ -80,6 +80,11 @@ export const useFavoritesStore = defineStore('favorites', () => {
     swapInArray(favoriteIds.value, id, target)
   }
 
+  // 拖曳排序：以可見的 id 清單換算，避免失效 id（skillsById 查不到者）造成索引錯位
+  const reorderFavorites = (visibleIds, oldIndex, newIndex) => {
+    favoriteIds.value = reorderVisible(favoriteIds.value, visibleIds, oldIndex, newIndex)
+  }
+
   const setFavorites = (ids) => {
     favoriteIds.value = [...ids]
   }
@@ -100,12 +105,12 @@ export const useFavoritesStore = defineStore('favorites', () => {
     toggleFavorite,
     isFavorite,
     moveFavorite,
+    reorderFavorites,
     setFavorites,
     clearFavorites,
   }
 })
 
-// 開發時熱更新 store 定義，避免舊實例缺少新方法（對 production build 無影響）
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useFavoritesStore, import.meta.hot))
 }

@@ -17,16 +17,18 @@ const resultCount = computed(() => dictionaryStore.filteredSkills.length)
 
 // 新增技能時的動畫狀態
 const isBuildTabBouncing = ref(false)
-let bounceTimeout = null
+let bounceResetTimer = null
+let bounceStartTimer = null
 
 watch(() => favoritesStore.count, (newCount, oldCount) => {
   if (newCount > oldCount) {
     isBuildTabBouncing.value = false
-    clearTimeout(bounceTimeout)
+    clearTimeout(bounceStartTimer)
+    clearTimeout(bounceResetTimer)
     // 微小延遲確保 CSS 動畫重置
-    setTimeout(() => {
+    bounceStartTimer = setTimeout(() => {
       isBuildTabBouncing.value = true
-      bounceTimeout = setTimeout(() => {
+      bounceResetTimer = setTimeout(() => {
         isBuildTabBouncing.value = false
       }, 500)
     }, 10)
@@ -74,16 +76,16 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('keydown', onKeydown)
   window.removeEventListener('scroll', onScroll)
+  clearTimeout(bounceStartTimer)
+  clearTimeout(bounceResetTimer)
 })
 </script>
 
 <template>
-  <!-- Scrim -->
   <Transition name="scrim-fade">
     <div v-show="ui.isDockExpanded" class="dock-scrim" @click="collapse"></div>
   </Transition>
 
-  <!-- 回頂部小鈕 -->
   <Transition name="top-btn-fade">
     <button
       v-show="showTopBtn && !ui.isDockExpanded"
@@ -97,7 +99,6 @@ onUnmounted(() => {
   </Transition>
 
   <div class="bottom-dock" :class="{ 'is-expanded': ui.isDockExpanded }">
-    <!-- 面板 -->
     <Transition name="panel-slide">
       <div v-show="ui.isDockExpanded" class="dock-panel">
         <div class="panel-inner">
@@ -107,7 +108,6 @@ onUnmounted(() => {
       </div>
     </Transition>
 
-    <!-- Tab 列 -->
     <div class="dock-tabbar" role="tablist">
       <button
         class="dock-tab"
@@ -353,7 +353,6 @@ onUnmounted(() => {
   transform: translateY(8px);
 }
 
-/* 動畫效果 - 針對技能組合 Tab 新增 */
 .dock-tab.is-bouncing .tab-icon--build {
   animation: pop-glow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }

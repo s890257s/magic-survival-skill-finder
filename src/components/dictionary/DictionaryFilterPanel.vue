@@ -120,7 +120,7 @@ const onBaseSkillChange = (val) => {
   background: var(--bg-surface);
   cursor: pointer;
   position: relative;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
   margin: 0;
 }
 

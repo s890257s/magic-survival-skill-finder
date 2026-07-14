@@ -1,8 +1,8 @@
 import { ref, watch, onUnmounted } from 'vue'
 
-// 浮層共用狀態(模組層,跨元件):
-// - body 捲動鎖:計數式,支援 modal 與 dock 疊加,最後一個解除者才還原捲動
-// - 浮層登記:讓底層 UI(如 BottomDock 的 Esc 處理)判斷上方是否還有 modal / dropdown
+// 浮層共用狀態（模組層，跨元件）：
+// - body 捲動鎖：計數式，支援 modal 與 dock 疊加，最後一個解除者才還原捲動
+// - 浮層登記：讓底層 UI（如 BottomDock 的 Esc 處理）判斷上方是否還有 modal / dropdown
 
 let scrollLockCount = 0
 
@@ -17,7 +17,7 @@ const overlayCount = ref(0)
 
 export const hasOpenOverlay = () => overlayCount.value > 0
 
-// 依 boolean 來源自動進出某個成對狀態;元件卸載時自動歸還,避免計數洩漏
+// 依 boolean 來源自動進出某個成對狀態；元件卸載時自動歸還，避免計數洩漏
 const useFlag = (source, activate, deactivate) => {
   let active = false
   const set = (val) => {

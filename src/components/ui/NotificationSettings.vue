@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Bell } from '@lucide/vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
+import ToggleSwitch from '@/components/ui/ToggleSwitch.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useDropdown } from '@/composables/useDropdown'
 import { useSettingsStore } from '@/stores/settings'
@@ -19,7 +20,6 @@ const options = computed(() => [
   { key: 'pin', label: t('ui.notify.pin'), desc: t('ui.notify.pin.desc') },
   { key: 'favoriteSuccess', label: t('ui.notify.favoriteSuccess'), desc: t('ui.notify.favoriteSuccess.desc') },
   { key: 'favoriteWarning', label: t('ui.notify.favoriteWarning'), desc: t('ui.notify.favoriteWarning.desc') },
-  { key: 'deleteSavedBuild', label: t('ui.notify.deleteSavedBuild'), desc: t('ui.notify.deleteSavedBuild.desc') }
 ])
 
 const togglePref = (key) => {
@@ -68,12 +68,7 @@ const deselectAll = () => settingsStore.setAllNotifications(false)
                 <span class="option-label">{{ opt.label }}</span>
                 <span class="option-desc">{{ opt.desc }}</span>
               </div>
-              <div 
-                class="toggle-switch"
-                :class="{ 'is-active': settingsStore.notificationPrefs[opt.key] }"
-              >
-                <div class="toggle-thumb"></div>
-              </div>
+              <ToggleSwitch :modelValue="settingsStore.notificationPrefs[opt.key]" />
             </button>
           </li>
         </ul>
@@ -170,38 +165,5 @@ const deselectAll = () => settingsStore.setAllNotifications(false)
   font-size: 0.75rem;
   color: var(--text-muted);
   line-height: 1.3;
-}
-
-.toggle-switch {
-  position: relative;
-  width: 36px;
-  height: 20px;
-  background-color: var(--bg-modifier-hover);
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-}
-
-.toggle-switch.is-active {
-  background-color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-}
-
-.toggle-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background-color: var(--text-muted);
-  border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.toggle-switch.is-active .toggle-thumb {
-  transform: translateX(16px);
-  background-color: #fff;
-  box-shadow: 0 0 8px var(--accent-cyan-glow);
 }
 </style>

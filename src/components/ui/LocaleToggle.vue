@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue'
-import { Globe, Check } from '@lucide/vue'
+import { Globe } from '@lucide/vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
+import DropdownOption from '@/components/ui/DropdownOption.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useDropdown } from '@/composables/useDropdown'
 
@@ -46,17 +47,13 @@ const select = (value) => {
 
     <DropdownPanel :isOpen="isOpen" @close="close" :style="panelStyle">
       <ul class="dropdown-options">
-        <li v-for="opt in options" :key="opt.value">
-          <button
-            type="button"
-            class="dropdown-option"
-            :class="{ selected: opt.value === locale }"
-            @click="select(opt.value)"
-          >
-            <span class="option-label">{{ opt.label }}</span>
-            <Check v-if="opt.value === locale" :size="16" class="check" />
-          </button>
-        </li>
+        <DropdownOption
+          v-for="opt in options"
+          :key="opt.value"
+          :label="opt.label"
+          :selected="opt.value === locale"
+          @select="select(opt.value)"
+        />
       </ul>
     </DropdownPanel>
   </div>

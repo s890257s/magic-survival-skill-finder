@@ -19,31 +19,18 @@ onMounted(() => {
 
   const { startX, startY, endX, endY } = props.particle
 
-  // 1. Calculate delta
-  const deltaX = endX - startX
-  const deltaY = endY - startY
-  
-  // 2. Animate using WAAPI
-  const animation = el.value.animate([
-    { 
-      transform: `translate(${startX}px, ${startY}px) scale(1)`, 
-      opacity: 1,
-      offset: 0
+  const animation = el.value.animate(
+    [
+      { transform: `translate(${startX}px, ${startY}px) scale(1)`, opacity: 1 },
+      { transform: `translate(${endX}px, ${endY}px) scale(0.3)`, opacity: 0 },
+    ],
+    {
+      duration: 600,
+      easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+      fill: 'forwards',
     },
-    // Add a slight arc/curve by modifying X and Y differently, 
-    // but easiest is just straight line with cubic bezier
-    { 
-      transform: `translate(${endX}px, ${endY}px) scale(0.3)`, 
-      opacity: 0,
-      offset: 1
-    }
-  ], {
-    duration: 600,
-    easing: 'cubic-bezier(0.25, 1, 0.5, 1)', // Decelerating curve
-    fill: 'forwards'
-  })
+  )
 
-  // 3. Remove particle when done
   animation.onfinish = () => {
     removeParticle(props.particle.id)
   }
@@ -63,8 +50,8 @@ onMounted(() => {
   left: 0;
   z-index: 9999;
   pointer-events: none;
-  /* Icon size configuration matching the skill card's size */
-  --icon-size: 32px; 
+  /* 與技能卡 icon 同尺寸，讓飛行動畫看起來是同一顆 icon */
+  --icon-size: 32px;
   width: var(--icon-size);
   height: var(--icon-size);
   margin-top: calc(var(--icon-size) / -2);

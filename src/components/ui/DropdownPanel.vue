@@ -2,6 +2,9 @@
 import { ref, watch, onBeforeUnmount } from 'vue'
 import { useOverlayPresence } from '@/composables/useOverlays'
 
+// 多根節點模板：attrs（含 usePanelPosition 的 style）手動綁到面板上
+defineOptions({ inheritAttrs: false })
+
 const props = defineProps({
   isOpen: {
     type: Boolean,

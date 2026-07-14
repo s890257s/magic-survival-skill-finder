@@ -15,6 +15,15 @@ const readStored = (key) => {
   }
 }
 
+// 關頁 / 切到背景時補寫未落地的變更，避免 debounce 視窗內的輸入遺失。
+// 所有 debounced writer 共用一對全域 listener（掛了就拆不掉，集中管理避免累積）
+const pendingFlushes = new Set()
+const flushAll = () => pendingFlushes.forEach((flush) => flush())
+window.addEventListener('beforeunload', flushAll)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) flushAll()
+})
+
 // debounceMs > 0 時延遲寫入，避免高頻變更（如搜尋輸入）每次都同步寫 localStorage
 const createWriter = (key, debounceMs) => {
   if (debounceMs <= 0) {
@@ -23,35 +32,36 @@ const createWriter = (key, debounceMs) => {
 
   let timer = null
   let pending = null
-  let hasPending = false
 
   const flush = () => {
-    if (!hasPending) return
     clearTimeout(timer)
     localStorage.setItem(key, JSON.stringify(pending))
-    hasPending = false
     pending = null
+    pendingFlushes.delete(flush)
   }
-
-  // 關頁 / 切到背景時補寫未落地的變更，避免 debounce 視窗內的輸入遺失
-  window.addEventListener('beforeunload', flush)
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) flush()
-  })
 
   return (val) => {
     pending = val
-    hasPending = true
+    pendingFlushes.add(flush)
     clearTimeout(timer)
     timer = setTimeout(flush, debounceMs)
   }
 }
 
-export function usePersistedRef(key, defaultValue, { debounceMs = 0 } = {}) {
+const isPlainObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val)
+
+// mergeDefaults：物件型預設值以 { ...default, ...stored } 初始化，
+// 讓舊使用者的存檔自動補上後續新增的欄位
+export function usePersistedRef(key, defaultValue, { debounceMs = 0, mergeDefaults = false } = {}) {
   const value = ref(defaultValue)
 
   const stored = readStored(key)
-  if (stored !== undefined) value.value = stored
+  if (stored !== undefined) {
+    value.value =
+      mergeDefaults && isPlainObject(defaultValue) && isPlainObject(stored)
+        ? { ...defaultValue, ...stored }
+        : stored
+  }
 
   watch(value, createWriter(key, debounceMs), { deep: true })
 

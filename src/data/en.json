@@ -359,11 +359,8 @@
   "ui.notify.favoriteSuccess.desc": "Notify when a skill is added or removed from your build",
   "ui.notify.favoriteWarning": "Conflict & Limit Warnings",
   "ui.notify.favoriteWarning.desc": "Notify when adding conflicting skills or exceeding build limits",
-  "ui.notify.deleteSavedBuild": "Delete Saved Build",
-  "ui.notify.deleteSavedBuild.desc": "Show an undo option after deleting a saved build",
   "ui.notify.selectAll": "Select All",
   "ui.notify.deselectAll": "Deselect All",
   "ui.builder.delete": "Delete",
-  "ui.builder.deletedBuildMsg": "Deleted \"{0}\"",
-  "ui.undo": "Undo"
+  "ui.builder.deletedBuildMsg": "Deleted \"{0}\""
 }

@@ -150,7 +150,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .close-btn:hover {
@@ -162,7 +162,6 @@ onUnmounted(() => {
   padding: 20px;
 }
 
-/* Transitions */
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.2s ease;

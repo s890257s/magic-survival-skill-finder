@@ -1,8 +1,9 @@
 <script setup>
 import { computed, ref, nextTick } from 'vue'
-import { ChevronDown, Check, Search } from '@lucide/vue'
+import { ChevronDown, Search } from '@lucide/vue'
 import GameIcon from '@/components/ui/GameIcon.vue'
 import DropdownPanel from '@/components/ui/DropdownPanel.vue'
+import DropdownOption from '@/components/ui/DropdownOption.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useDropdown } from '@/composables/useDropdown'
 import { isDesktopWidth } from '@/utils/device'
@@ -119,40 +120,18 @@ const select = (value) => {
         />
       </div>
       <ul class="dropdown-options" role="listbox">
-        <li>
-          <button
-            type="button"
-            class="dropdown-option"
-            :class="{ selected: !modelValue }"
-            role="option"
-            :aria-selected="!modelValue"
-            @click="select('')"
-          >
-            <span class="option-label muted">{{ t(placeholder) }}</span>
-            <Check v-if="!modelValue" :size="16" class="check" />
-          </button>
-        </li>
-        <li v-for="opt in filteredOptions" :key="opt">
-          <button
-            type="button"
-            class="dropdown-option"
-            :class="{ selected: opt === modelValue }"
-            role="option"
-            :aria-selected="opt === modelValue"
-            @click="select(opt)"
-          >
-            <GameIcon
-              v-if="category"
-              :name="opt"
-              :category="category"
-              class="select-option-icon"
-            />
-            <span class="option-label">
-              {{ t(opt) }}
-            </span>
-            <Check v-if="opt === modelValue" :size="16" class="check" />
-          </button>
-        </li>
+        <DropdownOption :label="t(placeholder)" :selected="!modelValue" muted @select="select('')" />
+        <DropdownOption
+          v-for="opt in filteredOptions"
+          :key="opt"
+          :label="t(opt)"
+          :selected="opt === modelValue"
+          @select="select(opt)"
+        >
+          <template #icon>
+            <GameIcon v-if="category" :name="opt" :category="category" class="select-option-icon" />
+          </template>
+        </DropdownOption>
       </ul>
     </DropdownPanel>
   </div>
@@ -254,12 +233,5 @@ const select = (value) => {
   color: var(--text-muted);
 }
 
-/* 選單樣式沿用全域 .dropdown-options / .dropdown-option，此處只放本元件差異 */
-.option-label.muted {
-  color: var(--text-muted);
-}
-
-.dropdown-option.selected .option-label.muted {
-  color: inherit;
-}
+/* 選單樣式沿用全域 .dropdown-options 與 DropdownOption 元件 */
 </style>

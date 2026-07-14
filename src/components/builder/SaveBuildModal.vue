@@ -3,7 +3,6 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useSavedBuildsStore } from '@/stores/savedBuilds'
 import { useToastStore } from '@/stores/toast'
-import { useSettingsStore } from '@/stores/settings'
 import Modal from '@/components/ui/Modal.vue'
 import { useI18n } from '@/composables/useI18n'
 import { formatDate } from '@/utils/format'
@@ -18,7 +17,6 @@ const emit = defineEmits(['update:show'])
 const favoritesStore = useFavoritesStore()
 const savedBuildsStore = useSavedBuildsStore()
 const toastStore = useToastStore()
-const settingsStore = useSettingsStore()
 const { t } = useI18n()
 
 const saveNameInput = ref('')
@@ -57,18 +55,15 @@ const confirmSave = () => {
   if (saveMode.value === 'new') {
     if (!savedBuildsStore.saveBuild(name, favoritesStore.favoriteIds)) {
       // 達存檔上限（開啟 modal 後上限才被觸及的邊界情況）
-      if (settingsStore.notificationPrefs.general) {
-        toastStore.showToast(t('ui.builder.saveLimitMsg', savedBuildsStore.maxSavedBuilds), 'warning')
-      }
+      toastStore.showToast(t('ui.builder.saveLimitMsg', savedBuildsStore.maxSavedBuilds), 'warning', {
+        prefKey: 'general',
+      })
       return
     }
   } else {
-    savedBuildsStore.overwriteBuild(saveMode.value, favoritesStore.favoriteIds)
-    savedBuildsStore.renameBuild(saveMode.value, name)
+    savedBuildsStore.updateBuild(saveMode.value, { name, skillIds: favoritesStore.favoriteIds })
   }
-  if (settingsStore.notificationPrefs.general) {
-    toastStore.showToast(t('ui.builder.saveSuccess'), 'success')
-  }
+  toastStore.showToast(t('ui.builder.saveSuccess'), 'success', { prefKey: 'general' })
   emit('update:show', false)
 }
 </script>
@@ -147,7 +142,7 @@ const confirmSave = () => {
   padding: 12px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s, background 0.2s;
   border: 1px solid transparent;
 }
 
