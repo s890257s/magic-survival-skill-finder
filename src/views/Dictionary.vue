@@ -66,7 +66,7 @@ const onSelectSubject = (name) => {
   }
 }
 
-// --- 頂置區 ---
+// --- 釘選區 ---
 
 const pinnedInView = computed(() => {
   return pinnedStore.pinnedIds.map((id) => skillsById.get(id)).filter(Boolean)
@@ -109,6 +109,43 @@ const toggleExpandAll = (cards, val) => {
   if (cards && cards.length) {
     cards.forEach((card) => card?.setExpanded?.(val))
   }
+}
+
+const onCardToggled = (index, val, listType) => {
+  if (window.innerWidth < 768) return
+
+  const isPinned = listType === 'pinned'
+  const listSelector = isPinned ? '.pinned-list' : '.unpinned-list'
+  const listElement = document.querySelector(listSelector)
+  if (!listElement) return
+
+  // 取得實際渲染的欄數 (透過 CSS Grid 計算結果)
+  const gridStyle = window.getComputedStyle(listElement)
+  const columns = gridStyle.gridTemplateColumns.split(' ').length
+  
+  if (columns <= 1) return // 單欄不需連動
+
+  // 計算該卡片所在的列 (Row) 的起始與結束 Index
+  const rowIndex = Math.floor(index / columns)
+  const startIndex = rowIndex * columns
+  const endIndex = startIndex + columns
+
+  // 從資料源取得同一列的 skill id，確保順序 100% 正確
+  const sourceArray = isPinned ? pinnedInView.value : filteredSkills.value
+  const targetIds = new Set()
+  for (let i = startIndex; i < endIndex && i < sourceArray.length; i++) {
+    targetIds.add(sourceArray[i].id)
+  }
+
+  // 遍歷 Vue Ref 陣列，只要 id 吻合就同步狀態 (無視陣列順序)
+  const cards = isPinned ? pinnedCards.value : allSkillCards.value
+  cards.forEach((card) => {
+    if (card && card.$props && card.$props.skill) {
+      if (targetIds.has(card.$props.skill.id)) {
+        card.setExpanded(val)
+      }
+    }
+  })
 }
 
 // --- 清空狀態 ---
@@ -157,7 +194,7 @@ const executeClearAll = () => {
     </div>
 
     <div class="list-area">
-      <!-- 頂置技能區 -->
+      <!-- 釘選技能區 -->
       <div class="section-container">
         <SectionHeader
           :expanded="ui.isPinnedExpanded"
@@ -214,6 +251,7 @@ const executeClearAll = () => {
               @select-base="onSelectBase"
               @select-enchant="onSelectEnchant"
               @select-subject="onSelectSubject"
+              @toggled="(val) => onCardToggled(index, val, 'pinned')"
             />
           </div>
         </div>
@@ -268,7 +306,7 @@ const executeClearAll = () => {
 
             <div v-else class="skill-list unpinned-list">
               <SkillCard
-                v-for="skill in filteredSkills"
+                v-for="(skill, index) in filteredSkills"
                 :key="skill.id"
                 ref="allSkillCards"
                 :data-id="skill.id"
@@ -280,6 +318,7 @@ const executeClearAll = () => {
                 @select-base="onSelectBase"
                 @select-enchant="onSelectEnchant"
                 @select-subject="onSelectSubject"
+                @toggled="(val) => onCardToggled(index, val, 'all')"
               />
             </div>
           </div>

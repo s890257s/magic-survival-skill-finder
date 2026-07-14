@@ -3,7 +3,7 @@ import { usePersistedRef } from '@/composables/usePersistedRef'
 import { STORAGE_KEYS } from '@/constants/storageKeys'
 import { toggleInArray } from '@/utils/array'
 
-// 頂置顯示：純排序偏好，與配技（favorites）無關，不做衝突檢測、無數量限制
+// 釘選顯示：純排序偏好，與配技（favorites）無關，不做衝突檢測、無數量限制
 export const usePinnedStore = defineStore('pinned', () => {
   const pinnedIds = usePersistedRef(STORAGE_KEYS.pinned, [])
 
@@ -11,7 +11,7 @@ export const usePinnedStore = defineStore('pinned', () => {
 
   const isPinned = (id) => pinnedIds.value.includes(id)
 
-  // 拖曳排序：visibleIds 為畫面上可見的頂置 id（依目前順序），
+  // 拖曳排序：visibleIds 為畫面上可見的釘選 id（依目前順序），
   // 以可見清單算出新順序後回寫，不在畫面上的 id（如已失效者）保留原位置
   const reorderVisible = (visibleIds, oldIndex, newIndex) => {
     const newOrder = [...visibleIds]

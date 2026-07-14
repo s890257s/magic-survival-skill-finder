@@ -29,7 +29,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // 顯示頂置按鈕（圖鑑頁）
+  // 顯示釘選按鈕（圖鑑頁）
   pinnable: {
     type: Boolean,
     default: false,
@@ -40,7 +40,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['select-base', 'select-enchant', 'select-subject'])
+const emit = defineEmits(['select-base', 'select-enchant', 'select-subject', 'toggled'])
 const favoritesStore = useFavoritesStore()
 const pinnedStore = usePinnedStore()
 const settingsStore = useSettingsStore()
@@ -56,6 +56,11 @@ const formulaParts = computed(() => [
   { labelKey: 'ui.card.mainSkill', part: props.skill.mainSkill, consume: false },
   { labelKey: 'ui.card.subSkill', part: props.skill.subSkill, consume: !!props.skill.subSkill.enchant },
 ])
+
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value
+  emit('toggled', isExpanded.value)
+}
 
 const onBaseClick = (name) => {
   if (props.clickableBases) {
@@ -87,12 +92,12 @@ defineExpose({
     <div v-if="hasConflict" class="conflict-badge">{{ t('ui.card.conflictBadge') }}</div>
     <div 
       class="skill-header"
-      @click="isExpanded = !isExpanded"
+      @click="toggleExpand"
       role="button"
       tabindex="0"
       :aria-expanded="isExpanded"
-      @keydown.enter="isExpanded = !isExpanded"
-      @keydown.space.prevent="isExpanded = !isExpanded"
+      @keydown.enter="toggleExpand"
+      @keydown.space.prevent="toggleExpand"
     >
       <div class="name-area">
         <div class="icon-wrapper">

@@ -4,6 +4,13 @@ import { STORAGE_KEYS } from '@/constants/storageKeys'
 
 const MAX_SAVED_BUILDS = 10
 
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  return Date.now().toString(36) + Math.random().toString(36).substring(2)
+}
+
 // 配技存檔庫：與「當前配技」（favorites store）解耦，
 // 要存哪些技能由呼叫端傳入，載入時也由呼叫端決定套用到哪。
 export const useSavedBuildsStore = defineStore('savedBuilds', () => {
@@ -14,7 +21,7 @@ export const useSavedBuildsStore = defineStore('savedBuilds', () => {
   const saveBuild = (name, skillIds) => {
     if (savedBuilds.value.length >= MAX_SAVED_BUILDS) return false
     savedBuilds.value.push({
-      id: crypto.randomUUID(),
+      id: generateId(),
       name,
       date: Date.now(),
       skills: [...skillIds],

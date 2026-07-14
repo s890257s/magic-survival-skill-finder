@@ -5,7 +5,7 @@ import { useI18n } from '@/composables/useI18n'
 import { useParticles } from '@/composables/useParticles'
 import { useSettingsStore } from '@/stores/settings'
 
-// 技能卡的「加入配技 / 頂置」動作與對應 toast 文案。
+// 技能卡的「加入配技 / 釘選」動作與對應 toast 文案。
 // 業務規則（衝突提示、超限提示、復原）集中於此，卡片元件只負責呈現。
 // getSkill：回傳目標技能的 getter，讓動作永遠取到最新的 props.skill
 export function useSkillActions(getSkill) {
