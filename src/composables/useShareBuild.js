@@ -36,9 +36,30 @@ export function useShareBuild() {
 
   const copyWithFeedback = async (text) => {
     try {
-      await navigator.clipboard.writeText(text)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        // Fallback for non-secure contexts (like HTTP local network testing)
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        
+        // Prevent scrolling to bottom of page in MS Edge
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        
+        const successful = document.execCommand('copy')
+        document.body.removeChild(textArea)
+        
+        if (!successful) throw new Error('Fallback copy failed')
+      }
       if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportSuccess'), 'success')
-    } catch {
+    } catch (e) {
+      console.error('Clipboard write failed', e)
       if (settingsStore.notificationPrefs.general) toastStore.showToast(t('ui.builder.exportFail'), 'warning')
     }
   }

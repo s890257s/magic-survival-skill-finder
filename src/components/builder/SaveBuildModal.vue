@@ -3,6 +3,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useSavedBuildsStore } from '@/stores/savedBuilds'
 import { useToastStore } from '@/stores/toast'
+import { useSettingsStore } from '@/stores/settings'
 import Modal from '@/components/ui/Modal.vue'
 import { useI18n } from '@/composables/useI18n'
 import { formatDate } from '@/utils/format'
@@ -17,6 +18,7 @@ const emit = defineEmits(['update:show'])
 const favoritesStore = useFavoritesStore()
 const savedBuildsStore = useSavedBuildsStore()
 const toastStore = useToastStore()
+const settingsStore = useSettingsStore()
 const { t } = useI18n()
 
 const saveNameInput = ref('')
