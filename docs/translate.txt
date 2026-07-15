@@ -28,19 +28,19 @@
 落雷	Thunderstorm	落雷	낙뢰
 隕石墜落	Meteor	隕石落下	운석 낙하
 旋風	Cyclone	つむじ風	돌개바람
-電氣衝擊	Electric Shock	電気ショック	감전
+電氣衝擊	Electric Shock	電気ショック	전기충격
 能量彈	Energy Bolt	エネルギー弾	에너지탄
 焚燒	Incineration	焼却	소각
 暴風雪	Blizzard	吹雪	눈보라
 海嘯	Tsunami	津波	해일
 精靈	Spirit	精霊	정령
 衛星	Satellite	衛星	위성
-幻視光線	Arcane Ray	ビジョン光線	환영 광선
+幻視光線	Arcane Ray	ビジョン光線	비전 광선
 導電地帶	Electric Zone	感電地帯	감전 지대
 凜霜	Frost Nova	霜柱	서릿발
 熔岩地帶	Lava Zone	熔岩地帯	용암 지대
 護盾	Shield	シールド	보호막
-疾行	Cloaking	幽体化	은신
+疾行	Cloaking	幽体化	유체화
 魔法陣	Magic Circle	魔法陣	마법진
 末日審判	Armageddon	アルマゲドン	아마겟돈
 閃光衝擊	Flash Shock	閃光ショック	섬광 충격
@@ -79,9 +79,9 @@
 道士	Taoist	導師	도사
 花藝師	Florist	フローリスト	플로리스트
 魔力箭矢	Magic Arrow	魔力の矢	마력 화살
-爆竹	Fireworks	花火	불꽃놀이
+爆竹	Fireworks	花火	폭죽
 分裂	Fission	分裂	핵분열
-連續施展	Chain Casting	連続発動	연속 영창
+連續施展	Chain Casting	連続発動	연속시전
 亂射	Fire at Bolt	乱射	난사
 分身	Doppelganger	ドッペルゲンガー	도플갱어
 大爆炸	Big Bang	大爆発	빅뱅
