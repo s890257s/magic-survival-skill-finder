@@ -1,19 +1,19 @@
 魔法師	Wizard	魔法使い	마법사
 天文學者	Astronomer	天文学者	천문학자
-冰凍師	Cryomancer	氷結師	빙결술사
+冰凍師	Cryomancer	氷結師	빙결사
 咒術師	Shaman	呪術師	주술사
-巫術師	Warlock	ウォーロック	흑마법사
-魔道學者	Arcanist	魔道学者	아르카니스트
+巫術師	Warlock	ウォーロック	워록
+魔道學者	Arcanist	魔道学者	마도학자
 召喚師	Summoner	召喚士	소환사
 大主教	Bishop	ビショップ	비숍
-神秘術士	Occultist	神秘術師	오컬티스트
+神秘術士	Occultist	神秘術師	신비술사
 德魯伊	Druid	ドルイド	드루이드
 火焰術士	Pyromancer	火炎術師	화염술사
 術士	Sorcerer	ソーサラー	소서러
 煉金術士	Alchemist	錬金術師	연금술사
 學者	Scholar	学者	학자
 魔女	Witch	魔女	마녀
-電荷術士	Electromancer	電荷術師	전격술사
+電荷術士	Electromancer	電荷術師	전하술사
 協調者	Arbitrator	調律者	조율자
 大魔法師	Archmage	大魔法使い	대마법사
 考古學者	Archaeologist	考古学者	고고학자
@@ -21,7 +21,7 @@
 魔學者	Mage	メイジ	메이지
 戰鬥法師	Battlemage	戦闘魔法使い	전투마법사
 戰爭領主	Warlord	ウォーロード	워로드
-黑魔法師	Black Mage	黒魔法使い	블랙 메이지
+黑魔法師	Black Mage	黒魔法使い	흑마법사
 傑克燈籠	Jack o' Lantern	ジャック・オー・ランタン	잭 오 랜턴
 魔力彈	Magic Bolt	魔力弾	마력탄
 火焰球	Fireball	ファイアボール	화염구
@@ -80,11 +80,11 @@
 花藝師	Florist	フローリスト	플로리스트
 魔力箭矢	Magic Arrow	魔力の矢	마력 화살
 爆竹	Fireworks	花火	폭죽
-分裂	Fission	分裂	핵분열
+分裂	Fission	分裂	분열
 連續施展	Chain Casting	連続発動	연속시전
 亂射	Fire at Bolt	乱射	난사
 分身	Doppelganger	ドッペルゲンガー	도플갱어
-大爆炸	Big Bang	大爆発	빅뱅
+大爆炸	Big Bang	大爆発	대폭발
 毒氣	Toxic Gas	毒ガス	독가스
 星座	Constellation	星座	별자리
 晴天霹靂	Thunderclap	青天の霹靂	청천벽력
@@ -94,9 +94,9 @@
 流星雨	Meteor Shower	流星群	유성우
 小行星	Asteroid	小惑星	소행성
 極端天氣	Extreme Weather	気象異変	기상 이변
-電氣球	Electric Orb	電気球体	전기 구슬
-虛無	Void	ボイド	공허
-連鎖閃電	Chain Lightning	連鎖する雷	연쇄 번개
+電氣球	Electric Orb	電気球体	전기 구체
+虛無	Void	ボイド	보이드
+連鎖閃電	Chain Lightning	連鎖する雷	연쇄번개
 高功率	High Output	高出力	고출력
 超導	Superconductivity	超電導	초전도
 帶電粒子	Charged Particle	荷電粒子	하전 입자
@@ -104,26 +104,26 @@
 閃焰	Flare	フレア	플레어
 火焰猛擊	Flamestrike	火炎強打	화염 강타
 縱火狂	Pyromaniac	放火癖	방화광
-地獄三頭犬之焰	Cerberus Flame	ケルベロスの炎	케르베로스의 불꽃
+地獄三頭犬之焰	Cerberus Flame	ケルベロスの炎	케르베로스 불꽃
 嚴寒期	Sub-Zero	極寒期	혹한기
 流星	Shooting Star	流れ星	별똥별
-火災	Conflagration	火災	대화재
+火災	Conflagration	火災	화재
 極點	Pole	極点	극점
 賽蓮之歌	Siren's Song	セイレーンの歌	세이렌의 노래
-大噴發	Great Eruption	大噴火	대분출
+大噴發	Great Eruption	大噴火	대분화
 魔法導彈	Magic Missile	魔法ミサイル	매직 미사일
-魔力刀刃	Magic Blade	魔力の刃	매직 블레이드
+魔力刀刃	Magic Blade	魔力の刃	마력 칼날
 使魔	Familiar	使い魔	사역마
 反重力	Anti-Gravity	反重力	반중력
 怪火	Will o' the Wisp	鬼火	도깨비불
 核融合	Nuclear Fusion	核融合	핵융합
 反射	Reflect	反射	반사
 破壞光線	Destruction Ray	破壊光線	파괴 광선
-電磁放射	Electromagnetic Burst	電磁波放出	전자기 폭발
-電荷排放	Electricity Blast	電荷放出	전기 방출
+電磁放射	Electromagnetic Burst	電磁波放出	전자기 방출
+電荷排放	Electricity Blast	電荷放出	전하 방출
 EMP	EMP	EMP	EMP
-火之光環	Fire Aura	炎のオーラ	화염 오라
-絕對零度	Absolute Zero	絶対零度	절대 영도
+火之光環	Fire Aura	炎のオーラ	불의 오오라
+絕對零度	Absolute Zero	絶対零度	절대영도
 冰河期	Ice Age	氷河期	빙하기
 地震	Earthquake	地震	지진
 融解	Melt	融解	융해

@@ -86,7 +86,7 @@ defineExpose({
             <div class="skill-name-row">
               <h3 class="skill-name">{{ t(skill.name) }}</h3>
               <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name"
-                >→{{ t(skill.requirements.ultimate) }} (Lv100)</span
+                >→{{ t(skill.requirements.ultimate) }}{{ skill.requirements.subject ? ` (${t(skill.requirements.subject)})` : '' }} (Lv100)</span
               >
             </div>
             <span v-if="settingsStore.showEnglish" class="skill-name-en">{{ skill.name }}</span>
