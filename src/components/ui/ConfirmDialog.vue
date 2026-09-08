@@ -12,6 +12,10 @@ defineProps({
   cancelText: {
     type: String,
     default: 'Cancel'
+  },
+  variant: {
+    type: String,
+    default: 'primary'
   }
 })
 
@@ -36,7 +40,7 @@ const handleCancel = () => {
       </slot>
       <div class="confirm-actions">
         <button class="btn btn-text" @click="handleCancel">{{ cancelText }}</button>
-        <button class="btn btn-primary" @click="handleConfirm">{{ confirmText }}</button>
+        <button :class="['btn', `btn-${variant}`]" @click="handleConfirm">{{ confirmText }}</button>
       </div>
     </div>
   </Modal>

@@ -231,3 +231,7 @@ EMP	EMP	EMP	EMP
 宇宙	Cosmos	コスモス	코스모스
 超載	Overload	オーバーロード	과부하
 終結者	Terminator	ターミネーター	터미네이터
+光彈風暴	Tempester	テンペスター	템페스터
+爆裂光束	Buster Beam	バスタービーム	버스터 빔
+女武神	Valkyrie	ヴァルキリー	발키리
+硫磺	Brimstone	ブリムストーン	유황

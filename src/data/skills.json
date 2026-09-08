@@ -103,6 +103,11 @@
     "subSkill": {
       "name": "Blizzard",
       "enchant": "Conflagration"
+    },
+    "requirements": {
+      "ultimate": "Brimstone",
+      "school": "Warlord",
+      "subject": "Warlord"
     }
   },
   {
@@ -250,6 +255,11 @@
     "subSkill": {
       "name": "Flash Shock",
       "enchant": "Wipeout"
+    },
+    "requirements": {
+      "ultimate": "Valkyrie",
+      "school": "Summoner",
+      "subject": "Summoner"
     }
   },
   {
@@ -313,6 +323,11 @@
     "subSkill": {
       "name": "Flash Shock",
       "enchant": "Ragnarok"
+    },
+    "requirements": {
+      "ultimate": "Buster Beam",
+      "school": "Occultist",
+      "subject": "Occultist"
     }
   },
   {
@@ -753,6 +768,11 @@
     "subSkill": {
       "name": "Spirit",
       "enchant": "Familiar"
+    },
+    "requirements": {
+      "ultimate": "Tempester",
+      "school": "Alchemist",
+      "subject": "Alchemist"
     }
   },
   {
