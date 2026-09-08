@@ -107,7 +107,8 @@
     "requirements": {
       "ultimate": "Brimstone",
       "school": "Warlord",
-      "subject": "Warlord"
+      "subject": "Warlord",
+      "addedVersion": "0.993"
     }
   },
   {
@@ -259,7 +260,8 @@
     "requirements": {
       "ultimate": "Valkyrie",
       "school": "Summoner",
-      "subject": "Summoner"
+      "subject": "Summoner",
+      "addedVersion": "0.993"
     }
   },
   {
@@ -327,7 +329,8 @@
     "requirements": {
       "ultimate": "Buster Beam",
       "school": "Occultist",
-      "subject": "Occultist"
+      "subject": "Occultist",
+      "addedVersion": "0.993"
     }
   },
   {
@@ -772,7 +775,8 @@
     "requirements": {
       "ultimate": "Tempester",
       "school": "Alchemist",
-      "subject": "Alchemist"
+      "subject": "Alchemist",
+      "addedVersion": "0.993"
     }
   },
   {

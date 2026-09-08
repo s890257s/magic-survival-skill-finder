@@ -10,6 +10,7 @@ import SkillFormula from '@/components/skill-card/SkillFormula.vue'
 import UltimateRecipe from '@/components/skill-card/UltimateRecipe.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useSkillActions } from '@/composables/useSkillActions'
+import { gameVersion } from '@/data/meta'
 
 const props = defineProps({
   skill: {
@@ -85,9 +86,11 @@ defineExpose({
           <div class="skill-title-group">
             <div class="skill-name-row">
               <h3 class="skill-name">{{ t(skill.name) }}</h3>
-              <span v-if="skill.requirements?.ultimate" class="skill-ultimate-name"
-                >→{{ t(skill.requirements.ultimate) }}{{ skill.requirements.subject ? ` (${t(skill.requirements.subject)})` : '' }} (Lv100)</span
-              >
+              <span v-if="skill.addedVersion === gameVersion" class="new-tag">[{{ gameVersion }} NEW]</span>
+              <template v-if="skill.requirements?.ultimate">
+                <span class="skill-ultimate-name">→{{ t(skill.requirements.ultimate) }}{{ skill.requirements.subject ? ` (${t(skill.requirements.subject)})` : '' }} (Lv100)</span>
+                <span v-if="skill.requirements.addedVersion === gameVersion" class="new-tag">[{{ gameVersion }} NEW]</span>
+              </template>
             </div>
             <span v-if="settingsStore.showEnglish" class="skill-name-en">{{ skill.name }}</span>
           </div>
@@ -246,6 +249,20 @@ defineExpose({
   color: var(--text-muted);
   font-style: italic;
   line-height: 1;
+}
+
+.new-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--warning);
+  border: 1px solid var(--warning-border);
+  background: var(--warning-bg);
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-left: 2px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
 }
 
 .header-actions {
