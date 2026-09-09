@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { reactive, computed } from 'vue'
 import { skillsData } from '@/data'
+import { gameVersion } from '@/data/meta'
 import { usePersistedReactive } from '@/composables/usePersistedRef'
 import { useFavoritesStore } from '@/stores/favorites'
 import { STORAGE_KEYS } from '@/constants/storageKeys'
@@ -18,6 +19,7 @@ export const useDictionaryStore = defineStore('dictionary', () => {
       baseSkill: '',
       enchant: '',
       ultimate: false,
+      onlyNew: false,
       excludeConsumed: false,
     }),
     { debounceMs: 300 },
@@ -70,6 +72,10 @@ export const useDictionaryStore = defineStore('dictionary', () => {
       if (filters.ultimate && !skill.requirements?.ultimate) {
         return false
       }
+      if (filters.onlyNew) {
+        const isNew = skill.addedVersion === gameVersion || skill.requirements?.addedVersion === gameVersion
+        if (!isNew) return false
+      }
       if (filters.excludeConsumed) {
         const main = skill.mainSkill?.name
         const sub = skill.subSkill?.name
@@ -92,6 +98,7 @@ export const useDictionaryStore = defineStore('dictionary', () => {
         filters.subject ||
         filters.baseSkill ||
         filters.ultimate ||
+        filters.onlyNew ||
         filters.excludeConsumed,
     ),
   )
@@ -102,6 +109,7 @@ export const useDictionaryStore = defineStore('dictionary', () => {
     filters.baseSkill = ''
     filters.enchant = ''
     filters.ultimate = false
+    filters.onlyNew = false
     filters.excludeConsumed = false
   }
 

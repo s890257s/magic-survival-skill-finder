@@ -259,6 +259,7 @@
   "ui.dict.baseSkill": "基礎技能",
   "ui.dict.enchant": "指定附魔",
   "ui.dict.onlyUltimate": "僅顯示終極技能",
+  "ui.dict.onlyNew": "僅顯示 NEW 技能",
   "ui.dict.excludeConsumed": "僅顯示無衝突技能",
   "ui.dict.resultCount": "符合 {0} 筆",
   "ui.dict.removeFilter": "移除篩選 {0}",

@@ -259,6 +259,7 @@
   "ui.dict.baseSkill": "기본 스킬",
   "ui.dict.enchant": "인챈트",
   "ui.dict.onlyUltimate": "궁극기만 표시",
+  "ui.dict.onlyNew": "NEW 스킬만 표시",
   "ui.dict.excludeConsumed": "충돌 없는 스킬만 표시",
   "ui.dict.resultCount": "{0}개의 결과",
   "ui.dict.removeFilter": "필터 제거 {0}",

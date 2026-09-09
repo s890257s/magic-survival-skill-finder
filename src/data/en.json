@@ -22,6 +22,7 @@
   "ui.dict.baseSkill": "Base Skill",
   "ui.dict.enchant": "Enchant",
   "ui.dict.onlyUltimate": "Ultimate Skills Only",
+  "ui.dict.onlyNew": "Only NEW Skills",
   "ui.dict.excludeConsumed": "Show conflict-free only",
   "ui.dict.resultCount": "{0} Results",
   "ui.dict.removeFilter": "Remove filter {0}",

@@ -259,6 +259,7 @@
   "ui.dict.baseSkill": "基本スキル",
   "ui.dict.enchant": "エンチャント",
   "ui.dict.onlyUltimate": "究極スキルのみ",
+  "ui.dict.onlyNew": "NEW スキルのみ",
   "ui.dict.excludeConsumed": "競合しないスキルのみ",
   "ui.dict.resultCount": "{0} 件の結果",
   "ui.dict.removeFilter": "フィルターを削除 {0}",

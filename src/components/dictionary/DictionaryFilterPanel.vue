@@ -63,6 +63,10 @@ const onBaseSkillChange = (val) => {
           <span class="checkbox-text">{{ t('ui.dict.onlyUltimate') }}</span>
         </label>
         <label class="checkbox-label">
+          <input type="checkbox" v-model="filters.onlyNew" />
+          <span class="checkbox-text">{{ t('ui.dict.onlyNew') }}</span>
+        </label>
+        <label class="checkbox-label">
           <input type="checkbox" v-model="filters.excludeConsumed" />
           <span class="checkbox-text">{{ t('ui.dict.excludeConsumed') }}</span>
         </label>

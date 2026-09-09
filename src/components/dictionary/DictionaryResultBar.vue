@@ -40,6 +40,9 @@ const activeChips = computed(() => {
   if (filters.ultimate) {
     chips.push({ key: 'ultimate', label: t('ui.dict.onlyUltimate'), icon: null })
   }
+  if (filters.onlyNew) {
+    chips.push({ key: 'onlyNew', label: t('ui.dict.onlyNew'), icon: null })
+  }
   if (filters.excludeConsumed) {
     chips.push({ key: 'excludeConsumed', label: t('ui.dict.excludeConsumed'), icon: null })
   }
