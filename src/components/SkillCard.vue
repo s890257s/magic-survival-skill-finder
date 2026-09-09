@@ -52,6 +52,11 @@ const { togglePin, toggleFavorite } = useSkillActions(() => props.skill)
 const isExpanded = ref(false)
 const isFavorite = computed(() => favoritesStore.isFavorite(props.skill.id))
 const isPinned = computed(() => pinnedStore.isPinned(props.skill.id))
+const isNew = computed(
+  () =>
+    props.skill.addedVersion === gameVersion ||
+    props.skill.requirements?.addedVersion === gameVersion,
+)
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
@@ -67,7 +72,10 @@ defineExpose({
 
 <template>
   <GlassCard class="skill-card">
-    <div v-if="hasConflict" class="conflict-badge">{{ t('ui.card.conflictBadge') }}</div>
+    <div class="top-right-badges" v-if="isNew || hasConflict">
+      <div v-if="isNew" class="new-card-badge">{{ props.skill.requirements.addedVersion }} NEW</div>
+      <div v-if="hasConflict" class="conflict-badge">{{ t('ui.card.conflictBadge') }}</div>
+    </div>
     <div
       class="skill-header"
       @click="toggleExpand"
@@ -86,10 +94,14 @@ defineExpose({
           <div class="skill-title-group">
             <div class="skill-name-row">
               <h3 class="skill-name">{{ t(skill.name) }}</h3>
-              <span v-if="skill.addedVersion === gameVersion" class="new-tag">[{{ gameVersion }} NEW]</span>
               <template v-if="skill.requirements?.ultimate">
-                <span class="skill-ultimate-name">→{{ t(skill.requirements.ultimate) }}{{ skill.requirements.subject ? ` (${t(skill.requirements.subject)})` : '' }} (Lv100)</span>
-                <span v-if="skill.requirements.addedVersion === gameVersion" class="new-tag">[{{ gameVersion }} NEW]</span>
+                <span class="skill-ultimate-name"
+                  >→{{ t(skill.requirements.ultimate)
+                  }}{{
+                    skill.requirements.subject ? ` (${t(skill.requirements.subject)})` : ''
+                  }}
+                  (Lv100)</span
+                >
               </template>
             </div>
             <span v-if="settingsStore.showEnglish" class="skill-name-en">{{ skill.name }}</span>
@@ -159,27 +171,43 @@ defineExpose({
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card-fusion-icon {
   --icon-size: var(--icon-size-card-fusion);
 }
 
-.conflict-badge {
+.top-right-badges {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  z-index: 10;
+  pointer-events: none;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 16px;
+  overflow: hidden;
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.new-card-badge {
+  background-color: var(--info, #ffab00);
+  color: black;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  letter-spacing: 0.5px;
+}
+
+.conflict-badge {
   background-color: var(--danger);
   color: white;
   font-size: 0.65rem;
   font-weight: 800;
   padding: 2px 8px;
-  border-bottom-left-radius: 10px;
-  border-top-right-radius: 16px;
-  z-index: 10;
-  pointer-events: none;
-  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .skill-header {
@@ -251,20 +279,6 @@ defineExpose({
   line-height: 1;
 }
 
-.new-tag {
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: var(--warning);
-  border: 1px solid var(--warning-border);
-  background: var(--warning-bg);
-  border-radius: 4px;
-  padding: 0 4px;
-  margin-left: 2px;
-  display: inline-flex;
-  align-items: center;
-  line-height: 1.2;
-}
-
 .header-actions {
   display: flex;
   align-items: center;
@@ -311,7 +325,9 @@ defineExpose({
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  transition:
+    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
   max-height: 500px;
   opacity: 1;
   overflow: hidden;
